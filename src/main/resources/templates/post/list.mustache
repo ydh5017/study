@@ -1,0 +1,50 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <h2>게시글 목록</h2>
+        <table class="board_list">
+            <colgroup>
+                <col width="15%"/>
+                <col width="*"/>
+                <col width="20%"/>
+            </colgroup>
+            <thead>
+            <tr>
+                <th scope="col">글번호</th>
+                <th scope="col">제목</th>
+                <th scope="col">작성일</th>
+            </tr>
+            </thead>
+            {{#pList}}
+            <tbody>
+            <tr>
+                <td>{{post_seq}}</td>
+                <td class="title">{{title}}</td>
+                <td>{{post_write_dt}}</td>
+            </tr>
+            {{/pList}}
+            {{^pList}}
+            <tr>
+                <td colspan="4">조회된 결과가 없습니다.</td>
+            </tr>
+            {{/pList}}
+            </tbody>
+        </table>
+        <a href="/post/postAdd" class="btn">글 쓰기</a>
+        <div>
+            <a class="pNumStart" href="/post/list?Pno=">이전</a>
+            <div class='pNum' style="background-color:#1abc9c;color:white;">
+                <a class='pNum' href="/post/list?Pno={{paging.page}}">{{paging.page}}</a>
+            </div>
+            <a class="pNumEnd" href="/post/list?Pno=">다음</a>
+        </div>
+    </div>
+</body>
+</html>
