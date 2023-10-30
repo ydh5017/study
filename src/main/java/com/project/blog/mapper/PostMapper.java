@@ -14,5 +14,7 @@ public interface PostMapper {
 
     int postAddProc(PostVO postVO) throws Exception;
 
+    PostVO postDetail(int post_seq) throws Exception;
+
     int postDelete(int result) throws Exception;
 }

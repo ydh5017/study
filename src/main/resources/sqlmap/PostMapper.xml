@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.project.blog.mapper.PostMapper">
+    <!-- 게시글 등록 -->
     <insert id="postAddProc" parameterType="PostVo">
         INSERT
         INTO
@@ -8,14 +9,12 @@
         (
             TITLE,
             CONTENT,
-            POSTWRITE_DT,
-            POSTCHG_DT
+            POSTWRITE_DT
         )
         VALUES
             (
                 #{title},
                 #{content},
-                SYSDATE(),
                 SYSDATE()
             )
     </insert>
@@ -31,6 +30,18 @@
         FROM POST
         ORDER BY POSTSEQ DESC
         LIMIT #{startlist}, #{listsize}
+    </select>
+    <!-- 게시글 가져오기 -->
+    <select id="postDetail" parameterType="int" resultType="PostVO">
+        SELECT
+            POSTSEQ AS post_seq,
+            TITLE AS title,
+            CONTENT AS content,
+            POSTWRITE_DT AS post_write_dt,
+            POSTCHG_DT AS post_chg_dt,
+            ISDELETED AS post_deleted
+        FROM POST
+        WHERE POSTSEQ = #{post_seq}
     </select>
     <!-- 총 게시글 수 조회 -->
     <select id="postCount" resultType="integer">

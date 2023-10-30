@@ -58,7 +58,6 @@ public class PostController {
     public String postAdd() {
         return "/post/postAdd";
     }
-
     @RequestMapping(value = "postAddProc")
     public String postAddProc(HttpServletRequest request, Model model) throws Exception {
         log.info("request : " + request);
@@ -78,6 +77,16 @@ public class PostController {
         return "/redirect";
     }
 
+    @RequestMapping(value = "postDetail")
+    public String postDetail(HttpServletRequest request, Model model) throws Exception {
+        int post_seq = Integer.parseInt(request.getParameter("no"));
+
+        PostVO postVO = postService.postDetail(post_seq);
+        model.addAttribute("postVO",postVO);
+
+        return "/post/postDetail";
+    }
+
     @RequestMapping(value = "postDelete")
     public String postDelete(HttpServletRequest request, Model model) throws Exception {
         log.info("request : " + request);
@@ -88,6 +97,31 @@ public class PostController {
 
         HashMap<String, String> hMap = postService.postDelete(post_seq);
 
+        log.info("hMap : " + hMap);
+
+        model.addAttribute("msg", hMap.get("msg"));
+        model.addAttribute("url", hMap.get("url"));
+
+        return "/redirect";
+    }
+
+    @RequestMapping(value = "postMod")
+    public String postMod(HttpServletRequest request, Model model) {
+        int post_seq = Integer.parseInt(request.getParameter("post_seq"));
+
+        return "/post/postMod";
+    }
+    @RequestMapping(value = "postModProc")
+    public String postModProc(HttpServletRequest request, Model model) throws Exception {
+        log.info("request : " + request);
+
+        PostVO postVO = new PostVO();
+        postVO.setTitle(request.getParameter("title"));
+        postVO.setContent(request.getParameter("content"));
+        log.info(postVO.getTitle());
+        log.info(postVO.getContent());
+
+        HashMap<String, String> hMap = postService.postAddProc(postVO);
         log.info("hMap : " + hMap);
 
         model.addAttribute("msg", hMap.get("msg"));

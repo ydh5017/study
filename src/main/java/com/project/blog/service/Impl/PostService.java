@@ -50,6 +50,19 @@ public class PostService implements IPostService {
     }
 
     @Override
+    public PostVO postDetail(int post_seq) throws Exception {
+        PostVO postVO = postMapper.postDetail(post_seq);
+        log.info("post_seq : " + postVO.getPost_seq());
+        log.info("title : " + postVO.getTitle());
+        log.info("content : " + postVO.getContent());
+        log.info("write_dt : " + postVO.getPost_write_dt());
+        log.info("chg_dt : " + postVO.getPost_chg_dt());
+        log.info("deleted : " + postVO.getPost_deleted());
+
+        return postVO;
+    }
+
+    @Override
     public HashMap<String, String> postDelete(int post_seq) throws Exception {
         HashMap<String, String> hMap = new HashMap<>();
         int result = postMapper.postDelete(post_seq);
