@@ -8,7 +8,7 @@
 </head>
 <body>
 <div class="container">
-    <h2>게시판 등록</h2>
+    <h2>게시글 상세보기</h2>
         <table class="board_detail">
             <tr>
                 <td>제목</td>
@@ -21,7 +21,16 @@
                 </td>
             </tr>
         </table>
+    <form id="frm" name="frm" method="get" action="/post/postMod">
+        <input type="hidden" name="no" value="{{postVO.post_seq}}">
+        <input type="submit" id="submit" value="수정" class="btn">
     </form>
+    <form id="frm" name="frm" method="post" action="/post">
+        <input type="hidden" name="_method" value="delete">
+        <input type="hidden" name="no" value="{{postVO.post_seq}}">
+        <input type="submit" id="submit" value="삭제" class="btn">
+    </form>
+    <input type="button" onclick="history.back()" value="취소" class="btn">
 </div>
 </body>
 </html>

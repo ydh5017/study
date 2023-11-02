@@ -1,0 +1,33 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div class="container">
+    <h2>게시글 수정</h2>
+    <form id="frm" name="frm" method="post" action="/post">
+        <input type="hidden" name="_method" value="put">
+        <table class="board_detail">
+            <tr>
+                <td>제목</td>
+                <td><input type="text" id="title" name="title" value="{{postVO.title}}"></td>
+            </tr>
+            <tr>
+                <td>내용</td>
+                <td colspan="2">
+                    <textarea id="content" name="content">{{postVO.content}}</textarea>
+                </td>
+            </tr>
+        </table>
+            <input type="hidden" name="no" value="{{postVO.post_seq}}">
+            <input type="submit" id="submit" value="수정" class="btn">
+    </form>
+        <input type="button" onclick="history.back()" id="submit" value="취소" class="btn">
+
+</div>
+</body>
+</html>

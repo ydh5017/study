@@ -6,8 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script>
         window.onload=function(){
+            var url = decodeURIComponent('{{url}}');
             alert('{{msg}}');
-            location.href='{{url}}';
+            location.href=url;
         };
     </script>
     <title>Document</title>

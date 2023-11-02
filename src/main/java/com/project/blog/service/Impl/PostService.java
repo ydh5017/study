@@ -38,7 +38,7 @@ public class PostService implements IPostService {
 
         if (result==1) {
             msg = "게시글 등록 성공";
-            url = "/post/list?pno=1";
+            url = "/post/postDetail?no%3D1" + postVO.getPost_seq();
         } else {
             msg = "게시글 등록 실패";
             url = "/post/postAdd";
@@ -66,14 +66,37 @@ public class PostService implements IPostService {
     public HashMap<String, String> postDelete(int post_seq) throws Exception {
         HashMap<String, String> hMap = new HashMap<>();
         int result = postMapper.postDelete(post_seq);
+        log.info("result : " + result);
+
         String msg, url;
 
         if (result==1) {
             msg = "글이 삭제되었습니다.";
-            url = "/post/";
+            url = "/post?pno%3D1";
         } else {
             msg = "글 삭제 실패";
-            url = "/post/";
+            url = "/post?pno%3D1";
+        }
+        hMap.put("msg", msg);
+        hMap.put("url", url);
+
+        return hMap;
+    }
+
+    @Override
+    public HashMap<String, String> postModProc(PostVO postVO) throws Exception {
+        HashMap<String, String> hMap = new HashMap<>();
+        int result = postMapper.postModProc(postVO);
+        log.info("result : " + result);
+
+        String msg, url;
+
+        if (result==1) {
+            msg = "수정되었습니다.";
+            url = "/post/postDetail?no%3D" + postVO.getPost_seq();
+        } else {
+            msg = "수정 실패";
+            url = "/post/postDetail?no%3D" + postVO.getPost_seq();
         }
         hMap.put("msg", msg);
         hMap.put("url", url);

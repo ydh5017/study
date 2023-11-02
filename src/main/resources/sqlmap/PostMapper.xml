@@ -56,4 +56,15 @@
         WHERE
             POSTSEQ = #{post_seq}
     </delete>
+    <!-- 게시글 수정 -->
+    <update id="postModProc" parameterType="PostVO">
+        UPDATE
+            POST
+        SET
+            TITLE = #{title},
+            CONTENT = #{content},
+            POSTCHG_DT = SYSDATE()
+        WHERE
+            POSTSEQ = #{post_seq}
+    </update>
 </mapper>

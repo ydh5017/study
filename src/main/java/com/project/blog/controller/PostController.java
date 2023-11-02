@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,9 +24,9 @@ public class PostController {
 
     private final IPostService postService;
 
-    @RequestMapping(value = "list")
-    public String getPostList(HttpServletRequest request, Model model) throws Exception {
-        int page = Integer.parseInt("1");
+    @GetMapping
+    public String getPostList(@RequestParam int pno, Model model) throws Exception {
+        int page = pno;
         int listCnt = postService.postCount();
         log.info("pno : " + page);
         log.info("listCnt : " + listCnt);
@@ -48,25 +49,36 @@ public class PostController {
             e.printStackTrace();
         }
 
+        int p = paging.getEndPage() - paging.getStartPage()+1;
+        String [] pageNum = new String[p];
+        int f, u = 0;
+
+        for (f = paging.getStartPage(); f <= paging.getEndPage(); f++) {
+            pageNum[u] = String.valueOf(f);
+            log.info("pageNum : " + pageNum[u]);
+            u++;
+        }
+
         model.addAttribute("pList", pList);
         model.addAttribute("paging", paging);
+        model.addAttribute("pageNum", pageNum);
 
         return "/post/List";
     }
 
-    @RequestMapping(value = "postAdd")
+    @GetMapping(value = "postAdd")
     public String postAdd() {
         return "/post/postAdd";
     }
-    @RequestMapping(value = "postAddProc")
-    public String postAddProc(HttpServletRequest request, Model model) throws Exception {
-        log.info("request : " + request);
+    @PostMapping
+    public String postAddProc(@RequestParam String title,
+                              @RequestParam String content, Model model) throws Exception {
+        log.info("title : " + title);
+        log.info("content : " + content);
 
         PostVO postVO = new PostVO();
-        postVO.setTitle(request.getParameter("title"));
-        postVO.setContent(request.getParameter("content"));
-        log.info(postVO.getTitle());
-        log.info(postVO.getContent());
+        postVO.setTitle(title);
+        postVO.setContent(content);
 
         HashMap<String, String> hMap = postService.postAddProc(postVO);
         log.info("hMap : " + hMap);
@@ -77,22 +89,16 @@ public class PostController {
         return "/redirect";
     }
 
-    @RequestMapping(value = "postDetail")
-    public String postDetail(HttpServletRequest request, Model model) throws Exception {
-        int post_seq = Integer.parseInt(request.getParameter("no"));
-
+    @GetMapping(value = "postDetail")
+    public String postDetail(@RequestParam("no") int post_seq, Model model) throws Exception {
         PostVO postVO = postService.postDetail(post_seq);
         model.addAttribute("postVO",postVO);
 
         return "/post/postDetail";
     }
 
-    @RequestMapping(value = "postDelete")
-    public String postDelete(HttpServletRequest request, Model model) throws Exception {
-        log.info("request : " + request);
-
-
-        int post_seq = Integer.parseInt(request.getParameter("post_seq"));
+    @DeleteMapping
+    public String postDelete(@RequestParam("no") int post_seq, Model model) throws Exception {
         log.info(String.valueOf(post_seq));
 
         HashMap<String, String> hMap = postService.postDelete(post_seq);
@@ -105,23 +111,28 @@ public class PostController {
         return "/redirect";
     }
 
-    @RequestMapping(value = "postMod")
-    public String postMod(HttpServletRequest request, Model model) {
-        int post_seq = Integer.parseInt(request.getParameter("post_seq"));
+    @GetMapping(value = "postMod")
+    public String postMod(@RequestParam("no") int post_seq, Model model) throws Exception {
+        PostVO postVO = postService.postDetail(post_seq);
+        model.addAttribute("postVO",postVO);
+        log.info("post_seq : " + post_seq);
 
         return "/post/postMod";
     }
-    @RequestMapping(value = "postModProc")
-    public String postModProc(HttpServletRequest request, Model model) throws Exception {
-        log.info("request : " + request);
+    @PutMapping
+    public String postModProc(@RequestParam("no") int post_seq,
+                              @RequestParam String title,
+                              @RequestParam String content, Model model) throws Exception {
+        log.info("post_seq : " + post_seq);
+        log.info("title : " + title);
+        log.info("content : " + content);
 
         PostVO postVO = new PostVO();
-        postVO.setTitle(request.getParameter("title"));
-        postVO.setContent(request.getParameter("content"));
-        log.info(postVO.getTitle());
-        log.info(postVO.getContent());
+        postVO.setPost_seq(post_seq);
+        postVO.setTitle(title);
+        postVO.setContent(content);
 
-        HashMap<String, String> hMap = postService.postAddProc(postVO);
+        HashMap<String, String> hMap = postService.postModProc(postVO);
         log.info("hMap : " + hMap);
 
         model.addAttribute("msg", hMap.get("msg"));
