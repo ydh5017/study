@@ -28,6 +28,7 @@
             POSTCHG_DT AS post_chg_dt,
             ISDELETED AS post_deleted
         FROM POST
+        WHERE ISDELETED = 0
         ORDER BY POSTSEQ DESC
         LIMIT #{startlist}, #{listsize}
     </select>
@@ -49,13 +50,14 @@
         FROM POST
     </select>
     <!-- 게시글 삭제 -->
-    <delete id="postDelete" parameterType="map">
-        DELETE
-        FROM
+    <update id="postDelete" parameterType="map">
+        UPDATE
             POST
+        SET
+            ISDELETED = 1
         WHERE
             POSTSEQ = #{post_seq}
-    </delete>
+    </update>
     <!-- 게시글 수정 -->
     <update id="postModProc" parameterType="PostVO">
         UPDATE

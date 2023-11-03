@@ -35,9 +35,9 @@ public class PostController {
 
         paging.pageInfo(page, listCnt);
         HashMap<String, Integer> hMap = new HashMap<>();
-        int i = paging.getStartPage();
+        int i = paging.getStartList();
         int j = paging.getListSize();
-        hMap.put("startlist", i-1);
+        hMap.put("startlist", i);
         hMap.put("listsize", j);
         log.info("hMap : " + hMap);
 
@@ -49,19 +49,11 @@ public class PostController {
             e.printStackTrace();
         }
 
-        int p = paging.getEndPage() - paging.getStartPage()+1;
-        String [] pageNum = new String[p];
-        int f, u = 0;
-
-        for (f = paging.getStartPage(); f <= paging.getEndPage(); f++) {
-            pageNum[u] = String.valueOf(f);
-            log.info("pageNum : " + pageNum[u]);
-            u++;
-        }
+        List<PagingUtil> puList = paging.list(paging.getPage(), paging.getRangeCnt(), paging.getStartPage());
 
         model.addAttribute("pList", pList);
         model.addAttribute("paging", paging);
-        model.addAttribute("pageNum", pageNum);
+        model.addAttribute("puList", puList);
 
         return "/post/List";
     }
@@ -97,7 +89,7 @@ public class PostController {
         return "/post/postDetail";
     }
 
-    @DeleteMapping
+    @PatchMapping
     public String postDelete(@RequestParam("no") int post_seq, Model model) throws Exception {
         log.info(String.valueOf(post_seq));
 

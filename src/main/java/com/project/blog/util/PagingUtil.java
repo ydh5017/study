@@ -1,5 +1,12 @@
 package com.project.blog.util;
 
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class PagingUtil {
     private String searchWord;
     private String searchCategory;
@@ -19,12 +26,15 @@ public class PagingUtil {
     private int listSize=10;	// 한 페이지 목록의 개수 (한 페이지에 출력되는 게시글 개수) 9
     private int rangeSize=10;	// 한 페이지 범위의 개수 (한 페이지에 출력되는 범위 개수) 10
     private int startPage;	// 시작번호 (1, 11, 21, 31)
+    private int prevPage; // 이전페이지 시작번호 (11 - 1 = 10)
     private int endPage;	// 끝번호 (10, 20, 30, 33)
+    private int nextPage; // 다음페이지 시작번호 (10 + 1 = 11)
     private int startList; // 게시판 시작번호
     private boolean prev;	// 이전페이지 (<)
     private boolean next;	// 다음페이지 (>)
-
-    private boolean equalsPage;
+    private int rangeCnt; // 페이지 범위의 개수
+    private ArrayList<MultiValueMap<String , Integer>> pageList; // 페이지 목록
+    private boolean equalsPage; // 현재페이지
 
     // 페이지 정보
     // 			            현재 페이지 번호, 총 게시글 개수
@@ -50,6 +60,30 @@ public class PagingUtil {
             this.endPage = this.pageCnt;
             this.next = false;
         }
+        // 현재 범위 페이지 개수
+        this.rangeCnt = this.endPage - this.startPage + 1;
+        // 이전, 다음 시작번호
+        this.prevPage = this.startPage - 1;
+        this.nextPage = this.endPage + 1;
+    }
+
+    //페이지 목록 가져오기
+    public List<PagingUtil> list(int page, int pageCnt, int startPage) {
+        List<PagingUtil> list = new ArrayList<>();
+
+        for (int a = 1; a <= pageCnt; a++) {
+            PagingUtil pagingUtil = new PagingUtil();
+            pagingUtil.setPage(startPage);
+            if (page == pagingUtil.getPage()) {
+                pagingUtil.setEqualsPage(true);
+            } else {
+                pagingUtil.setEqualsPage(false);
+            }
+            startPage++;
+            list.add(pagingUtil);
+        }
+
+        return list;
     }
 
     public String getSearchWord() {
@@ -162,5 +196,37 @@ public class PagingUtil {
 
     public void setEqualsPage(boolean equalsPage) {
         this.equalsPage = equalsPage;
+    }
+
+    public int getRangeCnt() {
+        return rangeCnt;
+    }
+
+    public void setRangeCnt(int rangeCnt) {
+        this.rangeCnt = rangeCnt;
+    }
+
+    public ArrayList<MultiValueMap<String, Integer>> getPageList() {
+        return pageList;
+    }
+
+    public void setPageList(ArrayList<MultiValueMap<String, Integer>> pageList) {
+        this.pageList = pageList;
+    }
+
+    public int getPrevPage() {
+        return prevPage;
+    }
+
+    public void setPrevPage(int prevPage) {
+        this.prevPage = prevPage;
+    }
+
+    public int getNextPage() {
+        return nextPage;
+    }
+
+    public void setNextPage(int nextPage) {
+        this.nextPage = nextPage;
     }
 }

@@ -26,11 +26,11 @@
         <input type="submit" id="submit" value="수정" class="btn">
     </form>
     <form id="frm" name="frm" method="post" action="/post">
-        <input type="hidden" name="_method" value="delete">
+        <input type="hidden" name="_method" value="patch">
         <input type="hidden" name="no" value="{{postVO.post_seq}}">
         <input type="submit" id="submit" value="삭제" class="btn">
     </form>
-    <input type="button" onclick="history.back()" value="취소" class="btn">
+    <input type="button" onclick="history.back()" value="이전" class="btn">
 </div>
 </body>
 </html>

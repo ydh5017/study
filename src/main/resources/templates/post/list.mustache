@@ -40,17 +40,24 @@
         <a href="/post/postAdd" class="btn">글 쓰기</a>
         <div>
             {{#paging.prev}}
-                <a class="pNumStart" href="/post?pno=">이전</a>
+                <a class="pNumStart" href="/post?pno={{paging.prevPage}}">이전</a>
             {{/paging.prev}}
 
-            {{#pageNum}}
-                <div class='pNum' style="background-color:#1abc9c;color:white;">
-                    <a class='pNum' href="/post?pno={{pageNum}}">{{pageNum}}</a>
-                </div>
-            {{/pageNum}}
+            {{#puList}}
+                {{#equalsPage}}
+                    <div class='pNum'>
+                        <a class='pNum'>{{page}}</a>
+                    </div>
+                {{/equalsPage}}
+                {{^equalsPage}}
+                    <div class='pNum' style="background-color:#1abc9c;color:white;">
+                        <a class='pNum' href="/post?pno={{page}}">{{page}}</a>
+                    </div>
+                {{/equalsPage}}
+            {{/puList}}
 
             {{#paging.next}}
-                <a class="pNumEnd" href="/post?pno=">다음</a>
+                <a class="pNumEnd" href="/post?pno={{paging.nextPage}}">다음</a>
             {{/paging.next}}
         </div>
     </div>
