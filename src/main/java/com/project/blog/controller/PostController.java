@@ -9,10 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,7 +52,7 @@ public class PostController {
         model.addAttribute("paging", paging);
         model.addAttribute("puList", puList);
 
-        return "/post/List";
+        return "/post/list";
     }
 
     @GetMapping(value = "postAdd")
@@ -63,14 +60,9 @@ public class PostController {
         return "/post/postAdd";
     }
     @PostMapping
-    public String postAddProc(@RequestParam String title,
-                              @RequestParam String content, Model model) throws Exception {
-        log.info("title : " + title);
-        log.info("content : " + content);
-
-        PostVO postVO = new PostVO();
-        postVO.setTitle(title);
-        postVO.setContent(content);
+    public String postAddProc(PostVO postVO, Model model) throws Exception {
+        log.info("title : " + postVO.getTitle());
+        log.info("content : " + postVO.getContent());
 
         HashMap<String, String> hMap = postService.postAddProc(postVO);
         log.info("hMap : " + hMap);
@@ -91,7 +83,7 @@ public class PostController {
 
     @PatchMapping
     public String postDelete(@RequestParam("no") int post_seq, Model model) throws Exception {
-        log.info(String.valueOf(post_seq));
+        log.info("post_seq : " + post_seq);
 
         HashMap<String, String> hMap = postService.postDelete(post_seq);
 
@@ -112,17 +104,10 @@ public class PostController {
         return "/post/postMod";
     }
     @PutMapping
-    public String postModProc(@RequestParam("no") int post_seq,
-                              @RequestParam String title,
-                              @RequestParam String content, Model model) throws Exception {
-        log.info("post_seq : " + post_seq);
-        log.info("title : " + title);
-        log.info("content : " + content);
-
-        PostVO postVO = new PostVO();
-        postVO.setPost_seq(post_seq);
-        postVO.setTitle(title);
-        postVO.setContent(content);
+    public String postModProc(PostVO postVO, Model model) throws Exception {
+        log.info("post_seq : " + postVO.getPost_seq());
+        log.info("title : " + postVO.getTitle());
+        log.info("content : " + postVO.getContent());
 
         HashMap<String, String> hMap = postService.postModProc(postVO);
         log.info("hMap : " + hMap);
