@@ -7,4 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserMapper {
 
     int userRegProc(UserVO userVO) throws Exception;
+
+    boolean idCheck(String user_id) throws Exception;
 }

@@ -1,5 +1,7 @@
 package com.project.blog.vo;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 public class UserVO {
 
     private int user_seq;

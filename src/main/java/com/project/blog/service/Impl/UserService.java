@@ -5,6 +5,7 @@ import com.project.blog.service.IUserService;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,17 +21,30 @@ public class UserService implements IUserService {
 
     @Override
     public HashMap<String, String> userRegProc(UserVO userVO) throws Exception {
-        HashMap<String, String> map = new HashMap<>();
-        int result = userMapper.userRegProc(userVO);
+        int result;
         String msg, url;
+        HashMap<String, String> map = new HashMap<>();
 
-        if (result==1) {
-            msg = "회원가입 성공";
-            url = "/user";
-        } else {
-            msg = "회원가입 실패";
-            url = "/user";
+        if (userMapper.idCheck(userVO.getUser_id())) {
+            msg = "중복된 아이디입니다.";
+            url = "/user/userReg";
+        }else {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            log.info("password : " + userVO.getPassword());
+            userVO.setPassword(passwordEncoder.encode(userVO.getPassword()));
+
+            result = userMapper.userRegProc(userVO);
+
+            if (result==1) {
+                msg = "회원가입 성공";
+                url = "/user";
+            } else {
+                msg = "회원가입 실패";
+                url = "/user";
+            }
         }
+
+
         map.put("msg", msg);
         map.put("url", url);
 

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.project.blog.mapper.UserMapper">
+    <!-- id 중복 확인 -->
+    <select id="idCheck" parameterType="String" resultType="boolean">
+        SELECT COUNT(*)
+        FROM USER
+        WHERE USERID = #{user_id}
+    </select>
     <!-- 회원가입 -->
     <insert id="userRegProc" parameterType="UserVO">
         INSERT
