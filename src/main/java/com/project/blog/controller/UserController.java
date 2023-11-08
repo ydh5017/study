@@ -40,4 +40,13 @@ public class UserController {
         model.addAttribute("url", map.get("url"));
         return "/redirect";
     }
+
+    @GetMapping("info")
+    public String userInfo(UserVO userVO, Model model) throws Exception {
+        String token = userService.login(userVO);
+        log.info("token : " + token);
+
+        model.addAttribute("token", token);
+        return "/user/info";
+    }
 }

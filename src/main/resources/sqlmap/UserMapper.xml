@@ -27,4 +27,15 @@
              SYSDATE()
             )
     </insert>
+    <!-- id 중복 확인 -->
+    <select id="login" parameterType="String" resultType="UserVO">
+        SELECT
+            USERSEQ AS user_seq,
+            USERID AS user_id,
+            PASSWORD AS password,
+            USERNAME AS user_name,
+            ROLE AS role
+        FROM USER
+        WHERE USERID = #{user_id}
+    </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.project.blog.service.Impl;
 
+import com.project.blog.config.jwt.JwtTokenProvider;
 import com.project.blog.mapper.UserMapper;
 import com.project.blog.service.IUserService;
 import com.project.blog.vo.UserVO;
@@ -18,6 +19,7 @@ public class UserService implements IUserService {
 
     @Resource
     private final UserMapper userMapper;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public HashMap<String, String> userRegProc(UserVO userVO) throws Exception {
@@ -50,4 +52,23 @@ public class UserService implements IUserService {
 
         return map;
     }
+
+    @Override
+    public String login(UserVO userVO) throws Exception {
+        String user_id = userVO.getUser_id();
+        String password = userVO.getPassword();
+
+        userVO = userMapper.login(user_id);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        if (passwordEncoder.matches(password, userVO.getPassword())) {
+            String token = jwtTokenProvider.createToken(userVO.getUser_id(), userVO.getRole());
+
+            return token;
+        }
+
+        return "x";
+    }
+
+
 }

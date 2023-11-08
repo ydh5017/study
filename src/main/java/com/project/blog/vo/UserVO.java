@@ -1,6 +1,9 @@
 package com.project.blog.vo;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class UserVO {
 
@@ -13,6 +16,22 @@ public class UserVO {
     private String  user_reg_dt;
     private String  user_chg_id;
     private String  user_chg_dt;
+    private String  role;
+
+    public List<String> getRolesList() {
+        if (this.role.length() > 0) {
+            return Arrays.asList(this.role.split(","));
+        }
+        return new ArrayList<>();
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public int getUser_seq() {
         return user_seq;
