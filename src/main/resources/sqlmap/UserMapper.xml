@@ -28,7 +28,7 @@
             )
     </insert>
     <!-- id 중복 확인 -->
-    <select id="login" parameterType="String" resultType="UserVO">
+    <select id="userInfo" parameterType="String" resultType="UserVO">
         SELECT
             USERSEQ AS user_seq,
             USERID AS user_id,

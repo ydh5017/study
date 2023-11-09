@@ -46,6 +46,38 @@ public class UserService implements IUserService {
             }
         }
 
+        map.put("msg", msg);
+        map.put("url", url);
+
+        return map;
+    }
+
+    @Override
+    public HashMap<String, String> login(UserVO userVO) throws Exception {
+        String user_id = userVO.getUser_id();
+        String password = userVO.getPassword();
+        String msg, url;
+        HashMap<String, String> map = new HashMap<>();
+
+        if (userMapper.idCheck(user_id)) {
+            userVO = userMapper.userInfo(user_id);
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+            if (passwordEncoder.matches(password, userVO.getPassword())) {
+                String token = jwtTokenProvider.createToken(userVO.getUser_id(), userVO.getRole());
+
+                msg = "로그인 성공";
+                url = "/index";
+
+                map.put("token", token);
+            } else {
+                msg = "비밀번호가 잘못되었습니다.";
+                url = "/user";
+            }
+        } else {
+            msg = "존재하지 않는 계정입니다.";
+            url = "/user";
+        }
 
         map.put("msg", msg);
         map.put("url", url);
@@ -54,21 +86,9 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public String login(UserVO userVO) throws Exception {
-        String user_id = userVO.getUser_id();
-        String password = userVO.getPassword();
+    public UserVO userInfo(String user_id) {
+        UserVO userVO = userMapper.userInfo(user_id);
 
-        userVO = userMapper.login(user_id);
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-        if (passwordEncoder.matches(password, userVO.getPassword())) {
-            String token = jwtTokenProvider.createToken(userVO.getUser_id(), userVO.getRole());
-
-            return token;
-        }
-
-        return "x";
+        return userVO;
     }
-
-
 }

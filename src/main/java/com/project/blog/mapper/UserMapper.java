@@ -12,5 +12,5 @@ public interface UserMapper {
 
     boolean idCheck(String user_id) throws Exception;
 
-    UserVO login(String user_id);
+    UserVO userInfo(String user_id);
 }
