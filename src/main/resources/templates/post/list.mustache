@@ -14,11 +14,13 @@
                 <col width="15%"/>
                 <col width="*"/>
                 <col width="20%"/>
+                <col width="20%"/>
             </colgroup>
             <thead>
             <tr>
                 <th scope="col">글번호</th>
                 <th scope="col">제목</th>
+                <th scope="col">작성자</th>
                 <th scope="col">작성일</th>
             </tr>
             </thead>
@@ -27,6 +29,7 @@
             <tr>
                     <td id="post_seq" name="post_seq">{{post_seq}}</td>
                     <td onclick="location.href='post/postDetail?no={{post_seq}}'">{{title}}</td>
+                    <td>{{post_write_id}}</td>
                     <td>{{post_write_dt}}</td>
             </tr>
             {{/pList}}
@@ -37,7 +40,9 @@
             {{/pList}}
             </tbody>
         </table>
-        <a href="/post/postAdd" class="btn">글 쓰기</a>
+        {{#user}}
+            <a href="/post/postAdd" class="btn">글 쓰기</a>
+        {{/user}}
         <div>
             {{#paging.prev}}
                 <a class="pNumStart" href="/post?pno={{paging.prevPage}}">이전</a>

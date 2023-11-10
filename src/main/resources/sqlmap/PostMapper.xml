@@ -2,19 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.project.blog.mapper.PostMapper">
     <!-- 게시글 등록 -->
-    <insert id="postAddProc" parameterType="PostVo">
+    <insert id="postAddProc" parameterType="PostVo" useGeneratedKeys="true" keyColumn="postSeq" keyProperty="post_seq">
         INSERT
         INTO
             POST
         (
             TITLE,
             CONTENT,
+            POSTWRITE_ID,
             POSTWRITE_DT
         )
         VALUES
             (
                 #{title},
                 #{content},
+                #{post_write_id},
                 SYSDATE()
             )
     </insert>
@@ -24,7 +26,9 @@
             POSTSEQ AS post_seq,
             TITLE AS title,
             CONTENT AS content,
+            POSTWRITE_ID AS post_write_id,
             POSTWRITE_DT AS post_write_dt,
+            POSTCHG_ID AS post_chg_id,
             POSTCHG_DT AS post_chg_dt,
             ISDELETED AS post_deleted
         FROM POST
@@ -38,7 +42,9 @@
             POSTSEQ AS post_seq,
             TITLE AS title,
             CONTENT AS content,
+            POSTWRITE_ID AS post_write_id,
             POSTWRITE_DT AS post_write_dt,
+            POSTCHG_ID AS post_chg_id,
             POSTCHG_DT AS post_chg_dt,
             ISDELETED AS post_deleted
         FROM POST
@@ -65,6 +71,7 @@
         SET
             TITLE = #{title},
             CONTENT = #{content},
+            POSTCHG_ID =#{post_chg_id},
             POSTCHG_DT = SYSDATE()
         WHERE
             POSTSEQ = #{post_seq}

@@ -1,5 +1,6 @@
 package com.project.blog.controller;
 
+import com.project.blog.config.jwt.JwtTokenProvider;
 import com.project.blog.service.IPostService;
 import com.project.blog.util.PagingUtil;
 import com.project.blog.vo.PostVO;
@@ -20,9 +21,16 @@ import java.util.List;
 public class PostController {
 
     private final IPostService postService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping
-    public String getPostList(@RequestParam int pno, Model model) throws Exception {
+    public String getPostList(@CookieValue(value = "token", required = false) String token,
+                              @RequestParam int pno, Model model) throws Exception {
+        boolean user = false;
+        if (token != null) {
+            user = true;
+        }
+
         int page = pno;
         int listCnt = postService.postCount();
         log.info("pno : " + page);
@@ -51,6 +59,7 @@ public class PostController {
         model.addAttribute("pList", pList);
         model.addAttribute("paging", paging);
         model.addAttribute("puList", puList);
+        model.addAttribute("user", user);
 
         return "/post/list";
     }
@@ -60,9 +69,13 @@ public class PostController {
         return "/post/postAdd";
     }
     @PostMapping
-    public String postAddProc(PostVO postVO, Model model) throws Exception {
+    public String postAddProc(@CookieValue(value = "token", required = false) String token,
+                              PostVO postVO, Model model) throws Exception {
+        String user_id = jwtTokenProvider.getUserId(token);
+        postVO.setPost_write_id(user_id);
         log.info("title : " + postVO.getTitle());
         log.info("content : " + postVO.getContent());
+        log.info("write_id : " + postVO.getPost_write_id());
 
         HashMap<String, String> hMap = postService.postAddProc(postVO);
         log.info("hMap : " + hMap);
@@ -74,9 +87,20 @@ public class PostController {
     }
 
     @GetMapping(value = "postDetail")
-    public String postDetail(@RequestParam("no") int post_seq, Model model) throws Exception {
+    public String postDetail(@CookieValue(value = "token", required = false) String token,
+                             @RequestParam("no") int post_seq, Model model) throws Exception {
         PostVO postVO = postService.postDetail(post_seq);
+        boolean write = false;
+
+        if (token != null) {
+            String user_id = jwtTokenProvider.getUserId(token);
+            if (user_id.equals(postVO.getPost_write_id())) {
+                write = true;
+            }
+        }
+
         model.addAttribute("postVO",postVO);
+        model.addAttribute("write",write);
 
         return "/post/postDetail";
     }
@@ -104,7 +128,13 @@ public class PostController {
         return "/post/postMod";
     }
     @PutMapping
-    public String postModProc(PostVO postVO, Model model) throws Exception {
+    public String postModProc(@CookieValue(value = "token", required = false) String token,
+                              PostVO postVO, Model model) throws Exception {
+        if (token != null) {
+            String user_id = jwtTokenProvider.getUserId(token);
+            postVO.setPost_chg_id(user_id);
+        }
+
         log.info("post_seq : " + postVO.getPost_seq());
         log.info("title : " + postVO.getTitle());
         log.info("content : " + postVO.getContent());

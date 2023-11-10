@@ -28,8 +28,10 @@ public class mainController {
             String user_id = jwtTokenProvider.getUserId(token);
             System.out.println(user_id);
             userVO = userService.userInfo(user_id);
+            userVO.setReleased();
         }
         System.out.println(userVO.getUser_id());
+        System.out.println(userVO.isReleased());
 
         model.addAttribute("userVO", userVO);
 

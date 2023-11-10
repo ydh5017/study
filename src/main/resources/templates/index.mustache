@@ -8,9 +8,17 @@
 </head>
 <body>
 {{#userVO}}
-{{/userVO}}
-{{^userVO}}
-    <a>xx</a>
+    {{#isReleased}}
+        <a>id : {{user_id}}</a>
+        <a>name : {{user_name}}</a>
+        <a>role : {{role}}</a>
+        <a href="/post?pno=1">게시판</a>
+        <a href="/user/logout">로그아웃</a>
+    {{/isReleased}}
+    {{^isReleased}}
+        <a href="/post?pno=1">게시판</a>
+        <a href="/user">로그인</a>
+    {{/isReleased}}
 {{/userVO}}
 </body>
 </html>

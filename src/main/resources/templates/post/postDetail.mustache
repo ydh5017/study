@@ -11,25 +11,28 @@
     <h2>게시글 상세보기</h2>
         <table class="board_detail">
             <tr>
-                <td>제목</td>
+                <td>제목 : </td>
                 <td>{{postVO.title}}</td>
+                <td>작성자 : {{postVO.post_write_id}}</td>
             </tr>
             <tr>
-                <td>내용</td>
+                <td>내용 : </td>
                 <td colspan="2">
                     {{postVO.content}}
                 </td>
             </tr>
         </table>
-    <form id="frm" name="frm" method="get" action="/post/postMod">
-        <input type="hidden" name="no" value="{{postVO.post_seq}}">
-        <input type="submit" id="submit" value="수정" class="btn">
-    </form>
-    <form id="frm" name="frm" method="post" action="/post">
-        <input type="hidden" name="_method" value="patch">
-        <input type="hidden" name="no" value="{{postVO.post_seq}}">
-        <input type="submit" id="submit" value="삭제" class="btn">
-    </form>
+    {{#write}}
+        <form id="frm" name="frm" method="get" action="/post/postMod">
+            <input type="hidden" name="no" value="{{postVO.post_seq}}">
+            <input type="submit" id="submit" value="수정" class="btn">
+        </form>
+        <form id="frm" name="frm" method="post" action="/post">
+            <input type="hidden" name="_method" value="patch">
+            <input type="hidden" name="no" value="{{postVO.post_seq}}">
+            <input type="submit" id="submit" value="삭제" class="btn">
+        </form>
+    {{/write}}
     <input type="button" onclick="history.back()" value="이전" class="btn">
 </div>
 </body>

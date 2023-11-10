@@ -17,6 +17,7 @@ public class UserVO {
     private String  user_chg_id;
     private String  user_chg_dt;
     private String  role;
+    private boolean isReleased = false;
 
     public List<String> getRolesList() {
         if (this.role.length() > 0) {
@@ -103,5 +104,13 @@ public class UserVO {
 
     public void setUser_chg_dt(String user_chg_dt) {
         this.user_chg_dt = user_chg_dt;
+    }
+
+    public boolean isReleased() {
+        return isReleased;
+    }
+
+    public void setReleased() {
+        isReleased = true;
     }
 }

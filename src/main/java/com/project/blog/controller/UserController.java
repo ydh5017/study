@@ -24,15 +24,6 @@ public class UserController {
     private final IUserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping
-    public String  loginPage(@CookieValue(value = "token", required = false) String token) {
-        if (token != null) {
-            String user_id = jwtTokenProvider.getUserId(token);
-            System.out.println(user_id);
-        }
-        return "/user/login";
-    }
-
     @GetMapping("userReg")
     public String userRegPage() {
         return "/user/userReg";
@@ -51,30 +42,52 @@ public class UserController {
         return "/redirect";
     }
 
+    @GetMapping
+    public String  loginPage() {
+        return "/user/login";
+    }
+
     @GetMapping("loginProc")
     public String login(UserVO userVO, Model model, HttpServletResponse response) throws Exception {
         HashMap<String, String> map = userService.login(userVO);
         log.info("map : " + map);
 
-        model.addAttribute("token", map.get("token"));
         model.addAttribute("msg", map.get("msg"));
         model.addAttribute("url", map.get("url"));
 
         Cookie cookie = new Cookie("token", map.get("token"));
         cookie.setMaxAge(60 * 60);  // 쿠키 유효 시간 : 1시간
+        cookie.setPath("/");
         response.addCookie(cookie);
 
-        return "redirect:/user";
+        model.addAttribute("msg", map.get("msg"));
+        model.addAttribute("url", map.get("url"));
+
+        return "/redirect";
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletResponse response, Model model) {
+    public String logout(@CookieValue(value = "token", required = false) String token,
+                         HttpServletResponse response, Model model) {
+        String msg, url;
 
-        // 쿠키 파기
-        Cookie cookie = new Cookie("token", null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        if (token != null) {
+            // 쿠키 파기
+            Cookie cookie = new Cookie("token", null);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
 
-        return "/user/login";
+            msg = "로그아웃";
+            url = "/index";
+        } else {
+            msg = "로그아웃 실패";
+            url = "/index";
+        }
+
+        model.addAttribute("msg", msg);
+        model.addAttribute("url", url);
+
+        return "/redirect";
     }
 }

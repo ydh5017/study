@@ -38,7 +38,7 @@ public class PostService implements IPostService {
 
         if (result==1) {
             msg = "게시글 등록 성공";
-            url = "/post/postDetail?no%3D1" + postVO.getPost_seq();
+            url = "/post/postDetail?no%3D" + postVO.getPost_seq();
         } else {
             msg = "게시글 등록 실패";
             url = "/post/postAdd";
@@ -55,7 +55,9 @@ public class PostService implements IPostService {
         log.info("post_seq : " + postVO.getPost_seq());
         log.info("title : " + postVO.getTitle());
         log.info("content : " + postVO.getContent());
+        log.info("write_id : " + postVO.getPost_write_id());
         log.info("write_dt : " + postVO.getPost_write_dt());
+        log.info("chg_id : " + postVO.getPost_chg_id());
         log.info("chg_dt : " + postVO.getPost_chg_dt());
         log.info("deleted : " + postVO.getPost_deleted());
 
