@@ -5,7 +5,7 @@
     <select id="idCheck" parameterType="String" resultType="boolean">
         SELECT COUNT(*)
         FROM USER
-        WHERE USERID = #{user_id}
+        WHERE USERID = #{userId}
     </select>
     <!-- 회원가입 -->
     <insert id="userRegProc" parameterType="UserVO">
@@ -15,27 +15,39 @@
             USERID,
             PASSWORD,
             USERNAME,
-            USERREG_ID,
-            USERREG_DT
+            REGID,
+            REGDT
             )
         VALUES
             (
-             #{user_id},
+             #{userId},
              #{password},
-             #{user_name},
-             #{user_id},
+             #{userName},
+             #{userId},
              SYSDATE()
             )
     </insert>
     <!-- id 중복 확인 -->
     <select id="userInfo" parameterType="String" resultType="UserVO">
         SELECT
-            USERSEQ AS user_seq,
-            USERID AS user_id,
-            PASSWORD AS password,
-            USERNAME AS user_name,
-            ROLE AS role
+            USERSEQ,
+            USERID,
+            PASSWORD,
+            USERNAME,
+            ROLE
         FROM USER
-        WHERE USERID = #{user_id}
+        WHERE USERID = #{userId}
     </select>
+    <!-- 회원정보 수정 -->
+    <update id="userModProc" parameterType="UserVO">
+        UPDATE
+            USER
+        SET
+            USERID = #{userId},
+            USERNAME = #{userName},
+            CHGID =#{chgId},
+            CHGDT = SYSDATE()
+        WHERE
+            POSTSEQ = #{userId}
+    </update>
 </mapper>

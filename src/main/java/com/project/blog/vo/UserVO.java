@@ -7,15 +7,14 @@ import java.util.List;
 
 public class UserVO {
 
-    private int user_seq;
-    private String  user_id;
+    private int userSeq;
+    private String  userId;
     private String  password;
-    private String  user_name;
-    private String  user_ass;
-    private String  user_reg_id;
-    private String  user_reg_dt;
-    private String  user_chg_id;
-    private String  user_chg_dt;
+    private String  userName;
+    private String  regId;
+    private String  regDt;
+    private String  chgId;
+    private String  chgDt;
     private String  role;
     private boolean isReleased = false;
 
@@ -26,28 +25,20 @@ public class UserVO {
         return new ArrayList<>();
     }
 
-    public String getRole() {
-        return role;
+    public int getUserSeq() {
+        return userSeq;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setUserSeq(int userSeq) {
+        this.userSeq = userSeq;
     }
 
-    public int getUser_seq() {
-        return user_seq;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser_seq(int user_seq) {
-        this.user_seq = user_seq;
-    }
-
-    public String getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getPassword() {
@@ -58,52 +49,52 @@ public class UserVO {
         this.password = password;
     }
 
-    public String getUser_name() {
-        return user_name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getUser_ass() {
-        return user_ass;
+    public String getRegId() {
+        return regId;
     }
 
-    public void setUser_ass(String user_ass) {
-        this.user_ass = user_ass;
+    public void setRegId(String regId) {
+        this.regId = regId;
     }
 
-    public String getUser_reg_id() {
-        return user_reg_id;
+    public String getRegDt() {
+        return regDt;
     }
 
-    public void setUser_reg_id(String user_reg_id) {
-        this.user_reg_id = user_reg_id;
+    public void setRegDt(String regDt) {
+        this.regDt = regDt;
     }
 
-    public String getUser_reg_dt() {
-        return user_reg_dt;
+    public String getChgId() {
+        return chgId;
     }
 
-    public void setUser_reg_dt(String user_reg_dt) {
-        this.user_reg_dt = user_reg_dt;
+    public void setChgId(String chgId) {
+        this.chgId = chgId;
     }
 
-    public String getUser_chg_id() {
-        return user_chg_id;
+    public String getChgDt() {
+        return chgDt;
     }
 
-    public void setUser_chg_id(String user_chg_id) {
-        this.user_chg_id = user_chg_id;
+    public void setChgDt(String chgDt) {
+        this.chgDt = chgDt;
     }
 
-    public String getUser_chg_dt() {
-        return user_chg_dt;
+    public String getRole() {
+        return role;
     }
 
-    public void setUser_chg_dt(String user_chg_dt) {
-        this.user_chg_dt = user_chg_dt;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public boolean isReleased() {

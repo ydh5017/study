@@ -2,35 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.project.blog.mapper.PostMapper">
     <!-- 게시글 등록 -->
-    <insert id="postAddProc" parameterType="PostVo" useGeneratedKeys="true" keyColumn="postSeq" keyProperty="post_seq">
+    <insert id="postAddProc" parameterType="PostVo" useGeneratedKeys="true" keyColumn="postSeq" keyProperty="postSeq">
         INSERT
         INTO
             POST
         (
             TITLE,
             CONTENT,
-            POSTWRITE_ID,
-            POSTWRITE_DT
+            WRITEID,
+            WRITEDT
         )
         VALUES
             (
                 #{title},
                 #{content},
-                #{post_write_id},
+                #{writeId},
                 SYSDATE()
             )
     </insert>
     <!-- 게시글 리스트 가져오기 -->
     <select id="getPostList" parameterType="map" resultType="PostVO">
         SELECT
-            POSTSEQ AS post_seq,
-            TITLE AS title,
-            CONTENT AS content,
-            POSTWRITE_ID AS post_write_id,
-            POSTWRITE_DT AS post_write_dt,
-            POSTCHG_ID AS post_chg_id,
-            POSTCHG_DT AS post_chg_dt,
-            ISDELETED AS post_deleted
+            POSTSEQ,
+            TITLE,
+            CONTENT,
+            WRITEID,
+            WRITEDT,
+            CHGID,
+            CHGDT,
+            ISDELETED
         FROM POST
         WHERE ISDELETED = 0
         ORDER BY POSTSEQ DESC
@@ -39,16 +39,16 @@
     <!-- 게시글 가져오기 -->
     <select id="postDetail" parameterType="int" resultType="PostVO">
         SELECT
-            POSTSEQ AS post_seq,
-            TITLE AS title,
-            CONTENT AS content,
-            POSTWRITE_ID AS post_write_id,
-            POSTWRITE_DT AS post_write_dt,
-            POSTCHG_ID AS post_chg_id,
-            POSTCHG_DT AS post_chg_dt,
-            ISDELETED AS post_deleted
+            POSTSEQ,
+            TITLE,
+            CONTENT,
+            WRITEID,
+            WRITEDT,
+            CHGID,
+            CHGDT,
+            ISDELETED
         FROM POST
-        WHERE POSTSEQ = #{post_seq}
+        WHERE POSTSEQ = #{postSeq}
     </select>
     <!-- 총 게시글 수 조회 -->
     <select id="postCount" resultType="integer">
@@ -62,7 +62,7 @@
         SET
             ISDELETED = 1
         WHERE
-            POSTSEQ = #{post_seq}
+            POSTSEQ = #{postSeq}
     </update>
     <!-- 게시글 수정 -->
     <update id="postModProc" parameterType="PostVO">
@@ -71,9 +71,9 @@
         SET
             TITLE = #{title},
             CONTENT = #{content},
-            POSTCHG_ID =#{post_chg_id},
-            POSTCHG_DT = SYSDATE()
+            CHGID =#{chgId},
+            CHGDT = SYSDATE()
         WHERE
-            POSTSEQ = #{post_seq}
+            POSTSEQ = #{postSeq}
     </update>
 </mapper>

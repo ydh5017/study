@@ -13,9 +13,9 @@ public interface IPostService {
 
     HashMap<String, String> postAddProc(PostVO postVO) throws Exception;
 
-    PostVO postDetail(int post_seq) throws Exception;
+    PostVO postDetail(int postSeq) throws Exception;
 
-    HashMap<String, String> postDelete(int post_seq) throws Exception;
+    HashMap<String, String> postDelete(int postSeq) throws Exception;
 
     HashMap<String, String> postModProc(PostVO postVO) throws Exception;
 }

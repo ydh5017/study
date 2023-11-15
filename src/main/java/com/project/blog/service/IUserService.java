@@ -9,5 +9,7 @@ public interface IUserService {
 
     HashMap<String, String> login(UserVO userVO) throws Exception;
 
-    UserVO userInfo(String user_id) throws Exception;
+    UserVO userInfo(String userId) throws Exception;
+
+    HashMap<String, String> userModProc(UserVO userVO) throws Exception;
 }

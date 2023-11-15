@@ -10,7 +10,9 @@ public interface UserMapper {
 
     int userRegProc(UserVO userVO) throws Exception;
 
-    boolean idCheck(String user_id) throws Exception;
+    boolean idCheck(String userId) throws Exception;
 
-    UserVO userInfo(String user_id);
+    UserVO userInfo(String userId);
+
+    int userModProc(UserVO userVO) throws Exception;
 }

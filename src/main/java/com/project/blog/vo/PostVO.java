@@ -2,21 +2,21 @@ package com.project.blog.vo;
 
 public class PostVO {
 
-    private int post_seq;
+    private int postSeq;
     private String title;
     private String content;
-    private String post_write_id;
-    private String post_write_dt;
-    private String post_chg_id;
-    private String post_chg_dt;
-    private String post_deleted;
+    private String writeId;
+    private String writeDt;
+    private String chgId;
+    private String chgDt;
+    private String isDeleted;
 
-    public int getPost_seq() {
-        return post_seq;
+    public int getPostSeq() {
+        return postSeq;
     }
 
-    public void setPost_seq(int post_seq) {
-        this.post_seq = post_seq;
+    public void setPostSeq(int postSeq) {
+        this.postSeq = postSeq;
     }
 
     public String getTitle() {
@@ -35,43 +35,43 @@ public class PostVO {
         this.content = content;
     }
 
-    public String getPost_write_id() {
-        return post_write_id;
+    public String getWriteId() {
+        return writeId;
     }
 
-    public void setPost_write_id(String post_write_id) {
-        this.post_write_id = post_write_id;
+    public void setWriteId(String writeId) {
+        this.writeId = writeId;
     }
 
-    public String getPost_write_dt() {
-        return post_write_dt;
+    public String getWriteDt() {
+        return writeDt;
     }
 
-    public void setPost_write_dt(String post_write_dt) {
-        this.post_write_dt = post_write_dt;
+    public void setWriteDt(String writeDt) {
+        this.writeDt = writeDt;
     }
 
-    public String getPost_chg_id() {
-        return post_chg_id;
+    public String getChgId() {
+        return chgId;
     }
 
-    public void setPost_chg_id(String post_chg_idt) {
-        this.post_chg_id = post_chg_idt;
+    public void setChgId(String chgId) {
+        this.chgId = chgId;
     }
 
-    public String getPost_chg_dt() {
-        return post_chg_dt;
+    public String getChgDt() {
+        return chgDt;
     }
 
-    public void setPost_chg_dt(String post_chg_dt) {
-        this.post_chg_dt = post_chg_dt;
+    public void setChgDt(String chgDt) {
+        this.chgDt = chgDt;
     }
 
-    public String getPost_deleted() {
-        return post_deleted;
+    public String getIsDeleted() {
+        return isDeleted;
     }
 
-    public void setPost_deleted(String post_deleted) {
-        this.post_deleted = post_deleted;
+    public void setIsDeleted(String isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

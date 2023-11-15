@@ -1,5 +1,6 @@
 package com.project.blog.config.jwt;
 
+import com.project.blog.vo.UserVO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
@@ -36,9 +38,10 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    public String createToken(String user_id, String role) {
-        Claims claims = Jwts.claims().setSubject(user_id);
-        claims.put("role", role);
+    public String createToken(UserVO userVO) {
+        Claims claims = Jwts.claims().setSubject(userVO.getUserId());
+        claims.put("role", userVO.getRole());
+        claims.put("user_seq", String.valueOf(userVO.getUserSeq()));
         Date now = new Date();
 
         System.out.println(secretKey);
@@ -57,14 +60,28 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    // 토큰에서 회원 정보 추출
+    // 토큰에서 user_id 추출
     public String getUserId(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
+    // 토큰에서 user_seq 추출
+    public String getUserSeq(String token) {
+        return String.valueOf(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("userSeq"));
+    }
+
     // Request의 Header에서 token 값을 가져온다. "X-AUTH-TOKEN" : TOKEN 값
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("X-AUTH-TOKEN");
+        Cookie[] cookies = request.getCookies();
+        String token = null;
+
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("token")) {
+                token = cookie.getValue();
+            }
+        }
+
+        return token;
     }
 
     // 토큰의 유효성 + 만료일자 확인

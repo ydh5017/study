@@ -38,10 +38,10 @@ public class PostService implements IPostService {
 
         if (result==1) {
             msg = "게시글 등록 성공";
-            url = "/post/postDetail?no%3D" + postVO.getPost_seq();
+            url = "/post/detail?no%3D" + postVO.getPostSeq();
         } else {
             msg = "게시글 등록 실패";
-            url = "/post/postAdd";
+            url = "/post/add";
         }
         hMap.put("msg", msg);
         hMap.put("url", url);
@@ -50,24 +50,24 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public PostVO postDetail(int post_seq) throws Exception {
-        PostVO postVO = postMapper.postDetail(post_seq);
-        log.info("post_seq : " + postVO.getPost_seq());
+    public PostVO postDetail(int postSeq) throws Exception {
+        PostVO postVO = postMapper.postDetail(postSeq);
+        log.info("postSeq : " + postVO.getPostSeq());
         log.info("title : " + postVO.getTitle());
         log.info("content : " + postVO.getContent());
-        log.info("write_id : " + postVO.getPost_write_id());
-        log.info("write_dt : " + postVO.getPost_write_dt());
-        log.info("chg_id : " + postVO.getPost_chg_id());
-        log.info("chg_dt : " + postVO.getPost_chg_dt());
-        log.info("deleted : " + postVO.getPost_deleted());
+        log.info("writeId : " + postVO.getWriteId());
+        log.info("writeDt : " + postVO.getWriteDt());
+        log.info("chgId : " + postVO.getChgId());
+        log.info("chgDt : " + postVO.getChgDt());
+        log.info("isDeleted : " + postVO.getIsDeleted());
 
         return postVO;
     }
 
     @Override
-    public HashMap<String, String> postDelete(int post_seq) throws Exception {
+    public HashMap<String, String> postDelete(int postSeq) throws Exception {
         HashMap<String, String> hMap = new HashMap<>();
-        int result = postMapper.postDelete(post_seq);
+        int result = postMapper.postDelete(postSeq);
         log.info("result : " + result);
 
         String msg, url;
@@ -95,10 +95,10 @@ public class PostService implements IPostService {
 
         if (result==1) {
             msg = "수정되었습니다.";
-            url = "/post/postDetail?no%3D" + postVO.getPost_seq();
+            url = "/post/detail?no%3D" + postVO.getPostSeq();
         } else {
             msg = "수정 실패";
-            url = "/post/postDetail?no%3D" + postVO.getPost_seq();
+            url = "/post/detail?no%3D" + postVO.getPostSeq();
         }
         hMap.put("msg", msg);
         hMap.put("url", url);

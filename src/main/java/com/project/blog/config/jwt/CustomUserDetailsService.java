@@ -18,8 +18,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserMapper userMapper;
 
     @Override
-    public UserDetails loadUserByUsername(String user_id) throws UsernameNotFoundException {
-        UserVO userVO = userMapper.userInfo(user_id);
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        UserVO userVO = userMapper.userInfo(userId);
         return new CustomUserDetails(userVO);
     }
 }

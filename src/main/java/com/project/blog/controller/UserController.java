@@ -24,30 +24,40 @@ public class UserController {
     private final IUserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("userReg")
+    // 회원가입 페이지
+    @GetMapping("regist")
     public String userRegPage() {
         return "/user/userReg";
     }
 
+    // 회원가입
     @PostMapping
     public String userRegProc(UserVO userVO, Model model) throws Exception {
-        log.info("id : " + userVO.getUser_id());
-        log.info("password : " + userVO.getPassword());
-        log.info("name : " + userVO.getUser_name());
+        if (log.isDebugEnabled()) {
+            log.info("id : " + userVO.getUserId());
+            log.info("password : " + userVO.getPassword());
+            log.info("name : " + userVO.getUserName());
+        }
+
         HashMap<String, String> map = userService.userRegProc(userVO);
-        log.info("map : " + map);
+
+        if (log.isDebugEnabled()) {
+            log.info("map : " + map);
+        }
 
         model.addAttribute("msg", map.get("msg"));
         model.addAttribute("url", map.get("url"));
         return "/redirect";
     }
 
+    // 로그인 페이지
     @GetMapping
     public String  loginPage() {
         return "/user/login";
     }
 
-    @GetMapping("loginProc")
+    // 로그인 & 회원인증
+    @PostMapping("/login")
     public String login(UserVO userVO, Model model, HttpServletResponse response) throws Exception {
         HashMap<String, String> map = userService.login(userVO);
         log.info("map : " + map);
@@ -58,6 +68,9 @@ public class UserController {
         Cookie cookie = new Cookie("token", map.get("token"));
         cookie.setMaxAge(60 * 60);  // 쿠키 유효 시간 : 1시간
         cookie.setPath("/");
+//        cookie.setHttpOnly();
+//        cookie.setSecure();
+        // TODO : Redis, LocalStorage, Cookie 차이점, 용도
         response.addCookie(cookie);
 
         model.addAttribute("msg", map.get("msg"));
@@ -66,6 +79,7 @@ public class UserController {
         return "/redirect";
     }
 
+    // 로그아웃
     @GetMapping("/logout")
     public String logout(@CookieValue(value = "token", required = false) String token,
                          HttpServletResponse response, Model model) {
@@ -90,4 +104,38 @@ public class UserController {
 
         return "/redirect";
     }
+
+    // 회원정보 페이지
+    @GetMapping("/detail")
+    public String userDetail(@CookieValue(value = "token", required = false) String token, Model model) throws Exception {
+        UserVO userVO = new UserVO();
+        if (token != null) {
+            String userId = jwtTokenProvider.getUserId(token);
+            if (userId != null) {
+                System.out.println("userId : " + userId);
+                userVO = userService.userInfo(userId);
+            }
+        }
+
+        model.addAttribute("userVO", userVO);
+        return "/user/userDetail";
+    }
+
+    // 회원정보 수정 페이지
+    @GetMapping("/modify")
+    public String userMod(@CookieValue(value = "token", required = false) String token, Model model) throws Exception {
+        UserVO userVO = new UserVO();
+        if (token != null) {
+            String userId = jwtTokenProvider.getUserId(token);
+            if (userId != null) {
+                System.out.println("userId : " + userId);
+                userVO = userService.userInfo(userId);
+            }
+        }
+
+        model.addAttribute("userVO", userVO);
+        return "/user/userMod";
+    }
+
+    // 회원정보 수정
 }

@@ -23,6 +23,7 @@ public class PostController {
     private final IPostService postService;
     private final JwtTokenProvider jwtTokenProvider;
 
+    // 게시글 리스트 페이지
     @GetMapping
     public String getPostList(@CookieValue(value = "token", required = false) String token,
                               @RequestParam int pno, Model model) throws Exception {
@@ -64,18 +65,21 @@ public class PostController {
         return "/post/list";
     }
 
-    @GetMapping(value = "postAdd")
+    // 게시글 작성 페이지
+    @GetMapping(value = "add")
     public String postAdd() {
         return "/post/postAdd";
     }
+
+    // 게시글 작성
     @PostMapping
     public String postAddProc(@CookieValue(value = "token", required = false) String token,
                               PostVO postVO, Model model) throws Exception {
-        String user_id = jwtTokenProvider.getUserId(token);
-        postVO.setPost_write_id(user_id);
+        String userId = jwtTokenProvider.getUserId(token);
+        postVO.setWriteId(userId);
         log.info("title : " + postVO.getTitle());
         log.info("content : " + postVO.getContent());
-        log.info("write_id : " + postVO.getPost_write_id());
+        log.info("write_id : " + postVO.getWriteId());
 
         HashMap<String, String> hMap = postService.postAddProc(postVO);
         log.info("hMap : " + hMap);
@@ -86,15 +90,16 @@ public class PostController {
         return "/redirect";
     }
 
-    @GetMapping(value = "postDetail")
+    // 게시글 상세보기 페이지
+    @GetMapping(value = "detail")
     public String postDetail(@CookieValue(value = "token", required = false) String token,
-                             @RequestParam("no") int post_seq, Model model) throws Exception {
-        PostVO postVO = postService.postDetail(post_seq);
+                             @RequestParam("no") int postSeq, Model model) throws Exception {
+        PostVO postVO = postService.postDetail(postSeq);
         boolean write = false;
 
         if (token != null) {
-            String user_id = jwtTokenProvider.getUserId(token);
-            if (user_id.equals(postVO.getPost_write_id())) {
+            String userId = jwtTokenProvider.getUserId(token);
+            if (userId.equals(postVO.getWriteId())) {
                 write = true;
             }
         }
@@ -105,11 +110,14 @@ public class PostController {
         return "/post/postDetail";
     }
 
+    // 게시글 삭제
     @PatchMapping
-    public String postDelete(@RequestParam("no") int post_seq, Model model) throws Exception {
-        log.info("post_seq : " + post_seq);
+    public String postDelete(@RequestParam("no") int postSeq, Model model) throws Exception {
+        log.info("post_seq : " + postSeq);
 
-        HashMap<String, String> hMap = postService.postDelete(post_seq);
+        //TODO : RequestParam, PathVariable
+
+        HashMap<String, String> hMap = postService.postDelete(postSeq);
 
         log.info("hMap : " + hMap);
 
@@ -119,23 +127,26 @@ public class PostController {
         return "/redirect";
     }
 
-    @GetMapping(value = "postMod")
-    public String postMod(@RequestParam("no") int post_seq, Model model) throws Exception {
-        PostVO postVO = postService.postDetail(post_seq);
+    // 게시글 수정 페이지
+    @GetMapping(value = "modify")
+    public String postMod(@RequestParam("no") int postSeq, Model model) throws Exception {
+        PostVO postVO = postService.postDetail(postSeq);
         model.addAttribute("postVO",postVO);
-        log.info("post_seq : " + post_seq);
+        log.info("postSeq : " + postSeq);
 
-        return "/post/postMod";
+        return "/post/postModify";
     }
+
+    // 게시글 수정
     @PutMapping
     public String postModProc(@CookieValue(value = "token", required = false) String token,
                               PostVO postVO, Model model) throws Exception {
         if (token != null) {
-            String user_id = jwtTokenProvider.getUserId(token);
-            postVO.setPost_chg_id(user_id);
+            String userId = jwtTokenProvider.getUserId(token);
+            postVO.setChgId(userId);
         }
 
-        log.info("post_seq : " + postVO.getPost_seq());
+        log.info("post_seq : " + postVO.getPostSeq());
         log.info("title : " + postVO.getTitle());
         log.info("content : " + postVO.getContent());
 

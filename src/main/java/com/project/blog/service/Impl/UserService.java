@@ -27,9 +27,9 @@ public class UserService implements IUserService {
         String msg, url;
         HashMap<String, String> map = new HashMap<>();
 
-        if (userMapper.idCheck(userVO.getUser_id())) {
+        if (userMapper.idCheck(userVO.getUserId())) {
             msg = "중복된 아이디입니다.";
-            url = "/user/userReg";
+            url = "/user/regist";
         }else {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             log.info("password : " + userVO.getPassword());
@@ -54,17 +54,17 @@ public class UserService implements IUserService {
 
     @Override
     public HashMap<String, String> login(UserVO userVO) throws Exception {
-        String user_id = userVO.getUser_id();
+        String userId = userVO.getUserId();
         String password = userVO.getPassword();
         String msg, url;
         HashMap<String, String> map = new HashMap<>();
 
-        if (userMapper.idCheck(user_id)) {
-            userVO = userMapper.userInfo(user_id);
+        if (userMapper.idCheck(userId)) {
+            userVO = userMapper.userInfo(userId);
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
             if (passwordEncoder.matches(password, userVO.getPassword())) {
-                String token = jwtTokenProvider.createToken(userVO.getUser_id(), userVO.getRole());
+                String token = jwtTokenProvider.createToken(userVO);
 
                 msg = "로그인 성공";
                 url = "/index";
@@ -86,9 +86,31 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserVO userInfo(String user_id) {
-        UserVO userVO = userMapper.userInfo(user_id);
+    public UserVO userInfo(String userId) {
+        UserVO userVO = userMapper.userInfo(userId);
 
         return userVO;
     }
+
+    @Override
+    public HashMap<String, String> userModProc(UserVO userVO) throws Exception {
+        int result = userMapper.userModProc(userVO);
+        String msg, url;
+        HashMap<String, String> map = new HashMap<>();
+
+        if (result == 1) {
+            msg = "회원정보 수정 성공";
+            url = "/user";
+        }else {
+            msg = "회원정보 수정 실패";
+            url = "/user";
+        }
+
+        map.put("msg", msg);
+        map.put("url", url);
+
+        return map;
+    }
+
+
 }
