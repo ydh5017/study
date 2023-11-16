@@ -1,17 +1,14 @@
 package com.project.blog.controller;
 
-import com.project.blog.config.jwt.JwtTokenProvider;
 import com.project.blog.service.IUserService;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
@@ -22,7 +19,6 @@ import java.util.HashMap;
 public class UserController {
 
     private final IUserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     // 회원가입 페이지
     @GetMapping("regist")
@@ -35,15 +31,9 @@ public class UserController {
     public String userRegProc(UserVO userVO, Model model) throws Exception {
         if (log.isDebugEnabled()) {
             log.info("id : " + userVO.getUserId());
-            log.info("password : " + userVO.getPassword());
-            log.info("name : " + userVO.getUserName());
         }
 
         HashMap<String, String> map = userService.userRegProc(userVO);
-
-        if (log.isDebugEnabled()) {
-            log.info("map : " + map);
-        }
 
         model.addAttribute("msg", map.get("msg"));
         model.addAttribute("url", map.get("url"));
@@ -60,7 +50,6 @@ public class UserController {
     @PostMapping("/login")
     public String login(UserVO userVO, Model model, HttpServletResponse response) throws Exception {
         HashMap<String, String> map = userService.login(userVO);
-        log.info("map : " + map);
 
         model.addAttribute("msg", map.get("msg"));
         model.addAttribute("url", map.get("url"));
@@ -81,11 +70,10 @@ public class UserController {
 
     // 로그아웃
     @GetMapping("/logout")
-    public String logout(@CookieValue(value = "token", required = false) String token,
-                         HttpServletResponse response, Model model) {
+    public String logout(HttpServletResponse response, Model model) {
         String msg, url;
 
-        if (token != null) {
+        try {
             // 쿠키 파기
             Cookie cookie = new Cookie("token", null);
             cookie.setMaxAge(0);
@@ -94,7 +82,7 @@ public class UserController {
 
             msg = "로그아웃";
             url = "/index";
-        } else {
+        } catch (Exception e){
             msg = "로그아웃 실패";
             url = "/index";
         }
@@ -107,35 +95,32 @@ public class UserController {
 
     // 회원정보 페이지
     @GetMapping("/detail")
-    public String userDetail(@CookieValue(value = "token", required = false) String token, Model model) throws Exception {
-        UserVO userVO = new UserVO();
-        if (token != null) {
-            String userId = jwtTokenProvider.getUserId(token);
-            if (userId != null) {
-                System.out.println("userId : " + userId);
-                userVO = userService.userInfo(userId);
-            }
-        }
+    public String userDetail(Model model) throws Exception {
+        UserVO userVO = userService.userInfo();
 
         model.addAttribute("userVO", userVO);
+
         return "/user/userDetail";
     }
 
     // 회원정보 수정 페이지
     @GetMapping("/modify")
-    public String userMod(@CookieValue(value = "token", required = false) String token, Model model) throws Exception {
-        UserVO userVO = new UserVO();
-        if (token != null) {
-            String userId = jwtTokenProvider.getUserId(token);
-            if (userId != null) {
-                System.out.println("userId : " + userId);
-                userVO = userService.userInfo(userId);
-            }
-        }
+    public String userMod(Model model) throws Exception {
+        UserVO userVO = userService.userInfo();
 
         model.addAttribute("userVO", userVO);
+
         return "/user/userMod";
     }
 
     // 회원정보 수정
+    @PutMapping
+    public String userModProc(UserVO userVO, Model model) throws Exception {
+        HashMap<String, String> map = userService.userModProc(userVO);
+
+        model.addAttribute("msg", map.get("msg"));
+        model.addAttribute("url", map.get("url"));
+
+        return "";
+    }
 }

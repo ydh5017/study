@@ -1,11 +1,13 @@
 package com.project.blog.service.Impl;
 
+import com.project.blog.config.jwt.CustomUserDetails;
 import com.project.blog.config.jwt.JwtTokenProvider;
 import com.project.blog.mapper.UserMapper;
 import com.project.blog.service.IUserService;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,6 @@ public class UserService implements IUserService {
             url = "/user/regist";
         }else {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            log.info("password : " + userVO.getPassword());
             userVO.setPassword(passwordEncoder.encode(userVO.getPassword()));
 
             result = userMapper.userRegProc(userVO);
@@ -86,14 +87,27 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserVO userInfo(String userId) {
-        UserVO userVO = userMapper.userInfo(userId);
+    public UserVO userInfo() {
+        CustomUserDetails customUserDetails;
+        try {
+            customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            customUserDetails.getUserVO().setReleased();
+        } catch (Exception e) {
+            return new UserVO();
+        }
 
-        return userVO;
+        return customUserDetails.getUserVO();
     }
 
     @Override
     public HashMap<String, String> userModProc(UserVO userVO) throws Exception {
+        String userId = userInfo().getUserId();
+        if (userId != null) {
+            userVO.setChgId(userId);
+        } else {
+            userVO.setChgId("익명");
+        }
+
         int result = userMapper.userModProc(userVO);
         String msg, url;
         HashMap<String, String> map = new HashMap<>();

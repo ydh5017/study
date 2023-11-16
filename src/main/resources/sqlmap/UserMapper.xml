@@ -27,14 +27,19 @@
              SYSDATE()
             )
     </insert>
-    <!-- id 중복 확인 -->
+    <!-- 회원정보 가져오기 -->
     <select id="userInfo" parameterType="String" resultType="UserVO">
         SELECT
             USERSEQ,
             USERID,
             PASSWORD,
             USERNAME,
-            ROLE
+            REGID,
+            REGDT,
+            CHGID,
+            CHGDT,
+            ROLE,
+            ISDELETED
         FROM USER
         WHERE USERID = #{userId}
     </select>
@@ -48,6 +53,6 @@
             CHGID =#{chgId},
             CHGDT = SYSDATE()
         WHERE
-            POSTSEQ = #{userId}
+            USERSEQ = #{userSeq}
     </update>
 </mapper>

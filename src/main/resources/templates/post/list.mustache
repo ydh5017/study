@@ -24,7 +24,7 @@
                 <th scope="col">작성일</th>
             </tr>
             </thead>
-            {{#pList}}
+            {{#postList}}
             <tbody>
             <tr>
                     <td id="postSeq" name="postSeq">{{postSeq}}</td>
@@ -32,12 +32,12 @@
                     <td>{{writeId}}</td>
                     <td>{{writeDt}}</td>
             </tr>
-            {{/pList}}
-            {{^pList}}
+            {{/postList}}
+            {{^postList}}
             <tr>
                 <td colspan="4">조회된 결과가 없습니다.</td>
             </tr>
-            {{/pList}}
+            {{/postList}}
             </tbody>
         </table>
         {{#user}}
@@ -48,7 +48,7 @@
                 <a class="pNumStart" href="/post?pno={{paging.prevPage}}">이전</a>
             {{/paging.prev}}
 
-            {{#puList}}
+            {{#pageList}}
                 {{#equalsPage}}
                     <div class='pNum'>
                         <a class='pNum'>{{page}}</a>
@@ -59,7 +59,7 @@
                         <a class='pNum' href="/post?pno={{page}}">{{page}}</a>
                     </div>
                 {{/equalsPage}}
-            {{/puList}}
+            {{/pageList}}
 
             {{#paging.next}}
                 <a class="pNumEnd" href="/post?pno={{paging.nextPage}}">다음</a>

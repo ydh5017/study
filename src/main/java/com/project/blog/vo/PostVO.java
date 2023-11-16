@@ -10,6 +10,7 @@ public class PostVO {
     private String chgId;
     private String chgDt;
     private String isDeleted;
+    private boolean isWriter = false;
 
     public int getPostSeq() {
         return postSeq;
@@ -73,5 +74,13 @@ public class PostVO {
 
     public void setIsDeleted(String isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public boolean isWriter() {
+        return isWriter;
+    }
+
+    public void setWriter() {
+        isWriter = true;
     }
 }

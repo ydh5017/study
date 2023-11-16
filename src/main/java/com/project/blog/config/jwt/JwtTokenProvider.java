@@ -44,8 +44,6 @@ public class JwtTokenProvider {
         claims.put("user_seq", String.valueOf(userVO.getUserSeq()));
         Date now = new Date();
 
-        System.out.println(secretKey);
-
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간
