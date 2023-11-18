@@ -28,7 +28,7 @@
             )
     </insert>
     <!-- 회원정보 가져오기 -->
-    <select id="userInfo" parameterType="String" resultType="UserVO">
+    <select id="loginInfo" parameterType="String" resultType="UserVO">
         SELECT
             USERSEQ,
             USERID,
@@ -43,15 +43,39 @@
         FROM USER
         WHERE USERID = #{userId}
     </select>
+    <!-- 회원정보 가져오기 -->
+    <select id="userInfo" parameterType="String" resultType="UserVO">
+        SELECT
+            USERSEQ,
+            USERID,
+            PASSWORD,
+            USERNAME,
+            REGID,
+            REGDT,
+            CHGID,
+            CHGDT,
+            ROLE,
+            ISDELETED
+        FROM USER
+        WHERE USERSEQ = #{userSeq}
+    </select>
     <!-- 회원정보 수정 -->
     <update id="userModProc" parameterType="UserVO">
         UPDATE
             USER
         SET
-            USERID = #{userId},
             USERNAME = #{userName},
             CHGID =#{chgId},
             CHGDT = SYSDATE()
+        WHERE
+            USERSEQ = #{userSeq}
+    </update>
+    <!-- 비밀번호 변경 -->
+    <update id="passwordModProc" parameterType="UserVO">
+        UPDATE
+            USER
+        SET
+            PASSWORD = #{password}
         WHERE
             USERSEQ = #{userSeq}
     </update>

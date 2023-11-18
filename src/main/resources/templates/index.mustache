@@ -9,12 +9,8 @@
 <body>
 {{#userVO}}
     {{#isReleased}}
-        <a>seq : {{userSeq}}</a>
-        <a>id : {{userId}}</a>
-        <a>name : {{userName}}</a>
-        <a>role : {{role}}</a>
         <a href="/post?pno=1">게시판</a>
-        <a href="/user/modify">회원정보 수정</a>
+        <a href="/user/detail">회원정보</a>
         <a href="/user/logout">로그아웃</a>
     {{/isReleased}}
     {{^isReleased}}

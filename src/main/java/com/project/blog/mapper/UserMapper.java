@@ -12,7 +12,11 @@ public interface UserMapper {
 
     boolean idCheck(String userId) throws Exception;
 
-    UserVO userInfo(String userId);
+    UserVO loginInfo(String userId);
+
+    UserVO userInfo(String userSeq);
 
     int userModProc(UserVO userVO) throws Exception;
+
+    int passwordModProc(UserVO userVO) throws Exception;
 }

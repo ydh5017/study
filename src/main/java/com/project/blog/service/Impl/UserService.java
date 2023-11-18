@@ -61,7 +61,7 @@ public class UserService implements IUserService {
         HashMap<String, String> map = new HashMap<>();
 
         if (userMapper.idCheck(userId)) {
-            userVO = userMapper.userInfo(userId);
+            userVO = userMapper.loginInfo(userId);
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
             if (passwordEncoder.matches(password, userVO.getPassword())) {
@@ -101,9 +101,9 @@ public class UserService implements IUserService {
 
     @Override
     public HashMap<String, String> userModProc(UserVO userVO) throws Exception {
-        String userId = userInfo().getUserId();
-        if (userId != null) {
-            userVO.setChgId(userId);
+        UserVO loginUser = userInfo();
+        if (loginUser != null) {
+                userVO.setChgId(loginUser.getUserId());
         } else {
             userVO.setChgId("익명");
         }
@@ -114,10 +114,48 @@ public class UserService implements IUserService {
 
         if (result == 1) {
             msg = "회원정보 수정 성공";
-            url = "/user";
+            url = "/user/detail";
         }else {
             msg = "회원정보 수정 실패";
-            url = "/user";
+            url = "/user/detail";
+        }
+
+        map.put("msg", msg);
+        map.put("url", url);
+
+        return map;
+    }
+
+    @Override
+    public HashMap<String, String> passwordModProc(String currentPassword, String newPassword) throws Exception {
+        String msg, url;
+        HashMap<String, String> map = new HashMap<>();
+        UserVO userVO = userInfo();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        log.info("cp : " + userVO.getPassword());
+        log.info("encode p : " + passwordEncoder.encode(currentPassword));
+
+        if (passwordEncoder.matches(currentPassword, userVO.getPassword())) {
+            if (!currentPassword.equals(newPassword)) {
+                userVO.setPassword(passwordEncoder.encode(newPassword));
+
+                int result = userMapper.passwordModProc(userVO);
+
+                if (result == 1) {
+                    msg = "패스워드 변경 성공";
+                    url = "/user/modify";
+                } else {
+                    msg = "패스워드 변경 실패";
+                    url = "/user/modify";
+                }
+
+            } else {
+                msg = "입력한 새 비밀번호가 현재 비밀번호와 동일합니다.";
+                url = "/user/modify";
+            }
+        } else {
+            msg = "현재 비밀번호가 틀렸습니다.";
+            url = "/user/modify";
         }
 
         map.put("msg", msg);

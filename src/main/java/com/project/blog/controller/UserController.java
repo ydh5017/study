@@ -121,6 +121,27 @@ public class UserController {
         model.addAttribute("msg", map.get("msg"));
         model.addAttribute("url", map.get("url"));
 
-        return "";
+        return "/redirect";
+    }
+
+    @GetMapping("pcpage")
+    public String pcpage() {
+        return "/user/passwordChg";
+    }
+
+    // 패스워드 변경
+    @PutMapping("password")
+    public String passwordModProc(String currentPassword, String newPassword, Model model) throws Exception {
+        log.info("cp : " + currentPassword);
+        log.info("np : " + newPassword);
+
+        HashMap<String, String> map = userService.passwordModProc(currentPassword, newPassword);
+
+        log.info("map : " + map);
+
+        model.addAttribute("msg", map.get("msg"));
+        model.addAttribute("url", map.get("url"));
+
+        return "/redirect";
     }
 }

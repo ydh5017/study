@@ -39,9 +39,9 @@ public class JwtTokenProvider {
 
     // JWT 토큰 생성
     public String createToken(UserVO userVO) {
-        Claims claims = Jwts.claims().setSubject(userVO.getUserId());
+        Claims claims = Jwts.claims().setSubject(userVO.getUserSeq());
         claims.put("role", userVO.getRole());
-        claims.put("user_seq", String.valueOf(userVO.getUserSeq()));
+        claims.put("userId", userVO.getUserId());
         Date now = new Date();
 
         return Jwts.builder()
@@ -54,18 +54,18 @@ public class JwtTokenProvider {
 
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(this.getUserId(token));
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(this.getUserSeq(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    // 토큰에서 user_id 추출
-    public String getUserId(String token) {
+    // 토큰에서 userSeq 추출
+    public String getUserSeq(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // 토큰에서 user_seq 추출
-    public String getUserSeq(String token) {
-        return String.valueOf(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("userSeq"));
+    // 토큰에서 userId 추출
+    public String getUserId(String token) {
+        return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("userId");
     }
 
     // Request의 Header에서 token 값을 가져온다. "X-AUTH-TOKEN" : TOKEN 값

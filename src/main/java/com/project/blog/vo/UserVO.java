@@ -7,7 +7,7 @@ import java.util.List;
 
 public class UserVO {
 
-    private int userSeq;
+    private String  userSeq;
     private String  userId;
     private String  password;
     private String  userName;
@@ -25,11 +25,11 @@ public class UserVO {
         return new ArrayList<>();
     }
 
-    public int getUserSeq() {
+    public String getUserSeq() {
         return userSeq;
     }
 
-    public void setUserSeq(int userSeq) {
+    public void setUserSeq(String userSeq) {
         this.userSeq = userSeq;
     }
 
