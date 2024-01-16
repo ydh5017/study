@@ -19,4 +19,6 @@ public interface UserMapper {
     int userModProc(UserVO userVO) throws Exception;
 
     int passwordModProc(UserVO userVO) throws Exception;
+
+    int updatePassword(String userId, String password) throws Exception;
 }

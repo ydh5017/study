@@ -1,19 +1,19 @@
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
+{{>layout/header}}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">회원정보</h1>
+    </div>
 {{#userVO}}
     <a>seq : {{userSeq}}</a><br>
     <a>id : {{userId}}</a><br>
     <a>name : {{userName}}</a><br>
     <a>role : {{role}}</a><br>
     <input type="button" onclick="location.href='/user/modify'" id="submit" value="회원정보 수정" class="btn">
-    <input type="button" onclick="history.back()" id="submit" value="취소" class="btn">
+    <input type="button" onclick="location.href='/index'" id="submit" value="취소" class="btn">
 {{/userVO}}
-</body>
-</html>
+</div>
+<!-- /.container-fluid -->
+{{>layout/footer}}

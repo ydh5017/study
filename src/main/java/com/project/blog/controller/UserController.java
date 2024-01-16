@@ -124,13 +124,8 @@ public class UserController {
         return "/redirect";
     }
 
-    @GetMapping("pcpage")
-    public String pcpage() {
-        return "/user/passwordChg";
-    }
-
     // 패스워드 변경
-    @PutMapping("password")
+    @PutMapping("/password")
     public String passwordModProc(String currentPassword, String newPassword, Model model) throws Exception {
         log.info("cp : " + currentPassword);
         log.info("np : " + newPassword);
@@ -138,6 +133,23 @@ public class UserController {
         HashMap<String, String> map = userService.passwordModProc(currentPassword, newPassword);
 
         log.info("map : " + map);
+
+        model.addAttribute("msg", map.get("msg"));
+        model.addAttribute("url", map.get("url"));
+
+        return "/redirect";
+    }
+
+    // 임시 비밀번호 발급 페이지
+    @GetMapping("/findPw")
+    public String findPw() throws Exception {
+        return "/user/findPw";
+    }
+
+    // 임시 비밀번호 발급
+    @PutMapping("/updatePassword")
+    public String updatePassword(String userId, Model model) throws Exception {
+        HashMap<String, String> map = userService.updatePassword(userId);
 
         model.addAttribute("msg", map.get("msg"));
         model.addAttribute("url", map.get("url"));

@@ -14,4 +14,7 @@ public interface IUserService {
     HashMap<String, String> userModProc(UserVO userVO) throws Exception;
 
     HashMap<String, String> passwordModProc(String currentPassword, String newPassword) throws Exception;
+
+    HashMap<String, String> updatePassword(String userId) throws Exception;
+    String getTemporaryPassword() throws Exception;
 }

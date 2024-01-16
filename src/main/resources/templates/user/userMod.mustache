@@ -1,4 +1,12 @@
 {{>layout/header}}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">회원정보 수정</h1>
+    </div>
+
     <h2>회원정보 수정</h2>
     <form id="frm" name="frm" method="post" action="/user">
         {{#userVO}}
@@ -33,4 +41,7 @@
         <input type="submit" id="passwordChg" value="비밀번호 변경" class="btn">
     </form>
     <input type="button" onclick="history.back()" id="submit" value="취소" class="btn">
+</div>
+
+<script src="/js/modify.js"></script>
 {{>layout/footer}}

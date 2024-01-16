@@ -7,6 +7,7 @@ import com.project.blog.vo.PostVO;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -52,14 +53,18 @@ public class PostController {
         model.addAttribute("postList", postList);
         model.addAttribute("paging", paging);
         model.addAttribute("pageList", pageList);
-        model.addAttribute("user", userVO.isReleased());
+        model.addAttribute("userVO", userVO);
 
         return "/post/list";
     }
 
     // 게시글 작성 페이지
     @GetMapping(value = "add")
-    public String postAdd() {
+    public String postAdd(Model model) throws Exception {
+        UserVO userVO = userService.userInfo();
+
+        model.addAttribute("userVO", userVO);
+
         return "/post/postAdd";
     }
 
@@ -78,7 +83,9 @@ public class PostController {
     @GetMapping(value = "detail")
     public String postDetail(@RequestParam("no") int postSeq, Model model) throws Exception {
         PostVO postVO = postService.postDetail(postSeq);
+        UserVO userVO = userService.userInfo();
 
+        model.addAttribute("userVO", userVO);
         model.addAttribute("postVO", postVO);
         model.addAttribute("write", postVO.isWriter());
 
@@ -101,7 +108,9 @@ public class PostController {
     @GetMapping(value = "modify")
     public String postMod(@RequestParam("no") int postSeq, Model model) throws Exception {
         PostVO postVO = postService.postDetail(postSeq);
+        UserVO userVO = userService.userInfo();
 
+        model.addAttribute("userVO", userVO);
         model.addAttribute("postVO",postVO);
 
         return "/post/postModify";

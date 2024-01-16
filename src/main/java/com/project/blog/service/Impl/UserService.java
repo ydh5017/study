@@ -132,8 +132,6 @@ public class UserService implements IUserService {
         HashMap<String, String> map = new HashMap<>();
         UserVO userVO = userInfo();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        log.info("cp : " + userVO.getPassword());
-        log.info("encode p : " + passwordEncoder.encode(currentPassword));
 
         if (passwordEncoder.matches(currentPassword, userVO.getPassword())) {
             if (!currentPassword.equals(newPassword)) {
@@ -164,5 +162,50 @@ public class UserService implements IUserService {
         return map;
     }
 
+    @Override
+    public HashMap<String, String> updatePassword(String userId) throws Exception {
+        HashMap<String, String> map = new HashMap<>();
+        String msg, url;
 
+        if (userMapper.idCheck(userId)) {
+            String password = getTemporaryPassword();
+
+            msg = "임시 비밀번호 : " + password;
+            url = "/user";
+
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            password = passwordEncoder.encode(password);
+
+            int result = userMapper.updatePassword(userId, password);
+
+            if (result != 1) {
+                msg = "실패";
+                url = "/user";
+            }
+        } else {
+            msg = "존재하지 않는 계정입니다.";
+            url = "/user";
+        }
+
+        map.put("msg", msg);
+        map.put("url", url);
+
+        return map;
+    }
+
+    @Override
+    public String getTemporaryPassword() throws Exception {
+        char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+
+        String str = "";
+
+        // 문자 배열 길이의 값을 랜덤으로 10개를 뽑아 구문을 작성함
+        int idx = 0;
+        for (int i = 0; i < 10; i++) {
+            idx = (int) (charSet.length * Math.random());
+            str += charSet[idx];
+        }
+        return str;
+    }
 }

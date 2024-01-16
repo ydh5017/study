@@ -1,39 +1,38 @@
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-<div class="container">
-    <h2>게시글 상세보기</h2>
-        <table class="board_detail">
-            <tr>
-                <td>제목 : </td>
-                <td>{{postVO.title}}</td>
-                <td>작성자 : {{postVO.writeId}}</td>
-            </tr>
-            <tr>
-                <td>내용 : </td>
-                <td colspan="2">
-                    {{postVO.content}}
-                </td>
-            </tr>
-        </table>
-    {{#write}}
-        <form id="frm" name="frm" method="get" action="/post/modify">
-            <input type="hidden" name="no" value="{{postVO.postSeq}}">
-            <input type="submit" id="submit" value="수정" class="btn">
-        </form>
-        <form id="frm" name="frm" method="post" action="/post">
-            <input type="hidden" name="_method" value="patch">
-            <input type="hidden" name="no" value="{{postVO.postSeq}}">
-            <input type="submit" id="submit" value="삭제" class="btn">
-        </form>
-    {{/write}}
-    <input type="button" onclick="history.back()" value="이전" class="btn">
+{{>layout/header}}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">게시글 상세보기</h1>
+    </div>
+    <div class="container">
+            <table class="board_detail">
+                <tr>
+                    <td>제목 : </td>
+                    <td>{{postVO.title}}</td>
+                    <td>작성자 : {{postVO.writeId}}</td>
+                </tr>
+                <tr>
+                    <td>내용 : </td>
+                    <td colspan="2">
+                        {{{postVO.content}}}
+                    </td>
+                </tr>
+            </table>
+        {{#write}}
+            <form id="frm" name="frm" method="get" action="/post/modify">
+                <input type="hidden" name="no" value="{{postVO.postSeq}}">
+                <input type="submit" id="submit" value="수정" class="btn">
+            </form>
+            <form id="frm" name="frm" method="post" action="/post">
+                <input type="hidden" name="_method" value="patch">
+                <input type="hidden" name="no" value="{{postVO.postSeq}}">
+                <input type="submit" id="submit" value="삭제" class="btn">
+            </form>
+        {{/write}}
+        <input type="button" onclick="history.back()" value="이전" class="btn">
+    </div>
 </div>
-</body>
-</html>
+<!-- /.container-fluid -->
+{{>layout/footer}}

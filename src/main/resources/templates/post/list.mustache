@@ -1,20 +1,19 @@
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
+{{>layout/header}}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">게시판</h1>
+    </div>
+
     <div class="container">
-        <h2>게시글 목록</h2>
         <table class="board_list">
             <colgroup>
+                <col width="6%"/>
                 <col width="15%"/>
-                <col width="*"/>
-                <col width="20%"/>
-                <col width="20%"/>
+                <col width="8%"/>
+                <col width="15%"/>
             </colgroup>
             <thead>
             <tr>
@@ -40,33 +39,45 @@
             {{/postList}}
             </tbody>
         </table>
-        {{#user}}
-            <a href="/post/add" class="btn">글 쓰기</a>
-        {{/user}}
-        <div>
+        {{#userVO}}
+            {{#isReleased}}
+                <a href="/post/add" class="btn">글 쓰기</a>
+            {{/isReleased}}
+            {{^isReleased}}
+            {{/isReleased}}
+        {{/userVO}}
+        <div class="col-sm-12 col-md-12">
+            <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                <ul class="pagination">
             {{#paging.prev}}
-                <a class="pNumStart" href="/post?pno={{paging.prevPage}}">이전</a>
+                <li class="paginate_button page-item previous" id="dataTable_previous">
+                    <a href="/post?pno={{paging.prevPage}}" aria-controls="dataTable" tabindex="0" class="page-link">Previous</a>
+                </li>
             {{/paging.prev}}
 
             {{#pageList}}
                 {{#equalsPage}}
-                    <div class='pNum'>
-                        <a class='pNum'>{{page}}</a>
-                    </div>
+                    <li class="paginate_button page-item active">
+                        <a aria-controls="dataTable" tabindex="0" class="page-link">{{page}}</a>
+                    </li>
                 {{/equalsPage}}
                 {{^equalsPage}}
-                    <div class='pNum' style="background-color:#1abc9c;color:white;">
-                        <a class='pNum' href="/post?pno={{page}}">{{page}}</a>
-                    </div>
+                    <li class="paginate_button page-item ">
+                        <a aria-controls="dataTable" tabindex="0" class="page-link" href="/post?pno={{page}}">{{page}}</a>
+                    </li>
                 {{/equalsPage}}
             {{/pageList}}
 
             {{#paging.next}}
-                <a class="pNumEnd" href="/post?pno={{paging.nextPage}}">다음</a>
+                <li class="paginate_button page-item next" id="dataTable_next">
+                    <a href="/post?pno={{paging.nextPage}}" aria-controls="dataTable" tabindex="0" class="page-link">next</a>
+                </li>
             {{/paging.next}}
             <br>
-            <input type="button" onclick="location.href='/index'" value="메인페이지" class="btn">
+                </ul>
+            </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+<!-- /.container-fluid -->
+{{>layout/footer}}

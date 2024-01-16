@@ -79,4 +79,13 @@
         WHERE
             USERSEQ = #{userSeq}
     </update>
+    <!-- 임시 비밀번호로 변경 -->
+    <update id="updatePassword" parameterType="String">
+        UPDATE
+            USER
+        SET
+            PASSWORD = #{password}
+        WHERE
+            USERID = #{userId}
+    </update>
 </mapper>
