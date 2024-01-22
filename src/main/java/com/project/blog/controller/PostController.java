@@ -27,23 +27,42 @@ public class PostController {
 
     // 게시글 리스트 페이지
     @GetMapping
-    public String getPostList(@RequestParam int pno, Model model) throws Exception {
+    public String getPostList(@RequestParam(defaultValue = "1") int pno,
+                              @RequestParam(required = false) String type,
+                              @RequestParam(required = false) String keyword, Model model) throws Exception {
         UserVO userVO = userService.userInfo();
+
         int page = pno;
-        int listCnt = postService.postCount();
+        int listCnt = 0;
+
+        if (type != null && keyword != null) {
+            listCnt = postService.searchCount(type, keyword);
+            log.info("listCnt : " + listCnt);
+        }else {
+            listCnt = postService.postCount();
+        }
 
         PagingUtil paging = new PagingUtil();
 
         paging.pageInfo(page, listCnt);
-        HashMap<String, Integer> Map = new HashMap<>();
+        HashMap<String, Integer> map = new HashMap<>();
         int i = paging.getStartList();
         int j = paging.getListSize();
-        Map.put("startlist", i);
-        Map.put("listsize", j);
+        map.put("startlist", i);
+        map.put("listsize", j);
 
         List<PostVO> postList = new ArrayList<>();
         try {
-            postList = postService.getPostList(Map);
+            if (type != null && keyword != null) {
+                HashMap<String, Object> sMap = new HashMap<>();
+                sMap.put("startlist", i);
+                sMap.put("listsize", j);
+                sMap.put("type", type);
+                sMap.put("keyword", keyword);
+                postList = postService.getSearchList(sMap);
+            }else {
+                postList = postService.getPostList(map);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -27,8 +27,19 @@ public class PostService implements IPostService {
     }
 
     @Override
+    public List<PostVO> getSearchList(HashMap<String, Object> hMap) throws Exception {
+        return postMapper.getSearchList(hMap);
+    }
+
+    @Override
     public int postCount() throws Exception {
         int count = postMapper.postCount();
+        return count;
+    }
+
+    @Override
+    public int searchCount(String type, String keyword) throws Exception {
+        int count = postMapper.searchCount(type, keyword);
         return count;
     }
 

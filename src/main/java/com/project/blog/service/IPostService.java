@@ -9,7 +9,11 @@ public interface IPostService {
 
     List<PostVO> getPostList(HashMap<String, Integer> hMap) throws Exception;
 
+    List<PostVO> getSearchList(HashMap<String, Object> hMap) throws Exception;
+
     int postCount() throws Exception;
+
+    int searchCount(String type, String keyword) throws Exception;
 
     HashMap<String, String> postAddProc(PostVO postVO) throws Exception;
 

@@ -36,6 +36,23 @@
         ORDER BY POSTSEQ DESC
         LIMIT #{startlist}, #{listsize}
     </select>
+    <!-- 검색된 게시글 리스트 가져오기 -->
+    <select id="getSearchList" parameterType="map" resultType="PostVO">
+        SELECT
+            POSTSEQ,
+            TITLE,
+            CONTENT,
+            WRITEID,
+            WRITEDT,
+            CHGID,
+            CHGDT,
+            ISDELETED
+        FROM POST
+        WHERE ${type} LIKE '%${keyword}%'
+            AND ISDELETED = 0
+        ORDER BY POSTSEQ DESC
+            LIMIT #{startlist}, #{listsize}
+    </select>
     <!-- 게시글 가져오기 -->
     <select id="postDetail" parameterType="int" resultType="PostVO">
         SELECT
@@ -54,6 +71,14 @@
     <select id="postCount" resultType="integer">
         SELECT COUNT(0)
         FROM POST
+        WHERE ISDELETED = 0
+    </select>
+    <!-- 검색된 게시글 수 조회 -->
+    <select id="searchCount" resultType="integer">
+        SELECT COUNT(0)
+        FROM POST
+        WHERE ${type} LIKE '%${keyword}%'
+          AND ISDELETED = 0
     </select>
     <!-- 게시글 삭제 -->
     <update id="postDelete" parameterType="map">

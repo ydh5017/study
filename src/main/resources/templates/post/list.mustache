@@ -7,6 +7,28 @@
         <h1 class="h3 mb-0 text-gray-800">게시판</h1>
     </div>
 
+    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style="padding: 1rem"
+    id="searchFoam" name="searchFoam" method="get" action="/post">
+        <div class="border-left-primary container" style="float: left;">
+            <div style="float: left; transform: translate(0, 20%)">
+                <select name="type">
+                    <option value="">검색 유형 선택</option>
+                    <option value="title">제목</option>
+                    <option value="writeId">작성자</option>
+                </select>
+            </div>
+            <div class="input-group" style="float: left; padding-left: 10px">
+                <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2"
+                name="keyword">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search fa-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
     <div class="container">
         <table class="board_list">
             <colgroup>
@@ -46,7 +68,7 @@
             {{^isReleased}}
             {{/isReleased}}
         {{/userVO}}
-        <div class="col-sm-12 col-md-12">
+        <div class="col-sm-12 col-md-12" style="padding: 1rem">
             <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
                 <ul class="pagination">
             {{#paging.prev}}
