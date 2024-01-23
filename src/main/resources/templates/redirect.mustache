@@ -8,7 +8,11 @@
         window.onload=function(){
             var url = decodeURIComponent('{{url}}');
             alert('{{msg}}');
-            location.href=url;
+            if(url.value!=""){
+                location.href=url;
+                return false;
+            }
+
         };
     </script>
     <title>Document</title>
