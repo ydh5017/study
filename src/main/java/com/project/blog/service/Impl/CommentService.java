@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -48,5 +49,10 @@ public class CommentService implements ICommentService {
         map.put("url", url);
 
         return map;
+    }
+
+    @Override
+    public List<CommentVO> getCommentList(int postSeq) throws Exception {
+        return commentMapper.getCommentList(postSeq);
     }
 }

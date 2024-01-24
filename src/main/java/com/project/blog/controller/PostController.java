@@ -1,8 +1,10 @@
 package com.project.blog.controller;
 
+import com.project.blog.service.ICommentService;
 import com.project.blog.service.IPostService;
 import com.project.blog.service.IUserService;
 import com.project.blog.util.PagingUtil;
+import com.project.blog.vo.CommentVO;
 import com.project.blog.vo.PostVO;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class PostController {
 
     private final IPostService postService;
     private final IUserService userService;
+    private final ICommentService commentService;
 
     // 게시글 리스트 페이지
     @GetMapping
@@ -104,9 +107,12 @@ public class PostController {
         PostVO postVO = postService.postDetail(postSeq);
         UserVO userVO = userService.userInfo();
 
+        List<CommentVO> commentList = commentService.getCommentList(postSeq);
+
         model.addAttribute("userVO", userVO);
         model.addAttribute("postVO", postVO);
         model.addAttribute("write", postVO.isWriter());
+        model.addAttribute("commentList", commentList);
 
         return "/post/postDetail";
     }

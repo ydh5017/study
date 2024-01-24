@@ -5,13 +5,20 @@ public class CommentVO {
     private int commentSeq;
     private int postSeq;
     private String content;
-    private String commentDepth;
+    private int commentDepth = 0;
     private String commentGroup;
     private String commentWriteId;
     private String commentWriteDt;
     private String commentChgId;
     private String commentChgDt;
     private String isDeleted;
+    private boolean isCommentForComment = false;
+
+    public CommentVO() {
+        if (this.commentDepth == 1) {
+            this.isCommentForComment = true;
+        }
+    }
 
     public int getCommentSeq() {
         return commentSeq;
@@ -37,11 +44,11 @@ public class CommentVO {
         this.content = content;
     }
 
-    public String getCommentDepth() {
+    public int getCommentDepth() {
         return commentDepth;
     }
 
-    public void setCommentDepth(String commentDepth) {
+    public void setCommentDepth(int commentDepth) {
         this.commentDepth = commentDepth;
     }
 
@@ -91,5 +98,13 @@ public class CommentVO {
 
     public void setIsDeleted(String isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public boolean isCommentForComment() {
+        return isCommentForComment;
+    }
+
+    public void setCommentForComment(boolean commentForComment) {
+        isCommentForComment = commentForComment;
     }
 }

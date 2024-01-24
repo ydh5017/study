@@ -32,6 +32,79 @@
             </form>
         {{/write}}
         <input type="button" onclick="history.back()" value="이전" class="btn">
+        <form method="post" action="/comment">
+            <table class="board_detail">
+                <tr>
+                    <td>댓글</td>
+                    <td><input type="text" id="content" name="content"></td>
+                    <input type="hidden" name="postSeq" value="{{postVO.postSeq}}">
+                </tr>
+            </table>
+            <input type="submit" id="submit" value="저장" class="btn">
+        </form>
+
+        {{#commentList}}
+            {{^isCommentForComment}}
+            <div class="col-xl-3">
+                <div class="card border-left-primary shadow h-10 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="border-bottom mb-1">
+                                    <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">
+                                        {{commentWriteId}}
+                                    </div>
+                                    <div class="text-xs text-right font-weight-bold text-uppercase mb-1">
+                                        {{commentWriteDt}}
+                                    </div>
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{content}}</div>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-info btn-circle">
+                                    <div>
+                                        <i class="fas fa-thumbs-up -align-center mt-2"></i>
+                                        <div class="text-xs">999</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mr-2">답글 달기</div>
+                </div>
+            </div>
+            {{/isCommentForComment}}
+            {{#isCommentForComment}}
+            <div class="col-xl-4" style="padding-left: 5rem">
+                <div class="card border-left-primary shadow h-10 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="border-bottom mb-1">
+                                    <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">
+                                        {{commentWriteId}}
+                                    </div>
+                                    <div class="text-xs text-right font-weight-bold text-uppercase mb-1">
+                                        {{commentWriteDt}}
+                                    </div>
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{content}}</div>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-info btn-circle">
+                                    <div>
+                                        <i class="fas fa-thumbs-up -align-center mt-2"></i>
+                                        <div class="text-xs">1</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/isCommentForComment}}
+        {{/commentList}}
+
     </div>
 </div>
 <!-- /.container-fluid -->
