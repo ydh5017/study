@@ -27,7 +27,13 @@ public class CommentController {
     @PostMapping
     public String postAdd(@RequestParam int postSeq, CommentVO commentVO, Model model) throws Exception {
         commentVO.setPostSeq(postSeq);
-        HashMap<String, String> Map = commentService.commentAddProc(commentVO);
+        HashMap<String, String> Map;
+
+        if (commentVO.getCommentSeq() == 0) {
+            Map = commentService.commentAddProc(commentVO);
+        }else {
+            Map = commentService.commentAddProc(commentVO);
+        }
 
         model.addAttribute("msg", Map.get("msg"));
         model.addAttribute("url", Map.get("url"));

@@ -26,16 +26,20 @@ public class CommentService implements ICommentService {
     public HashMap<String, String> commentAddProc(CommentVO commentVO) throws Exception {
         HashMap<String, String> map = new HashMap<>();
         String userId = userService.userInfo().getUserId();
-
-
+        int result;
 
         if (userId != null) {
             commentVO.setCommentWriteId(userId);
         } else {
             commentVO.setCommentWriteId("익명");
         }
+        if (commentVO.getCommentSeq() != 0){
+            commentVO.setCommentGroup(commentVO.getCommentSeq());
+            result = commentMapper.replyCommentAddProc(commentVO);
+        }else {
+            result = commentMapper.commentAddProc(commentVO);
+        }
 
-        int result = commentMapper.commentAddProc(commentVO);
         String msg, url;
 
         if (result==1) {

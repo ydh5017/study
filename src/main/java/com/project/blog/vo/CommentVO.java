@@ -6,17 +6,34 @@ public class CommentVO {
     private int postSeq;
     private String content;
     private int commentDepth = 0;
-    private String commentGroup;
+    private int commentGroup;
     private String commentWriteId;
     private String commentWriteDt;
     private String commentChgId;
     private String commentChgDt;
     private String isDeleted;
-    private boolean isCommentForComment = false;
+    private boolean isReplyComment = false;
+    private boolean isParentComment = false;
 
-    public CommentVO() {
-        if (this.commentDepth == 1) {
-            this.isCommentForComment = true;
+    public CommentVO(int commentSeq, int postSeq, String content, int commentDepth,
+                     String  commentGroup, String commentWriteId, String commentWriteDt,
+                     String commentChgId, String commentChgDt, String isDeleted) {
+        this.commentSeq = commentSeq;
+        this.postSeq = postSeq;
+        this.content = content;
+        this.commentDepth = commentDepth;
+        if (commentGroup != null) {
+            this.commentGroup = Integer.parseInt(commentGroup);
+        }
+        this.commentWriteId = commentWriteId;
+        this.commentWriteDt = commentWriteDt;
+        this.commentChgId = commentChgId;
+        this.commentChgDt = commentChgDt;
+        this.isDeleted = isDeleted;
+        if (commentDepth == 0) {
+            this.isParentComment = true;
+        }else {
+            this.isReplyComment = true;
         }
     }
 
@@ -52,11 +69,11 @@ public class CommentVO {
         this.commentDepth = commentDepth;
     }
 
-    public String getCommentGroup() {
+    public int getCommentGroup() {
         return commentGroup;
     }
 
-    public void setCommentGroup(String commentGroup) {
+    public void setCommentGroup(int commentGroup) {
         this.commentGroup = commentGroup;
     }
 
@@ -100,11 +117,19 @@ public class CommentVO {
         this.isDeleted = isDeleted;
     }
 
-    public boolean isCommentForComment() {
-        return isCommentForComment;
+    public boolean isReplyComment() {
+        return isReplyComment;
     }
 
-    public void setCommentForComment(boolean commentForComment) {
-        isCommentForComment = commentForComment;
+    public void setReplyComment(boolean replyComment) {
+        isReplyComment = replyComment;
+    }
+
+    public boolean isParentComment() {
+        return isParentComment;
+    }
+
+    public void setParentComment(boolean parentComment) {
+        isParentComment = parentComment;
     }
 }

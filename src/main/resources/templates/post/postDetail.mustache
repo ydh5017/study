@@ -38,15 +38,17 @@
                     <td>댓글</td>
                     <td><input type="text" id="content" name="content"></td>
                     <input type="hidden" name="postSeq" value="{{postVO.postSeq}}">
+                    <input type="hidden" name="commentSeq" value=0>
+                    <input type="hidden" name="commentDepth" value=0>
                 </tr>
             </table>
             <input type="submit" id="submit" value="저장" class="btn">
         </form>
 
         {{#commentList}}
-            {{^isCommentForComment}}
+            {{#isParentComment}}
             <div class="col-xl-3">
-                <div class="card border-left-primary shadow h-10 py-2">
+                <div class="card border-left h-10 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
@@ -60,52 +62,109 @@
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{content}}</div>
                             </div>
-                            <div class="col-auto">
-                                <a href="#" class="btn btn-info btn-circle">
-                                    <div>
-                                        <i class="fas fa-thumbs-up -align-center mt-2"></i>
-                                        <div class="text-xs">999</div>
-                                    </div>
-                                </a>
-                            </div>
                         </div>
                     </div>
-                    <div class="col mr-2">답글 달기</div>
+                    <div class="col mr-2">
+                        <span class="mr-1">
+                            <i class="fas fa-thumbs-up -align-center mt-2"></i>
+                            <span class="text-xs">999</span>
+                        </span>
+                        <span class="mr-1" id="reply-{{commentSeq}}" onclick="return reply({{commentSeq}})">답글</span>
+                        <span class="mr-1" id="">수정</span>
+                        <span class="mr-1" id="">삭제</span>
+                    </div>
+                    <div class="col mr-2">
+                        <span class="mr-1 text-primary" id="onReplyComment-{{commentSeq}}" onclick="return onReplyComment({{commentSeq}})">
+                            <i class="fas fa-solid fa-caret-down mr-1"></i>답글 보기
+                        </span>
+                        <span class="mr-1 text-primary" id="offReplyComment-{{commentSeq}}" onclick="return offReplyComment({{commentSeq}})" style="display: none">
+                            <i class="fas fa-solid fa-caret-up mr-1"></i>답글 닫기
+                        </span>
+                    </div>
                 </div>
             </div>
-            {{/isCommentForComment}}
-            {{#isCommentForComment}}
-            <div class="col-xl-4" style="padding-left: 5rem">
-                <div class="card border-left-primary shadow h-10 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="border-bottom mb-1">
-                                    <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">
-                                        {{commentWriteId}}
+                <div class="col-xl-3"  id="replyCommentPost-{{commentSeq}}" style="display: none">
+                    <form method="post" action="/comment">
+                        <table class="board_detail">
+                            <tr>
+                                <td>댓글</td>
+                                <td><input type="text" id="content" name="content"></td>
+                                <input type="hidden" name="postSeq" value="{{postVO.postSeq}}">
+                                <input type="hidden" name="commentSeq" value="{{commentSeq}}">
+                                <input type="hidden" name="commentDepth" value=1>
+                            </tr>
+                        </table>
+                        <input type="submit" id="submit" value="저장" class="btn">
+                    </form>
+                </div>
+            {{/isParentComment}}
+            <div>
+                {{#isReplyComment}}
+                <div class="col-xl-4 replyComment-{{commentGroup}}"  style="padding-left: 3rem; display: none">
+                    <div class="card border-left h-10 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="border-bottom mb-1">
+                                        <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">
+                                            {{commentWriteId}}
+                                        </div>
+                                        <div class="text-xs text-right font-weight-bold text-uppercase mb-1">
+                                            {{commentWriteDt}}
+                                        </div>
                                     </div>
-                                    <div class="text-xs text-right font-weight-bold text-uppercase mb-1">
-                                        {{commentWriteDt}}
-                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{content}}</div>
                                 </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{content}}</div>
-                            </div>
-                            <div class="col-auto">
-                                <a href="#" class="btn btn-info btn-circle">
-                                    <div>
-                                        <i class="fas fa-thumbs-up -align-center mt-2"></i>
-                                        <div class="text-xs">1</div>
-                                    </div>
-                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
+            {{/isReplyComment}}
             </div>
-            {{/isCommentForComment}}
         {{/commentList}}
-
     </div>
 </div>
+<script type="text/javascript">
+    function reply(i){
+        const replyCommentPost = document.getElementById('replyCommentPost-'+i);
+        if(replyCommentPost.style.display == "none"){
+            replyCommentPost.style.display = ""
+        }else if (replyCommentPost.style.display != "none"){
+            replyCommentPost.style.display = "none"
+        }
+    };
+    function onReplyComment(i){
+        const replyComment = document.querySelector('.replyComment-'+i);
+        const onReplyComment = document.getElementById('onReplyComment-'+i);
+        const offReplyComment = document.getElementById('offReplyComment-'+i);
+        if(replyComment.style.display == "none"){
+            replyComment.style.display = ""
+            onReplyComment.style.display = "none"
+            offReplyComment.style.display = ""
+        }
+    };
+    function offReplyComment(i){
+        const replyComment = document.querySelector('.replyComment-'+i);
+        const onReplyComment = document.getElementById('onReplyComment-'+i);
+        const offReplyComment = document.getElementById('offReplyComment-'+i);
+        if(replyComment.style.display != "none"){
+            replyComment.style.display = "none"
+            onReplyComment.style.display = ""
+            offReplyComment.style.display = "none"
+        }
+    };
+</script>
+<script>
+
+    // $(function(){
+    //     $('#offReplyComment').click(function(){
+    //         if($("#replyComment").css("display") != "none"){
+    //             $('#replyComment').hide();
+    //             $("#offReplyComment").hide();
+    //             $('#onReplyComment').show();
+    //         }
+    //     });
+    // });
+</script>
 <!-- /.container-fluid -->
 {{>layout/footer}}
