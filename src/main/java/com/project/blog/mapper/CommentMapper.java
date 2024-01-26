@@ -13,4 +13,10 @@ public interface CommentMapper {
     int replyCommentAddProc(CommentVO commentVO) throws Exception;
 
     List<CommentVO> getCommentList(int postSeq) throws Exception;
+
+    List<CommentVO> getReplyList(int commentSeq) throws Exception;
+
+     int commentModProc(CommentVO commentVO) throws Exception;
+
+     int commentDelete(int commentSeq) throws Exception;
 }

@@ -59,4 +59,57 @@ public class CommentService implements ICommentService {
     public List<CommentVO> getCommentList(int postSeq) throws Exception {
         return commentMapper.getCommentList(postSeq);
     }
+
+    @Override
+    public List<CommentVO> getReplyList(int commentSeq) throws Exception {
+        return commentMapper.getReplyList(commentSeq);
+    }
+
+    @Override
+    public HashMap<String, String> commentModProc(CommentVO commentVO) throws Exception {
+        HashMap<String, String> Map = new HashMap<>();
+
+        String userId = userService.userInfo().getUserId();
+        if (userId != null) {
+            commentVO.setCommentChgId(userId);
+        } else {
+            commentVO.setCommentChgId("익명");
+        }
+
+        log.info("commentVO : " +commentVO.getCommentSeq());
+
+        int result = commentMapper.commentModProc(commentVO);
+        String msg, url;
+
+        if (result==1) {
+            msg = "수정되었습니다.";
+            url = "/post/detail?no%3D" + commentVO.getPostSeq();
+        } else {
+            msg = "수정 실패";
+            url = "/post/detail?no%3D" + commentVO.getPostSeq();
+        }
+        Map.put("msg", msg);
+        Map.put("url", url);
+
+        return Map;
+    }
+
+    @Override
+    public HashMap<String, String> commentDelete(int commentSeq, int postSeq) throws Exception {
+        HashMap<String, String> map = new HashMap<>();
+        int result = commentMapper.commentDelete(commentSeq);
+        String msg, url;
+
+        if (result==1) {
+            msg = " 삭제되었습니다.";
+            url = "/post/detail?no%3D" + postSeq;
+        } else {
+            msg = "삭제 실패";
+            url = "/post/detail?no%3D" + postSeq;
+        }
+        map.put("msg", msg);
+        map.put("url", url);
+
+        return map;
+    }
 }

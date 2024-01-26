@@ -46,9 +46,8 @@
         </form>
 
         {{#commentList}}
-            {{#isParentComment}}
             <div class="col-xl-3">
-                <div class="card border-left h-10 py-2">
+                <div class="card border-left h-10 py-2" id="parentComment-{{commentSeq}}">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
@@ -60,7 +59,27 @@
                                         {{commentWriteDt}}
                                     </div>
                                 </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{content}}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">{{content}}</div>
+                                {{#isWrite}}
+                                <div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">
+                                <nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">
+                                            <div class="navbar text-xs text-right font-weight-bold text-uppercase mb-0" data-toggle="dropdown">
+                                                <i class="fas fa-solid fa-ellipsis-h -align-center mt-2"></i>
+                                            </div>
+                                            <div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="navbarDropdown">
+                                                <a class="dropdown-item" onclick="return modifyComment({{postSeq}}, {{commentSeq}}, {{content}})">수정</a>
+                                                <form class="mr-1" method="post" action="/comment">
+                                                    <input type="hidden" name="_method" value="patch">
+                                                    <input type="hidden" name="commentSeq" value="{{commentSeq}}">
+                                                    <input type="hidden" name="postSeq" value="{{postVO.postSeq}}">
+                                                <button class="dropdown-item" type="submit">삭제</button>
+                                                </form>
+                                            </div>
+                                </nav>
+                                </div>
+                                {{/isWrite}}
+
+
                             </div>
                         </div>
                     </div>
@@ -70,8 +89,6 @@
                             <span class="text-xs">999</span>
                         </span>
                         <span class="mr-1" id="reply-{{commentSeq}}" onclick="return reply({{commentSeq}})">답글</span>
-                        <span class="mr-1" id="">수정</span>
-                        <span class="mr-1" id="">삭제</span>
                     </div>
                     <div class="col mr-2">
                         <span class="mr-1 text-primary" id="onReplyComment-{{commentSeq}}" onclick="return onReplyComment({{commentSeq}})">
@@ -82,6 +99,29 @@
                         </span>
                     </div>
                 </div>
+
+
+                <div class="col-xl-3" id="modifyDiv-{{commentSeq}}" style="display: none"></div>
+
+
+                <div class="card border-left h-10 py-2" id="parentCommentMod-{{commentSeq}}" style="display: none">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <form method="post" action="/">
+                                        <input type="hidden" name="_method" value="put">
+                                        <input type="text" id="content" name="content" value="{{content}}">
+                                        <input type="submit" id="submit" value="저장" class="btn">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
             </div>
                 <div class="col-xl-3"  id="replyCommentPost-{{commentSeq}}" style="display: none">
                     <form method="post" action="/comment">
@@ -97,34 +137,71 @@
                         <input type="submit" id="submit" value="저장" class="btn">
                     </form>
                 </div>
-            {{/isParentComment}}
-            <div>
-                {{#isReplyComment}}
-                <div class="col-xl-4 replyComment-{{commentGroup}}"  style="padding-left: 3rem; display: none">
-                    <div class="card border-left h-10 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="border-bottom mb-1">
-                                        <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">
-                                            {{commentWriteId}}
-                                        </div>
-                                        <div class="text-xs text-right font-weight-bold text-uppercase mb-1">
-                                            {{commentWriteDt}}
-                                        </div>
-                                    </div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{content}}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {{/isReplyComment}}
-            </div>
+            <div id="replyDiv-{{commentSeq}}" style="display: none"></div>
         {{/commentList}}
     </div>
 </div>
 <script type="text/javascript">
+    //대댓글 출력하기
+    function onReplyComment(commentSeq){
+        const replyDiv = document.getElementById('replyDiv-'+commentSeq);
+        const onReplyComment = document.getElementById('onReplyComment-'+commentSeq);
+        const offReplyComment = document.getElementById('offReplyComment-'+commentSeq);
+
+        replyDiv.style.display = ""
+        onReplyComment.style.display = "none"
+        offReplyComment.style.display = ""
+
+        $.ajax({
+            url:"/api/replyList",
+            type:"get",
+            dataType: 'json',
+            data:{"commentSeq":commentSeq},
+            success:function(ReplyCommentList){
+                const html = document.createElement("div");
+                html.id = "replyList-" + commentSeq;
+
+                if (ReplyCommentList.length > 0) {
+                    for(let i = 0; i < ReplyCommentList.length; i++) {
+                        html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
+                                '<div class="card border-left h-10 py-2"> <div class="card-body">' +
+                                '<div class="row no-gutters align-items-center"> <div class="col mr-2">' +
+                                '<div class="border-bottom mb-1">' +
+                                '<div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">'+
+                                ReplyCommentList[i].commentWriteId +
+                                '</div>' +
+                                '<div class="text-xs text-right font-weight-bold text-uppercase mb-1">'+
+                                ReplyCommentList[i].commentWriteDt +
+                                '</div></div>' +
+                                '<div class="h5 mb-0 font-weight-bold text-gray-800 mt-2">'+
+                                ReplyCommentList[i].content +
+                                '</div></div></div></div></div></div>';
+                    }
+                }else {
+                    html.innerHTML ='<div class="col-xl-4"  style="padding-left: 3rem">' +
+                    '<div class="card border-left h-10 py-2">' +
+                    '<div class="card-body">' +
+                    '<div class="row no-gutters align-items-center">' +
+                    '<div class="col mr-2">' +
+                    '<div class="h5 mb-0 font-weight-bold text-gray-800">등록된 답글이 없습니다.</div>' +
+                    '</div></div></div></div></div>';
+                }
+                replyDiv.append(html);
+            },
+            error: function (request, status, error) {
+                alert("code: " + request.status + "\n" + "error: " + error);
+            }
+        })
+    };
+    function offReplyComment(commentSeq){
+        const replyDiv = document.getElementById('replyList-'+commentSeq);
+        const onReplyComment = document.getElementById('onReplyComment-'+commentSeq);
+        const offReplyComment = document.getElementById('offReplyComment-'+commentSeq);
+
+        replyDiv.remove();
+        onReplyComment.style.display = ""
+        offReplyComment.style.display = "none"
+    };
     function reply(i){
         const replyCommentPost = document.getElementById('replyCommentPost-'+i);
         if(replyCommentPost.style.display == "none"){
@@ -133,38 +210,38 @@
             replyCommentPost.style.display = "none"
         }
     };
-    function onReplyComment(i){
-        const replyComment = document.querySelector('.replyComment-'+i);
-        const onReplyComment = document.getElementById('onReplyComment-'+i);
-        const offReplyComment = document.getElementById('offReplyComment-'+i);
-        if(replyComment.style.display == "none"){
-            replyComment.style.display = ""
-            onReplyComment.style.display = "none"
-            offReplyComment.style.display = ""
-        }
-    };
-    function offReplyComment(i){
-        const replyComment = document.querySelector('.replyComment-'+i);
-        const onReplyComment = document.getElementById('onReplyComment-'+i);
-        const offReplyComment = document.getElementById('offReplyComment-'+i);
-        if(replyComment.style.display != "none"){
-            replyComment.style.display = "none"
-            onReplyComment.style.display = ""
-            offReplyComment.style.display = "none"
-        }
-    };
-</script>
-<script>
+    // function modifyComment(commentSeq){
+    //     const parentComment = document.getElementById('parentComment-'+commentSeq);
+    //     const parentCommentMod = document.getElementById('parentCommentMod-'+commentSeq);
+    //
+    //     parentComment.style.display = "none"
+    //     parentCommentMod.style.display = ""
+    // };
+    function modifyComment(postSeq, commentSeq, content){
+        const parentComment = document.getElementById('parentComment-'+commentSeq);
+        const modifyDiv = document.getElementById('modifyDiv-'+commentSeq);
 
-    // $(function(){
-    //     $('#offReplyComment').click(function(){
-    //         if($("#replyComment").css("display") != "none"){
-    //             $('#replyComment').hide();
-    //             $("#offReplyComment").hide();
-    //             $('#onReplyComment').show();
-    //         }
-    //     });
-    // });
+        parentComment.style.display = "none"
+        modifyDiv.style.display = ""
+
+        const html = document.createElement("div");
+        html.id = "parentCommentMod-" + commentSeq;
+        html.innerHTML+= '<div class="card border-left h-10 py-2">' +
+                '<div class="card-body">' +
+                '<div class="row no-gutters align-items-center">' +
+                '<div class="col mr-2">' +
+                '<div class="h5 mb-0 font-weight-bold text-gray-800">' +
+                '<form method="post" action="/comment">' +
+                '<input type="hidden" name="_method" value="put">' +
+                '<input type="hidden" name="commentDepth" value=0>' +
+                '<input type="hidden" name="postSeq" value="' + postSeq + '">' +
+                '<input type="hidden" name="commentSeq" value="' + commentSeq + '">' +
+                '<input type="text" id="content" name="content" value="' + content + '">' +
+                '<input type="submit" id="submit" value="저장" class="btn">' +
+                '</form>' +
+                '</div></div></div></div></div>';
+        modifyDiv.append(html);
+    };
 </script>
 <!-- /.container-fluid -->
 {{>layout/footer}}

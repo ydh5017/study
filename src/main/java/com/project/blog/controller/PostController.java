@@ -106,8 +106,15 @@ public class PostController {
     public String postDetail(@RequestParam("no") int postSeq, Model model) throws Exception {
         PostVO postVO = postService.postDetail(postSeq);
         UserVO userVO = userService.userInfo();
+        String userId = userVO.getUserId();
 
         List<CommentVO> commentList = commentService.getCommentList(postSeq);
+
+        if (userId != null) {
+            for (int i = 0; i < commentList.size(); i++) {
+                commentList.get(i).setWrite(userId.equals(commentList.get(i).getCommentWriteId()));
+            }
+        }
 
         model.addAttribute("userVO", userVO);
         model.addAttribute("postVO", postVO);

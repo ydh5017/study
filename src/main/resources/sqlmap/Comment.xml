@@ -46,31 +46,57 @@
     <!-- 댓글 리스트 -->
     <select id="getCommentList" parameterType="int" resultType="CommentVO">
         SELECT
-            CG.COMMENTSEQ,
-            CG.POSTSEQ,
-            CG.CONTENT,
-            CG.COMMENTDEPTH,
-            CG.COMMENTGROUP,
-            CG.COMMENTWRITEID,
-            CG.COMMENTWRITEDT,
-            CG.COMMENTCHGID,
-            CG.COMMENTCHGDT,
-            CG.ISDELETED
-        FROM
-            (SELECT
-                 COMMENTSEQ,
-                 POSTSEQ,
-                 CONTENT,
-                 COMMENTDEPTH,
-                 IFNULL(COMMENTGROUP, COMMENTSEQ) AS COMMENTGROUP,
-                 COMMENTWRITEID,
-                 COMMENTWRITEDT,
-                 COMMENTCHGID,
-                 COMMENTCHGDT,
-                 ISDELETED
-             FROM COMMENT) AS CG
+            COMMENTSEQ,
+            POSTSEQ,
+            CONTENT,
+            COMMENTDEPTH,
+            COMMENTWRITEID,
+            COMMENTWRITEDT,
+            COMMENTCHGID,
+            COMMENTCHGDT,
+            ISDELETED
+        FROM COMMENT
         WHERE POSTSEQ = #{postSeq}
         AND ISDELETED = 0
-        ORDER BY COMMENTGROUP, COMMENTSEQ
+        AND COMMENTDEPTH = 0
+        ORDER BY COMMENTSEQ
     </select>
+    <!-- 대댓글 리스트 -->
+    <select id="getReplyList" parameterType="int" resultType="CommentVO">
+        SELECT
+            COMMENTSEQ,
+            POSTSEQ,
+            CONTENT,
+            COMMENTDEPTH,
+            COMMENTGROUP,
+            COMMENTWRITEID,
+            COMMENTWRITEDT,
+            COMMENTCHGID,
+            COMMENTCHGDT,
+            ISDELETED
+        FROM COMMENT
+        WHERE COMMENTGROUP = #{commentSeq}
+          AND ISDELETED = 0
+        ORDER BY COMMENTSEQ
+    </select>
+    <!-- 댓글 수정 -->
+    <update id="commentModProc" parameterType="CommentVO">
+        UPDATE
+            COMMENT
+        SET
+            CONTENT = #{content},
+            COMMENTCHGID = #{commentChgId},
+            COMMENTCHGDT = SYSDATE()
+        WHERE
+            COMMENTSEQ = #{commentSeq}
+    </update>
+    <!-- 댓글 삭제 -->
+    <update id="commentDelete" parameterType="map">
+        UPDATE
+            COMMENT
+        SET
+            ISDELETED = 1
+        WHERE
+            COMMENTSEQ = #{commentSeq}
+    </update>
 </mapper>

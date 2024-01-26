@@ -14,28 +14,7 @@ public class CommentVO {
     private String isDeleted;
     private boolean isReplyComment = false;
     private boolean isParentComment = false;
-
-    public CommentVO(int commentSeq, int postSeq, String content, int commentDepth,
-                     String  commentGroup, String commentWriteId, String commentWriteDt,
-                     String commentChgId, String commentChgDt, String isDeleted) {
-        this.commentSeq = commentSeq;
-        this.postSeq = postSeq;
-        this.content = content;
-        this.commentDepth = commentDepth;
-        if (commentGroup != null) {
-            this.commentGroup = Integer.parseInt(commentGroup);
-        }
-        this.commentWriteId = commentWriteId;
-        this.commentWriteDt = commentWriteDt;
-        this.commentChgId = commentChgId;
-        this.commentChgDt = commentChgDt;
-        this.isDeleted = isDeleted;
-        if (commentDepth == 0) {
-            this.isParentComment = true;
-        }else {
-            this.isReplyComment = true;
-        }
-    }
+    private boolean isWrite = false;
 
     public int getCommentSeq() {
         return commentSeq;
@@ -131,5 +110,13 @@ public class CommentVO {
 
     public void setParentComment(boolean parentComment) {
         isParentComment = parentComment;
+    }
+
+    public boolean isWrite() {
+        return isWrite;
+    }
+
+    public void setWrite(boolean write) {
+        isWrite = write;
     }
 }
