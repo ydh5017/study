@@ -4,6 +4,7 @@ import com.project.blog.mapper.CommentMapper;
 import com.project.blog.service.ICommentService;
 import com.project.blog.service.IUserService;
 import com.project.blog.vo.CommentVO;
+import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,28 +28,31 @@ public class CommentService implements ICommentService {
         HashMap<String, String> map = new HashMap<>();
         String userId = userService.userInfo().getUserId();
         int result;
+        String msg, url;
 
         if (userId != null) {
             commentVO.setCommentWriteId(userId);
+
+            if (commentVO.getCommentSeq() != 0){
+                commentVO.setCommentGroup(commentVO.getCommentSeq());
+                result = commentMapper.replyCommentAddProc(commentVO);
+            }else {
+                result = commentMapper.commentAddProc(commentVO);
+            }
+
+            if (result==1) {
+                msg = "댓글 등록 성공";
+                url = "/post/detail?no%3D" + commentVO.getPostSeq();
+            } else {
+                msg = "댓글 등록 실패";
+                url = "/post/detail?no%3D" + commentVO.getPostSeq();
+            }
+
         } else {
-            commentVO.setCommentWriteId("익명");
-        }
-        if (commentVO.getCommentSeq() != 0){
-            commentVO.setCommentGroup(commentVO.getCommentSeq());
-            result = commentMapper.replyCommentAddProc(commentVO);
-        }else {
-            result = commentMapper.commentAddProc(commentVO);
+            msg = "로그인 후 사용해주세요.";
+            url = "/post/detail?no%3D" + commentVO.getPostSeq();
         }
 
-        String msg, url;
-
-        if (result==1) {
-            msg = "댓글 등록 성공";
-            url = "/post/detail?no%3D" + commentVO.getPostSeq();
-        } else {
-            msg = "댓글 등록 실패";
-            url = "/post/detail?no%3D" + commentVO.getPostSeq();
-        }
         map.put("msg", msg);
         map.put("url", url);
 
@@ -62,7 +66,18 @@ public class CommentService implements ICommentService {
 
     @Override
     public List<CommentVO> getReplyList(int commentSeq) throws Exception {
-        return commentMapper.getReplyList(commentSeq);
+        UserVO userVO = userService.userInfo();
+        String userId = userVO.getUserId();
+
+        List<CommentVO> commentList = commentMapper.getReplyList(commentSeq);
+
+        if (userId != null) {
+            for (int i = 0; i < commentList.size(); i++) {
+                commentList.get(i).setWriter(userId.equals(commentList.get(i).getCommentWriteId()));
+            }
+        }
+
+        return commentList;
     }
 
     @Override
@@ -75,8 +90,6 @@ public class CommentService implements ICommentService {
         } else {
             commentVO.setCommentChgId("익명");
         }
-
-        log.info("commentVO : " +commentVO.getCommentSeq());
 
         int result = commentMapper.commentModProc(commentVO);
         String msg, url;

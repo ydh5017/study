@@ -59,7 +59,10 @@
                                         {{commentWriteDt}}
                                     </div>
                                 </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">{{content}}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">
+                                    <input type="hidden" id="commentContent-{{commentSeq}}" value="{{content}}">
+                                    {{content}}
+                                </div>
                                 {{#isWrite}}
                                 <div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">
                                 <nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">
@@ -67,7 +70,7 @@
                                                 <i class="fas fa-solid fa-ellipsis-h -align-center mt-2"></i>
                                             </div>
                                             <div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="navbarDropdown">
-                                                <a class="dropdown-item" onclick="return modifyComment({{postSeq}}, {{commentSeq}}, {{content}})">수정</a>
+                                                <a class="dropdown-item" onclick="return modifyComment({{commentSeq}}, {{postSeq}}, '{{content}}')">수정</a>
                                                 <form class="mr-1" method="post" action="/comment">
                                                     <input type="hidden" name="_method" value="patch">
                                                     <input type="hidden" name="commentSeq" value="{{commentSeq}}">
@@ -84,12 +87,14 @@
                         </div>
                     </div>
                     <div class="col mr-2">
+                        <!-- 좋아요 -->
                         <span class="mr-1">
                             <i class="fas fa-thumbs-up -align-center mt-2"></i>
                             <span class="text-xs">999</span>
                         </span>
                         <span class="mr-1" id="reply-{{commentSeq}}" onclick="return reply({{commentSeq}})">답글</span>
                     </div>
+                    <!-- 답글 없으면 안 보이게 -->
                     <div class="col mr-2">
                         <span class="mr-1 text-primary" id="onReplyComment-{{commentSeq}}" onclick="return onReplyComment({{commentSeq}})">
                             <i class="fas fa-solid fa-caret-down mr-1"></i>답글 보기
@@ -98,6 +103,7 @@
                             <i class="fas fa-solid fa-caret-up mr-1"></i>답글 닫기
                         </span>
                     </div>
+
                 </div>
 
 
@@ -163,19 +169,57 @@
 
                 if (ReplyCommentList.length > 0) {
                     for(let i = 0; i < ReplyCommentList.length; i++) {
-                        html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
-                                '<div class="card border-left h-10 py-2"> <div class="card-body">' +
-                                '<div class="row no-gutters align-items-center"> <div class="col mr-2">' +
-                                '<div class="border-bottom mb-1">' +
-                                '<div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">'+
-                                ReplyCommentList[i].commentWriteId +
-                                '</div>' +
-                                '<div class="text-xs text-right font-weight-bold text-uppercase mb-1">'+
-                                ReplyCommentList[i].commentWriteDt +
-                                '</div></div>' +
-                                '<div class="h5 mb-0 font-weight-bold text-gray-800 mt-2">'+
-                                ReplyCommentList[i].content +
-                                '</div></div></div></div></div></div>';
+                        if (ReplyCommentList[i].writer > 0) {
+                            html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
+                                    '<div class="card border-left h-10 py-2" id="childComment-' + ReplyCommentList[i].commentSeq + '">' +
+                                    '<div class="card-body">' +
+                                    '<div class="row no-gutters align-items-center">' +
+                                    '<div class="col mr-2">' +
+                                    '<div class="border-bottom mb-1">' +
+                                    '<div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">'+
+                                    ReplyCommentList[i].commentWriteId +
+                                    '</div>' +
+                                    '<div class="text-xs text-right font-weight-bold text-uppercase mb-1">'+
+                                    ReplyCommentList[i].commentWriteDt +
+                                    '</div></div>' +
+                                    '<div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">'+
+                                    ReplyCommentList[i].content +
+                                    '</div>' +
+                                    '<div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">' +
+                                    '<nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">' +
+                                    '<div class="navbar text-xs text-right font-weight-bold text-uppercase mb-0" data-toggle="dropdown">' +
+                                    '<i class="fas fa-solid fa-ellipsis-h -align-center mt-2"></i>' +
+                                    '</div>' +
+                                    '<div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="navbarDropdown">' +
+                                    '<a class="dropdown-item" onclick="return modifyReply(' + ReplyCommentList[i].postSeq + ', ' + ReplyCommentList[i].commentSeq + ', ' + "'" + ReplyCommentList[i].content +"'" + ')">수정</a>' +
+                                    '<form class="mr-1" method="post" action="/comment">' +
+                                    '<input type="hidden" name="_method" value="patch">' +
+                                    '<input type="hidden" name="commentSeq" value="' + ReplyCommentList[i].commentSeq + '">' +
+                                    '<input type="hidden" name="postSeq" value="' + ReplyCommentList[i].postSeq + '">' +
+                                    '<button class="dropdown-item" type="submit">삭제</button>' +
+                                    '</form></div></nav></div></div></div></div></div>' +
+                                    '<div class="col-xl-3" id="ReplyModDiv-' + ReplyCommentList[i].commentSeq + '" style="display: none"></div>' +
+                                    '</div>';
+                        }else {
+
+                            html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
+                                    '<div class="card border-left h-10 py-2">' +
+                                    '<div class="card-body">' +
+                                    '<div class="row no-gutters align-items-center">' +
+                                    '<div class="col mr-2">' +
+                                    '<div class="border-bottom mb-1">' +
+                                    '<div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">'+
+                                    ReplyCommentList[i].commentWriteId +
+                                    '</div>' +
+                                    '<div class="text-xs text-right font-weight-bold text-uppercase mb-1">'+
+                                    ReplyCommentList[i].commentWriteDt +
+                                    '</div></div>' +
+                                    '<div class="h5 mb-0 font-weight-bold text-gray-800 mt-2">'+
+                                    ReplyCommentList[i].content +
+                                    '</div></div></div></div></div></div>';
+                        }
+
+                        console.log(ReplyCommentList[i].writer);
                     }
                 }else {
                     html.innerHTML ='<div class="col-xl-4"  style="padding-left: 3rem">' +
@@ -210,14 +254,7 @@
             replyCommentPost.style.display = "none"
         }
     };
-    // function modifyComment(commentSeq){
-    //     const parentComment = document.getElementById('parentComment-'+commentSeq);
-    //     const parentCommentMod = document.getElementById('parentCommentMod-'+commentSeq);
-    //
-    //     parentComment.style.display = "none"
-    //     parentCommentMod.style.display = ""
-    // };
-    function modifyComment(postSeq, commentSeq, content){
+    function modifyComment(commentSeq, postSeq, content){
         const parentComment = document.getElementById('parentComment-'+commentSeq);
         const modifyDiv = document.getElementById('modifyDiv-'+commentSeq);
 
@@ -237,10 +274,45 @@
                 '<input type="hidden" name="postSeq" value="' + postSeq + '">' +
                 '<input type="hidden" name="commentSeq" value="' + commentSeq + '">' +
                 '<input type="text" id="content" name="content" value="' + content + '">' +
-                '<input type="submit" id="submit" value="저장" class="btn">' +
+                '<input type="submit" id="submit" value="수정" class="btn">' +
+                '<a onclick="return modifyCommenCancel('+ commentSeq +')">취소</a>' +
                 '</form>' +
                 '</div></div></div></div></div>';
         modifyDiv.append(html);
+    };
+    function modifyCommenCancel(commentSeq){
+        const parentComment = document.getElementById('parentComment-'+commentSeq);
+        const parentCommentMod = document.getElementById('parentCommentMod-'+commentSeq);
+
+        parentCommentMod.remove();
+        parentComment.style.display = ""
+    };
+
+    function modifyReply(postSeq, commentSeq, content){
+        const childComment = document.getElementById('childComment-'+commentSeq);
+        const ReplyModDiv = document.getElementById('ReplyModDiv-'+commentSeq);
+
+        childComment.style.display = "none"
+        ReplyModDiv.style.display = ""
+
+        const html = document.createElement("div");
+        html.id = "childCommentMod-" + commentSeq;
+        html.innerHTML+= '<div class="card border-left h-10 py-2">' +
+                '<div class="card-body">' +
+                '<div class="row no-gutters align-items-center">' +
+                '<div class="col mr-2">' +
+                '<div class="h5 mb-0 font-weight-bold text-gray-800">' +
+                '<form method="post" action="/comment">' +
+                '<input type="hidden" name="_method" value="put">' +
+                '<input type="hidden" name="commentDepth" value=0>' +
+                '<input type="hidden" name="postSeq" value="' + postSeq + '">' +
+                '<input type="hidden" name="commentSeq" value="' + commentSeq + '">' +
+                '<input type="text" id="content" name="content" value="' + content + '">' +
+                '<input type="submit" id="submit" value="수정" class="btn">' +
+                '<input value="취소" class="btn">' +
+                '</form>' +
+                '</div></div></div></div></div>';
+        ReplyModDiv.append(html);
     };
 </script>
 <!-- /.container-fluid -->

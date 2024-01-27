@@ -112,7 +112,7 @@ public class PostController {
 
         if (userId != null) {
             for (int i = 0; i < commentList.size(); i++) {
-                commentList.get(i).setWrite(userId.equals(commentList.get(i).getCommentWriteId()));
+                commentList.get(i).setWriter(userId.equals(commentList.get(i).getCommentWriteId()));
             }
         }
 

@@ -14,6 +14,7 @@ public class CommentVO {
     private String isDeleted;
     private boolean isReplyComment = false;
     private boolean isParentComment = false;
+    private String writer = null;
     private boolean isWrite = false;
 
     public int getCommentSeq() {
@@ -112,11 +113,14 @@ public class CommentVO {
         isParentComment = parentComment;
     }
 
-    public boolean isWrite() {
-        return isWrite;
+    public String getWriter() {
+        return writer;
     }
 
-    public void setWrite(boolean write) {
-        isWrite = write;
+    public void setWriter(boolean isWriter) {
+        if (isWriter) {
+            this.writer = "1";
+            this.isWrite = true;
+        }
     }
 }
