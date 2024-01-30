@@ -5,6 +5,9 @@ public class PostVO {
     private int postSeq;
     private String title;
     private String content;
+    private String views;
+    private String likes;
+    private boolean isLikeUser = false;
     private String writeId;
     private String writeDt;
     private String chgId;
@@ -34,6 +37,30 @@ public class PostVO {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getViews() {
+        return views;
+    }
+
+    public void setViews(String views) {
+        this.views = views;
+    }
+
+    public String getLikes() {
+        return likes;
+    }
+
+    public void setLikes(String likes) {
+        this.likes = likes;
+    }
+
+    public boolean isLikeUser() {
+        return isLikeUser;
+    }
+
+    public void setLikeUser(boolean likeUser) {
+        isLikeUser = likeUser;
     }
 
     public String getWriteId() {

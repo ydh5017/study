@@ -40,6 +40,7 @@ public class JwtTokenProvider {
     // JWT 토큰 생성
     public String createToken(UserVO userVO) {
         Claims claims = Jwts.claims().setSubject(userVO.getUserSeq());
+        claims.put("userSeq", userVO.getUserSeq());
         claims.put("role", userVO.getRole());
         claims.put("userId", userVO.getUserId());
         Date now = new Date();

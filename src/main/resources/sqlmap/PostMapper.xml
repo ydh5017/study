@@ -26,6 +26,8 @@
             POSTSEQ,
             TITLE,
             CONTENT,
+            VIEWS,
+            LIKES,
             WRITEID,
             WRITEDT,
             CHGID,
@@ -42,6 +44,8 @@
             POSTSEQ,
             TITLE,
             CONTENT,
+            VIEWS,
+            LIKES,
             WRITEID,
             WRITEDT,
             CHGID,
@@ -59,6 +63,8 @@
             POSTSEQ,
             TITLE,
             CONTENT,
+            VIEWS,
+            LIKES,
             WRITEID,
             WRITEDT,
             CHGID,
@@ -80,6 +86,15 @@
         WHERE ${type} LIKE '%${keyword}%'
           AND ISDELETED = 0
     </select>
+    <!-- 조회수 증가 -->
+    <update id="viewIncrease" parameterType="map">
+        UPDATE
+            POST
+        SET
+            VIEWS = VIEWS + 1
+        WHERE
+            POSTSEQ = #{postSeq}
+    </update>
     <!-- 게시글 삭제 -->
     <update id="postDelete" parameterType="map">
         UPDATE
@@ -98,6 +113,24 @@
             CONTENT = #{content},
             CHGID =#{chgId},
             CHGDT = SYSDATE()
+        WHERE
+            POSTSEQ = #{postSeq}
+    </update>
+    <!-- 좋아요 증가 -->
+    <update id="likeInc" parameterType="map">
+        UPDATE
+            POST
+        SET
+            LIKES = LIKES + 1
+        WHERE
+            POSTSEQ = #{postSeq}
+    </update>
+    <!-- 좋아요 감소 -->
+    <update id="likeDec" parameterType="map">
+        UPDATE
+            POST
+        SET
+            LIKES = LIKES - 1
         WHERE
             POSTSEQ = #{postSeq}
     </update>

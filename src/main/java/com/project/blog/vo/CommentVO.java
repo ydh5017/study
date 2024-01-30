@@ -7,6 +7,8 @@ public class CommentVO {
     private String content;
     private int commentDepth = 0;
     private int commentGroup;
+    private int replyCount;
+    private boolean isCount = false;
     private String commentWriteId;
     private String commentWriteDt;
     private String commentChgId;
@@ -55,6 +57,25 @@ public class CommentVO {
 
     public void setCommentGroup(int commentGroup) {
         this.commentGroup = commentGroup;
+    }
+
+    public int getReplyCount() {
+        return replyCount;
+    }
+
+    public void setReplyCount(int replyCount) {
+        if (replyCount != 0) {
+            this.isCount = true;
+        }
+        this.replyCount = replyCount;
+    }
+
+    public boolean isCount() {
+        return isCount;
+    }
+
+    public void setCount(boolean count) {
+            isCount = count;
     }
 
     public String getCommentWriteId() {

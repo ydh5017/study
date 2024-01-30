@@ -12,6 +12,10 @@ public interface CommentMapper {
 
     int replyCommentAddProc(CommentVO commentVO) throws Exception;
 
+    void replyCount(int commentSeq) throws Exception;
+
+    int replyCountTotal(int commentSeq) throws Exception;
+
     List<CommentVO> getCommentList(int postSeq) throws Exception;
 
     List<CommentVO> getReplyList(int commentSeq) throws Exception;
@@ -19,4 +23,6 @@ public interface CommentMapper {
      int commentModProc(CommentVO commentVO) throws Exception;
 
      int commentDelete(int commentSeq) throws Exception;
+
+     void countDelete(int commentSeq) throws Exception;
 }

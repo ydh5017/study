@@ -22,4 +22,8 @@ public interface IPostService {
     HashMap<String, String> postDelete(int postSeq) throws Exception;
 
     HashMap<String, String> postModProc(PostVO postVO) throws Exception;
+
+    void  postLikeInc(int postSeq) throws Exception;
+
+    void  postLikeDec(int postSeq) throws Exception;
 }

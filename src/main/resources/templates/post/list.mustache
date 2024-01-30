@@ -34,31 +34,34 @@
             <colgroup>
                 <col width="6%"/>
                 <col width="15%"/>
+                <col width="5%"/>
                 <col width="8%"/>
                 <col width="15%"/>
             </colgroup>
             <thead>
-            <tr>
-                <th scope="col">글번호</th>
-                <th scope="col">제목</th>
-                <th scope="col">작성자</th>
-                <th scope="col">작성일</th>
-            </tr>
+                <tr>
+                    <th scope="col">글번호</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">조회수</th>
+                    <th scope="col">작성자</th>
+                    <th scope="col">작성일</th>
+                </tr>
             </thead>
             {{#postList}}
             <tbody>
-            <tr>
+                <tr>
                     <td id="postSeq" name="postSeq">{{postSeq}}</td>
                     <td onclick="location.href='post/detail?no={{postSeq}}'">{{title}}</td>
+                    <td>{{views}}</td>
                     <td>{{writeId}}</td>
                     <td>{{writeDt}}</td>
-            </tr>
-            {{/postList}}
-            {{^postList}}
-            <tr>
+                </tr>
+                {{/postList}}
+                {{^postList}}
+                <tr>
                 <td colspan="4">조회된 결과가 없습니다.</td>
-            </tr>
-            {{/postList}}
+                </tr>
+                {{/postList}}
             </tbody>
         </table>
         {{#userVO}}

@@ -116,9 +116,12 @@ public class PostController {
             }
         }
 
+        log.info("like : " + postVO.isLikeUser());
+
         model.addAttribute("userVO", userVO);
         model.addAttribute("postVO", postVO);
         model.addAttribute("write", postVO.isWriter());
+        model.addAttribute("likeUser", postVO.isLikeUser());
         model.addAttribute("commentList", commentList);
 
         return "/post/postDetail";

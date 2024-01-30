@@ -36,6 +36,7 @@ public class CommentService implements ICommentService {
             if (commentVO.getCommentSeq() != 0){
                 commentVO.setCommentGroup(commentVO.getCommentSeq());
                 result = commentMapper.replyCommentAddProc(commentVO);
+                commentMapper.replyCount(commentVO.getCommentSeq());
             }else {
                 result = commentMapper.commentAddProc(commentVO);
             }
@@ -110,15 +111,23 @@ public class CommentService implements ICommentService {
     @Override
     public HashMap<String, String> commentDelete(int commentSeq, int postSeq) throws Exception {
         HashMap<String, String> map = new HashMap<>();
-        int result = commentMapper.commentDelete(commentSeq);
         String msg, url;
+        int result = commentMapper.replyCountTotal(commentSeq);
+        log.info("result : "+result);
 
-        if (result==1) {
-            msg = " 삭제되었습니다.";
+        if (result > 0) {
+            msg = "답글이 존재하여 삭제할 수 없습니다.";
             url = "/post/detail?no%3D" + postSeq;
         } else {
-            msg = "삭제 실패";
-            url = "/post/detail?no%3D" + postSeq;
+            result = commentMapper.commentDelete(commentSeq);
+            commentMapper.countDelete(commentSeq);
+            if (result == 1) {
+                msg = " 삭제되었습니다.";
+                url = "/post/detail?no%3D" + postSeq;
+            } else {
+                msg = "삭제 실패";
+                url = "/post/detail?no%3D" + postSeq;
+            }
         }
         map.put("msg", msg);
         map.put("url", url);

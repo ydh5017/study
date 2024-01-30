@@ -1,9 +1,11 @@
 package com.project.blog.service.Impl;
 
+import com.project.blog.mapper.LikeMapper;
 import com.project.blog.mapper.PostMapper;
 import com.project.blog.service.IPostService;
 import com.project.blog.service.IUserService;
 import com.project.blog.vo.PostVO;
+import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class PostService implements IPostService {
     @Resource
     private final PostMapper postMapper;
     private final IUserService userService;
+    private final LikeMapper likeMapper;
 
     @Override
     public List<PostVO> getPostList(HashMap<String, Integer> Map) throws Exception {
@@ -73,8 +76,16 @@ public class PostService implements IPostService {
     @Override
     public PostVO postDetail(int postSeq) throws Exception {
         PostVO postVO = postMapper.postDetail(postSeq);
+        UserVO userVO = userService.userInfo();
 
-        if (postVO.getWriteId().equals(userService.userInfo().getUserId())) {
+        postMapper.viewIncrease(postSeq);
+
+        if (userVO.getUserSeq() != null) {
+            postVO.setLikeUser(likeMapper.postLikeCheck(Integer.parseInt(userVO.getUserSeq()), postSeq));
+        }
+
+
+        if (postVO.getWriteId().equals(userVO.getUserId())) {
             postVO.setWriter();
         }
 
@@ -126,5 +137,19 @@ public class PostService implements IPostService {
         Map.put("url", url);
 
         return Map;
+    }
+
+    @Override
+    public void postLikeInc(int postSeq) throws Exception {
+        int userSeq = Integer.parseInt(userService.userInfo().getUserSeq());
+        postMapper.likeInc(postSeq);
+        likeMapper.postLikeInc(userSeq, postSeq);
+    }
+
+    @Override
+    public void postLikeDec(int postSeq) throws Exception {
+        int userSeq = Integer.parseInt(userService.userInfo().getUserSeq());
+        postMapper.likeDec(postSeq);
+        likeMapper.postLikeDec(userSeq, postSeq);
     }
 }

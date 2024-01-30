@@ -17,6 +17,8 @@ public interface PostMapper {
 
     int searchCount(String type, String keyword) throws Exception;
 
+    void viewIncrease(int postSeq) throws Exception;
+
     int postAddProc(PostVO postVO) throws Exception;
 
     PostVO postDetail(int postSeq) throws Exception;
@@ -24,4 +26,8 @@ public interface PostMapper {
     int postDelete(int postSeq) throws Exception;
 
     int postModProc(PostVO postVO) throws Exception;
+
+    void likeInc(int postSeq) throws Exception;
+
+    void likeDec(int postSeq) throws Exception;
 }

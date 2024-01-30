@@ -8,18 +8,44 @@
     </div>
     <div class="container">
             <table class="board_detail">
-                <tr>
+                <tr class="border-bottom">
                     <td>제목 : </td>
                     <td>{{postVO.title}}</td>
                     <td>작성자 : {{postVO.writeId}}</td>
+                    <td>작성자 : {{postVO.views}}</td>
                 </tr>
                 <tr>
-                    <td>내용 : </td>
+                    <td class="border-bottom">내용 : </td>
                     <td colspan="2">
                         {{{postVO.content}}}
                     </td>
                 </tr>
             </table>
+
+        <!-- 좋아요 -->
+        <div class="col mr-2">
+
+            <!-- 수정 필요 -->
+            <span class="mr-1" id="">
+                {{#postVO}}
+                {{#isLikeUser}}
+                    <a href="#" class="btn btn-info btn-circle" id="postLikeOffBtn"
+                       onclick="return postLike({{postSeq}})">
+                                <i class="fas fa-thumbs-up"></i>
+                    </a>
+                {{/isLikeUser}}
+                {{^isLikeUser}}
+                    <a href="#" class="btn btn-block btn-circle" id="postLikeOnBtn"
+                           style="border-color: #858796" onclick="return postLike({{postSeq}})">
+                                <i class="fas fa-regular fa-thumbs-up"></i>
+                    </a>
+                {{/isLikeUser}}
+                {{/postVO}}
+                <span class="text-xs" id="likeCount">22</span>
+            </span>
+            <span class="mr-1">좋아요</span>
+        </div>
+
         {{#write}}
             <form id="frm" name="frm" method="get" action="/post/modify">
                 <input type="hidden" name="no" value="{{postVO.postSeq}}">
@@ -94,15 +120,16 @@
                         </span>
                         <span class="mr-1" id="reply-{{commentSeq}}" onclick="return reply({{commentSeq}})">답글</span>
                     </div>
-                    <!-- 답글 없으면 안 보이게 -->
+                    {{#count}}
                     <div class="col mr-2">
                         <span class="mr-1 text-primary" id="onReplyComment-{{commentSeq}}" onclick="return onReplyComment({{commentSeq}})">
-                            <i class="fas fa-solid fa-caret-down mr-1"></i>답글 보기
+                            <i class="fas fa-solid fa-caret-down mr-1"></i>답글 보기({{replyCount}})
                         </span>
                         <span class="mr-1 text-primary" id="offReplyComment-{{commentSeq}}" onclick="return offReplyComment({{commentSeq}})" style="display: none">
-                            <i class="fas fa-solid fa-caret-up mr-1"></i>답글 닫기
+                            <i class="fas fa-solid fa-caret-up mr-1"></i>답글 닫기({{replyCount}})
                         </span>
                     </div>
+                    {{/count}}
 
                 </div>
 
@@ -147,172 +174,48 @@
         {{/commentList}}
     </div>
 </div>
+<script src="/js/comment.js"></script>
 <script type="text/javascript">
-    //대댓글 출력하기
-    function onReplyComment(commentSeq){
-        const replyDiv = document.getElementById('replyDiv-'+commentSeq);
-        const onReplyComment = document.getElementById('onReplyComment-'+commentSeq);
-        const offReplyComment = document.getElementById('offReplyComment-'+commentSeq);
+    // 수정 필요 on/off 따로 작성
+    function postLike(postSeq){
+        const postLikeOnBtn = document.getElementById('postLikeOnBtn');
+        const postLikeOffBtn = document.getElementById('postLikeOffBtn');
+        const likeCount = document.getElementById('likeCount');
 
-        replyDiv.style.display = ""
-        onReplyComment.style.display = "none"
-        offReplyComment.style.display = ""
+        if (postLikeOffBtn.style.display == "none"){
+            postLikeOffBtn.style.display = ""
+            postLikeOnBtn.style.display = "none"
+            likeCount.innerText = Number(likeCount.innerText) + 1;
 
-        $.ajax({
-            url:"/api/replyList",
-            type:"get",
-            dataType: 'json',
-            data:{"commentSeq":commentSeq},
-            success:function(ReplyCommentList){
-                const html = document.createElement("div");
-                html.id = "replyList-" + commentSeq;
+            $.ajax({
+                url:"/api/postLikeInc",
+                type:"post",
+                data:{"postSeq":postSeq},
+                success:function(){
 
-                if (ReplyCommentList.length > 0) {
-                    for(let i = 0; i < ReplyCommentList.length; i++) {
-                        if (ReplyCommentList[i].writer > 0) {
-                            html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
-                                    '<div class="card border-left h-10 py-2" id="childComment-' + ReplyCommentList[i].commentSeq + '">' +
-                                    '<div class="card-body">' +
-                                    '<div class="row no-gutters align-items-center">' +
-                                    '<div class="col mr-2">' +
-                                    '<div class="border-bottom mb-1">' +
-                                    '<div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">'+
-                                    ReplyCommentList[i].commentWriteId +
-                                    '</div>' +
-                                    '<div class="text-xs text-right font-weight-bold text-uppercase mb-1">'+
-                                    ReplyCommentList[i].commentWriteDt +
-                                    '</div></div>' +
-                                    '<div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">'+
-                                    ReplyCommentList[i].content +
-                                    '</div>' +
-                                    '<div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">' +
-                                    '<nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">' +
-                                    '<div class="navbar text-xs text-right font-weight-bold text-uppercase mb-0" data-toggle="dropdown">' +
-                                    '<i class="fas fa-solid fa-ellipsis-h -align-center mt-2"></i>' +
-                                    '</div>' +
-                                    '<div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="navbarDropdown">' +
-                                    '<a class="dropdown-item" onclick="return modifyReply(' + ReplyCommentList[i].postSeq + ', ' + ReplyCommentList[i].commentSeq + ', ' + "'" + ReplyCommentList[i].content +"'" + ')">수정</a>' +
-                                    '<form class="mr-1" method="post" action="/comment">' +
-                                    '<input type="hidden" name="_method" value="patch">' +
-                                    '<input type="hidden" name="commentSeq" value="' + ReplyCommentList[i].commentSeq + '">' +
-                                    '<input type="hidden" name="postSeq" value="' + ReplyCommentList[i].postSeq + '">' +
-                                    '<button class="dropdown-item" type="submit">삭제</button>' +
-                                    '</form></div></nav></div></div></div></div></div>' +
-                                    '<div class="col-xl-3" id="ReplyModDiv-' + ReplyCommentList[i].commentSeq + '" style="display: none"></div>' +
-                                    '</div>';
-                        }else {
-
-                            html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
-                                    '<div class="card border-left h-10 py-2">' +
-                                    '<div class="card-body">' +
-                                    '<div class="row no-gutters align-items-center">' +
-                                    '<div class="col mr-2">' +
-                                    '<div class="border-bottom mb-1">' +
-                                    '<div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">'+
-                                    ReplyCommentList[i].commentWriteId +
-                                    '</div>' +
-                                    '<div class="text-xs text-right font-weight-bold text-uppercase mb-1">'+
-                                    ReplyCommentList[i].commentWriteDt +
-                                    '</div></div>' +
-                                    '<div class="h5 mb-0 font-weight-bold text-gray-800 mt-2">'+
-                                    ReplyCommentList[i].content +
-                                    '</div></div></div></div></div></div>';
-                        }
-
-                        console.log(ReplyCommentList[i].writer);
-                    }
-                }else {
-                    html.innerHTML ='<div class="col-xl-4"  style="padding-left: 3rem">' +
-                    '<div class="card border-left h-10 py-2">' +
-                    '<div class="card-body">' +
-                    '<div class="row no-gutters align-items-center">' +
-                    '<div class="col mr-2">' +
-                    '<div class="h5 mb-0 font-weight-bold text-gray-800">등록된 답글이 없습니다.</div>' +
-                    '</div></div></div></div></div>';
+                },
+                error: function (request, status, error) {
+                    alert("code: " + request.status + "\n" + "error: " + error);
                 }
-                replyDiv.append(html);
-            },
-            error: function (request, status, error) {
-                alert("code: " + request.status + "\n" + "error: " + error);
-            }
-        })
-    };
-    function offReplyComment(commentSeq){
-        const replyDiv = document.getElementById('replyList-'+commentSeq);
-        const onReplyComment = document.getElementById('onReplyComment-'+commentSeq);
-        const offReplyComment = document.getElementById('offReplyComment-'+commentSeq);
+            })
+        } else {
+            postLikeOffBtn.style.display = "none"
+            postLikeOnBtn.style.display = ""
+            likeCount.innerText = Number(likeCount.innerText) - 1;
 
-        replyDiv.remove();
-        onReplyComment.style.display = ""
-        offReplyComment.style.display = "none"
-    };
-    function reply(i){
-        const replyCommentPost = document.getElementById('replyCommentPost-'+i);
-        if(replyCommentPost.style.display == "none"){
-            replyCommentPost.style.display = ""
-        }else if (replyCommentPost.style.display != "none"){
-            replyCommentPost.style.display = "none"
+            $.ajax({
+                url:"/api/postLikeDec",
+                type:"delete",
+                data:{"postSeq":postSeq},
+                success:function(){
+
+                },
+                error: function (request, status, error) {
+                    alert("code: " + request.status + "\n" + "error: " + error);
+                }
+            })
         }
-    };
-    function modifyComment(commentSeq, postSeq, content){
-        const parentComment = document.getElementById('parentComment-'+commentSeq);
-        const modifyDiv = document.getElementById('modifyDiv-'+commentSeq);
 
-        parentComment.style.display = "none"
-        modifyDiv.style.display = ""
-
-        const html = document.createElement("div");
-        html.id = "parentCommentMod-" + commentSeq;
-        html.innerHTML+= '<div class="card border-left h-10 py-2">' +
-                '<div class="card-body">' +
-                '<div class="row no-gutters align-items-center">' +
-                '<div class="col mr-2">' +
-                '<div class="h5 mb-0 font-weight-bold text-gray-800">' +
-                '<form method="post" action="/comment">' +
-                '<input type="hidden" name="_method" value="put">' +
-                '<input type="hidden" name="commentDepth" value=0>' +
-                '<input type="hidden" name="postSeq" value="' + postSeq + '">' +
-                '<input type="hidden" name="commentSeq" value="' + commentSeq + '">' +
-                '<input type="text" id="content" name="content" value="' + content + '">' +
-                '<input type="submit" id="submit" value="수정" class="btn">' +
-                '<a onclick="return modifyCommenCancel('+ commentSeq +')">취소</a>' +
-                '</form>' +
-                '</div></div></div></div></div>';
-        modifyDiv.append(html);
-    };
-    function modifyCommenCancel(commentSeq){
-        const parentComment = document.getElementById('parentComment-'+commentSeq);
-        const parentCommentMod = document.getElementById('parentCommentMod-'+commentSeq);
-
-        parentCommentMod.remove();
-        parentComment.style.display = ""
-    };
-
-    function modifyReply(postSeq, commentSeq, content){
-        const childComment = document.getElementById('childComment-'+commentSeq);
-        const ReplyModDiv = document.getElementById('ReplyModDiv-'+commentSeq);
-
-        childComment.style.display = "none"
-        ReplyModDiv.style.display = ""
-
-        const html = document.createElement("div");
-        html.id = "childCommentMod-" + commentSeq;
-        html.innerHTML+= '<div class="card border-left h-10 py-2">' +
-                '<div class="card-body">' +
-                '<div class="row no-gutters align-items-center">' +
-                '<div class="col mr-2">' +
-                '<div class="h5 mb-0 font-weight-bold text-gray-800">' +
-                '<form method="post" action="/comment">' +
-                '<input type="hidden" name="_method" value="put">' +
-                '<input type="hidden" name="commentDepth" value=0>' +
-                '<input type="hidden" name="postSeq" value="' + postSeq + '">' +
-                '<input type="hidden" name="commentSeq" value="' + commentSeq + '">' +
-                '<input type="text" id="content" name="content" value="' + content + '">' +
-                '<input type="submit" id="submit" value="수정" class="btn">' +
-                '<input value="취소" class="btn">' +
-                '</form>' +
-                '</div></div></div></div></div>';
-        ReplyModDiv.append(html);
     };
 </script>
 <!-- /.container-fluid -->
