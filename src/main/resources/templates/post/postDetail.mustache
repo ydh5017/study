@@ -22,10 +22,8 @@
                 </tr>
             </table>
 
-        <!-- 좋아요 -->
+        <!-- 게시글 좋아요 -->
         <div class="col mr-2">
-
-            <!-- 수정 필요 -->
             <span class="mr-1" id="">
                 {{#postVO}}
                 {{#isLikeUser}}
@@ -33,19 +31,27 @@
                        onclick="return postLike({{postSeq}})">
                                 <i class="fas fa-thumbs-up"></i>
                     </a>
+                    <a href="#" class="btn btn-block btn-circle" id="postLikeOnBtn"
+                   style="border-color: #858796; display: none" onclick="return postLike({{postSeq}})">
+                                <i class="fas fa-regular fa-thumbs-up"></i>
+                    </a>
                 {{/isLikeUser}}
                 {{^isLikeUser}}
+                    <a href="#" class="btn btn-info btn-circle" id="postLikeOffBtn"
+                       style="display: none" onclick="return postLike({{postSeq}})">
+                                <i class="fas fa-thumbs-up"></i>
+                    </a>
                     <a href="#" class="btn btn-block btn-circle" id="postLikeOnBtn"
                            style="border-color: #858796" onclick="return postLike({{postSeq}})">
                                 <i class="fas fa-regular fa-thumbs-up"></i>
                     </a>
                 {{/isLikeUser}}
+                <span class="text-xs" id="postLikeCount">{{likes}}</span>
                 {{/postVO}}
-                <span class="text-xs" id="likeCount">22</span>
             </span>
             <span class="mr-1">좋아요</span>
         </div>
-
+        <!-- 수정, 삭제 버튼 -->
         {{#write}}
             <form id="frm" name="frm" method="get" action="/post/modify">
                 <input type="hidden" name="no" value="{{postVO.postSeq}}">
@@ -57,7 +63,9 @@
                 <input type="submit" id="submit" value="삭제" class="btn">
             </form>
         {{/write}}
+        <!-- 이전 페이지 이동 버튼 -->
         <input type="button" onclick="history.back()" value="이전" class="btn">
+        <!-- 댓글 입력 창 -->
         <form method="post" action="/comment">
             <table class="board_detail">
                 <tr>
@@ -70,9 +78,10 @@
             </table>
             <input type="submit" id="submit" value="저장" class="btn">
         </form>
-
+        <!-- 댓글 리스트 -->
         {{#commentList}}
             <div class="col-xl-3">
+                <!-- 댓글 컨텐츠 -->
                 <div class="card border-left h-10 py-2" id="parentComment-{{commentSeq}}">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -89,6 +98,7 @@
                                     <input type="hidden" id="commentContent-{{commentSeq}}" value="{{content}}">
                                     {{content}}
                                 </div>
+                                <!-- 댓글 수정,삭제 -->
                                 {{#isWrite}}
                                 <div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">
                                 <nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">
@@ -112,14 +122,21 @@
                             </div>
                         </div>
                     </div>
+                    <!-- 댓글 좋아요 -->
                     <div class="col mr-2">
-                        <!-- 좋아요 -->
-                        <span class="mr-1">
-                            <i class="fas fa-thumbs-up -align-center mt-2"></i>
-                            <span class="text-xs">999</span>
-                        </span>
+                        <a href="#" class="btn btn-block btn-circle btn-sm" id="commentLikeOnBtn"
+                           style="border-color: #858796; display: none" onclick="return commentLike({{commentSeq}})">
+                            <i class="fas fa-thumbs-up"></i>
+                        </a>
+                        <a href="#" class="btn btn-info btn-circle btn-sm" id="commentLikeOffBtn"
+                           onclick="return commentLike({{commentSeq}})">
+                            <i class="fas fa-thumbs-up"></i>
+                        </a>
+                        <span class="text-xs" id="commentLikeCount">{{likes}}</span>
+                        <!-- 답글(대댓글) 입력 창 활성화 버튼 -->
                         <span class="mr-1" id="reply-{{commentSeq}}" onclick="return reply({{commentSeq}})">답글</span>
                     </div>
+                    <!-- 대댓글 리스트 보기 버튼 -->
                     {{#count}}
                     <div class="col mr-2">
                         <span class="mr-1 text-primary" id="onReplyComment-{{commentSeq}}" onclick="return onReplyComment({{commentSeq}})">
@@ -130,32 +147,26 @@
                         </span>
                     </div>
                     {{/count}}
-
                 </div>
-
-
+                <!-- 댓글 수정 창 -->
                 <div class="col-xl-3" id="modifyDiv-{{commentSeq}}" style="display: none"></div>
-
-
-                <div class="card border-left h-10 py-2" id="parentCommentMod-{{commentSeq}}" style="display: none">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <form method="post" action="/">
-                                        <input type="hidden" name="_method" value="put">
-                                        <input type="text" id="content" name="content" value="{{content}}">
-                                        <input type="submit" id="submit" value="저장" class="btn">
-                                    </form>
+                    <div class="card border-left h-10 py-2" id="parentCommentMod-{{commentSeq}}" style="display: none">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        <form method="post" action="/">
+                                            <input type="hidden" name="_method" value="put">
+                                            <input type="text" id="content" name="content" value="{{content}}">
+                                            <input type="submit" id="submit" value="저장" class="btn">
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-
-            </div>
+                <!-- 답글(대댓글) 입력 창 -->
                 <div class="col-xl-3"  id="replyCommentPost-{{commentSeq}}" style="display: none">
                     <form method="post" action="/comment">
                         <table class="board_detail">
@@ -170,50 +181,64 @@
                         <input type="submit" id="submit" value="저장" class="btn">
                     </form>
                 </div>
+            <!-- 대댓글 리스트 div -->
             <div id="replyDiv-{{commentSeq}}" style="display: none"></div>
         {{/commentList}}
     </div>
 </div>
 <script src="/js/comment.js"></script>
 <script type="text/javascript">
-    // 수정 필요 on/off 따로 작성
+    // 게시글 좋아요 on/off
     function postLike(postSeq){
         const postLikeOnBtn = document.getElementById('postLikeOnBtn');
         const postLikeOffBtn = document.getElementById('postLikeOffBtn');
-        const likeCount = document.getElementById('likeCount');
+        const likeCount = document.getElementById('postLikeCount');
 
         if (postLikeOffBtn.style.display == "none"){
-            postLikeOffBtn.style.display = ""
-            postLikeOnBtn.style.display = "none"
-            likeCount.innerText = Number(likeCount.innerText) + 1;
-
             $.ajax({
                 url:"/api/postLikeInc",
                 type:"post",
                 data:{"postSeq":postSeq},
                 success:function(){
-
+                    postLikeOffBtn.style.display = ""
+                    postLikeOnBtn.style.display = "none"
+                    likeCount.innerText = Number(likeCount.innerText) + 1;
                 },
                 error: function (request, status, error) {
-                    alert("code: " + request.status + "\n" + "error: " + error);
+                    alert("로그인 후 이용해주세요.");
                 }
             })
         } else {
-            postLikeOffBtn.style.display = "none"
-            postLikeOnBtn.style.display = ""
-            likeCount.innerText = Number(likeCount.innerText) - 1;
-
             $.ajax({
                 url:"/api/postLikeDec",
                 type:"delete",
                 data:{"postSeq":postSeq},
                 success:function(){
-
+                    postLikeOffBtn.style.display = "none"
+                    postLikeOnBtn.style.display = ""
+                    likeCount.innerText = Number(likeCount.innerText) - 1;
                 },
                 error: function (request, status, error) {
-                    alert("code: " + request.status + "\n" + "error: " + error);
+                    alert("로그인 후 이용해주세요.");
                 }
             })
+        }
+
+    };
+    // 댓글 좋아요 on/off
+    function commentLike(commentSeq){
+        const commentLikeOnBtn = document.getElementById('commentLikeOnBtn');
+        const commentLikeOffBtn = document.getElementById('commentLikeOffBtn');
+        const likeCount = document.getElementById('commentLikeCount');
+
+        if (commentLikeOffBtn.style.display == "none"){
+            commentLikeOffBtn.style.display = ""
+            commentLikeOnBtn.style.display = "none"
+            likeCount.innerText = Number(likeCount.innerText) + 1;
+        } else {
+            commentLikeOffBtn.style.display = "none"
+            commentLikeOnBtn.style.display = ""
+            likeCount.innerText = Number(likeCount.innerText) - 1;
         }
 
     };

@@ -5,6 +5,7 @@ public class CommentVO {
     private int commentSeq;
     private int postSeq;
     private String content;
+    private int likes;
     private int commentDepth = 0;
     private int commentGroup;
     private int replyCount;
@@ -41,6 +42,14 @@ public class CommentVO {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public int getCommentDepth() {
