@@ -27,11 +27,11 @@
             <span class="mr-1" id="">
                 {{#postVO}}
                 {{#isLikeUser}}
-                    <a href="#" class="btn btn-info btn-circle" id="postLikeOffBtn"
+                    <a class="btn btn-info btn-circle" id="postLikeOffBtn"
                        onclick="return postLike({{postSeq}})">
                                 <i class="fas fa-thumbs-up"></i>
                     </a>
-                    <a href="#" class="btn btn-block btn-circle" id="postLikeOnBtn"
+                    <a class="btn btn-block btn-circle" id="postLikeOnBtn"
                    style="border-color: #858796; display: none" onclick="return postLike({{postSeq}})">
                                 <i class="fas fa-regular fa-thumbs-up"></i>
                     </a>
@@ -124,15 +124,27 @@
                     </div>
                     <!-- 댓글 좋아요 -->
                     <div class="col mr-2">
-                        <a href="#" class="btn btn-block btn-circle btn-sm" id="commentLikeOnBtn"
-                           style="border-color: #858796; display: none" onclick="return commentLike({{commentSeq}})">
-                            <i class="fas fa-thumbs-up"></i>
-                        </a>
-                        <a href="#" class="btn btn-info btn-circle btn-sm" id="commentLikeOffBtn"
+                        {{#isLikeUser}}
+                        <a class="btn btn-info btn-circle btn-sm" id="commentLikeOffBtn-{{commentSeq}}"
                            onclick="return commentLike({{commentSeq}})">
                             <i class="fas fa-thumbs-up"></i>
                         </a>
-                        <span class="text-xs" id="commentLikeCount">{{likes}}</span>
+                        <a class="btn btn-block btn-circle btn-sm" id="commentLikeOnBtn-{{commentSeq}}"
+                           style="border-color: #858796; display: none" onclick="return commentLike({{commentSeq}})">
+                            <i class="fas fa-thumbs-up"></i>
+                        </a>
+                        {{/isLikeUser}}
+                        {{^isLikeUser}}
+                        <a class="btn btn-info btn-circle btn-sm" id="commentLikeOffBtn-{{commentSeq}}"
+                           style="display: none" onclick="return commentLike({{commentSeq}})">
+                            <i class="fas fa-thumbs-up"></i>
+                        </a>
+                        <a class="btn btn-block btn-circle btn-sm" id="commentLikeOnBtn-{{commentSeq}}"
+                           style="border-color: #858796;" onclick="return commentLike({{commentSeq}})">
+                            <i class="fas fa-thumbs-up"></i>
+                        </a>
+                        {{/isLikeUser}}
+                        <span class="text-xs" id="commentLikeCount-{{commentSeq}}">{{likes}}</span>
                         <!-- 답글(대댓글) 입력 창 활성화 버튼 -->
                         <span class="mr-1" id="reply-{{commentSeq}}" onclick="return reply({{commentSeq}})">답글</span>
                     </div>
@@ -187,61 +199,6 @@
     </div>
 </div>
 <script src="/js/comment.js"></script>
-<script type="text/javascript">
-    // 게시글 좋아요 on/off
-    function postLike(postSeq){
-        const postLikeOnBtn = document.getElementById('postLikeOnBtn');
-        const postLikeOffBtn = document.getElementById('postLikeOffBtn');
-        const likeCount = document.getElementById('postLikeCount');
-
-        if (postLikeOffBtn.style.display == "none"){
-            $.ajax({
-                url:"/api/postLikeInc",
-                type:"post",
-                data:{"postSeq":postSeq},
-                success:function(){
-                    postLikeOffBtn.style.display = ""
-                    postLikeOnBtn.style.display = "none"
-                    likeCount.innerText = Number(likeCount.innerText) + 1;
-                },
-                error: function (request, status, error) {
-                    alert("로그인 후 이용해주세요.");
-                }
-            })
-        } else {
-            $.ajax({
-                url:"/api/postLikeDec",
-                type:"delete",
-                data:{"postSeq":postSeq},
-                success:function(){
-                    postLikeOffBtn.style.display = "none"
-                    postLikeOnBtn.style.display = ""
-                    likeCount.innerText = Number(likeCount.innerText) - 1;
-                },
-                error: function (request, status, error) {
-                    alert("로그인 후 이용해주세요.");
-                }
-            })
-        }
-
-    };
-    // 댓글 좋아요 on/off
-    function commentLike(commentSeq){
-        const commentLikeOnBtn = document.getElementById('commentLikeOnBtn');
-        const commentLikeOffBtn = document.getElementById('commentLikeOffBtn');
-        const likeCount = document.getElementById('commentLikeCount');
-
-        if (commentLikeOffBtn.style.display == "none"){
-            commentLikeOffBtn.style.display = ""
-            commentLikeOnBtn.style.display = "none"
-            likeCount.innerText = Number(likeCount.innerText) + 1;
-        } else {
-            commentLikeOffBtn.style.display = "none"
-            commentLikeOnBtn.style.display = ""
-            likeCount.innerText = Number(likeCount.innerText) - 1;
-        }
-
-    };
-</script>
+<script src="/js/like.js"></script>
 <!-- /.container-fluid -->
 {{>layout/footer}}

@@ -19,18 +19,33 @@ public class ApiController {
     private final ICommentService commentService;
     private final IPostService postService;
 
+    // 대댓글 리스트 get
     @GetMapping(value = "replyList")
     public List<CommentVO> getReplyList(@RequestParam int commentSeq) throws Exception {
         return commentService.getReplyList(commentSeq);
     }
 
+    // 게시글 좋아요 up
     @PostMapping(value = "postLikeInc")
     public void postLikeInc(@RequestParam int postSeq) throws Exception {
         postService.postLikeInc(postSeq);
     }
 
+    // 게시글 좋아요 down
     @DeleteMapping(value = "postLikeDec")
     public void postLikeDec(@RequestParam int postSeq) throws Exception {
         postService.postLikeDec(postSeq);
+    }
+
+    // 댓글 좋아요 up
+    @PostMapping(value = "commentLikeInc")
+    public void commentLikeInc(@RequestParam int commentSeq) throws Exception {
+        commentService.commentLikeInc(commentSeq);
+    }
+
+    // 댓글 좋아요 down
+    @DeleteMapping(value = "commentLikeDec")
+    public void commentLikeDec(@RequestParam int commentSeq) throws Exception {
+        commentService.commentLikeDec(commentSeq);
     }
 }

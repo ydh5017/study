@@ -25,4 +25,8 @@ public interface CommentMapper {
      int commentDelete(int commentSeq) throws Exception;
 
      void countDelete(int commentSeq) throws Exception;
+
+    void likeInc(int commentSeq) throws Exception;
+
+    void likeDec(int commentSeq) throws Exception;
 }

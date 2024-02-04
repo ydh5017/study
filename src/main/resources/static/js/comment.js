@@ -20,56 +20,172 @@ function onReplyComment(commentSeq){
             if (ReplyCommentList.length > 0) {
                 for(let i = 0; i < ReplyCommentList.length; i++) {
                     if (ReplyCommentList[i].writer > 0) {
-                        html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
-                            '<div class="card border-left h-10 py-2" id="childComment-' + ReplyCommentList[i].commentSeq + '">' +
-                            '<div class="card-body">' +
-                            '<div class="row no-gutters align-items-center">' +
-                            '<div class="col mr-2">' +
-                            '<div class="border-bottom mb-1">' +
-                            '<div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">'+
-                            ReplyCommentList[i].commentWriteId +
-                            '</div>' +
-                            '<div class="text-xs text-right font-weight-bold text-uppercase mb-1">'+
-                            ReplyCommentList[i].commentWriteDt +
-                            '</div></div>' +
-                            '<div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">'+
-                            ReplyCommentList[i].content +
-                            '</div>' +
-                            '<div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">' +
-                            '<nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">' +
-                            '<div class="navbar text-xs text-right font-weight-bold text-uppercase mb-0" data-toggle="dropdown">' +
-                            '<i class="fas fa-solid fa-ellipsis-h -align-center mt-2"></i>' +
-                            '</div>' +
-                            '<div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="navbarDropdown">' +
-                            '<a class="dropdown-item" onclick="return modifyReply(' + ReplyCommentList[i].postSeq + ', ' + ReplyCommentList[i].commentSeq + ', ' + "'" + ReplyCommentList[i].content +"'" + ')">수정</a>' +
-                            '<form class="mr-1" method="post" action="/comment">' +
-                            '<input type="hidden" name="_method" value="patch">' +
-                            '<input type="hidden" name="commentSeq" value="' + ReplyCommentList[i].commentSeq + '">' +
-                            '<input type="hidden" name="postSeq" value="' + ReplyCommentList[i].postSeq + '">' +
-                            '<button class="dropdown-item" type="submit">삭제</button>' +
-                            '</form></div></nav></div></div></div></div></div>' +
-                            '<div class="col-xl-3" id="ReplyModDiv-' + ReplyCommentList[i].commentSeq + '" style="display: none"></div>' +
-                            '</div>';
+                        if (ReplyCommentList[i].liker > 0) {
+                            html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
+                                '<div class="card border-left h-10 py-2" id="childComment-' + ReplyCommentList[i].commentSeq + '">' +
+                                '   <div class="card-body">' +
+                                '       <div class="row no-gutters align-items-center">' +
+                                '           <div class="col mr-2">' +
+                                '               <div class="border-bottom mb-1">' +
+                                '                   <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">'+
+                                ReplyCommentList[i].commentWriteId +
+                                '                   </div>' +
+                                '                   <div class="text-xs text-right font-weight-bold text-uppercase mb-1">'+
+                                ReplyCommentList[i].commentWriteDt +
+                                '                   </div>' +
+                                '               </div>' +
+                                '               <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">'+
+                                ReplyCommentList[i].content +
+                                '               </div>' +
+                                '               <div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">' +
+                                '                   <nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">' +
+                                '                       <div class="navbar text-xs text-right font-weight-bold text-uppercase mb-0" data-toggle="dropdown">' +
+                                '                           <i class="fas fa-solid fa-ellipsis-h -align-center mt-2"></i>' +
+                                '                       </div>' +
+                                '                       <div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="navbarDropdown">' +
+                                '                           <a class="dropdown-item" onclick="return modifyReply(' + ReplyCommentList[i].postSeq + ', ' + ReplyCommentList[i].commentSeq + ', ' + "'" + ReplyCommentList[i].content +"'" + ')">수정</a>' +
+                                '                           <form class="mr-1" method="post" action="/comment">' +
+                                '                               <input type="hidden" name="_method" value="patch">' +
+                                '                               <input type="hidden" name="commentSeq" value="' + ReplyCommentList[i].commentSeq + '">' +
+                                '                               <input type="hidden" name="postSeq" value="' + ReplyCommentList[i].postSeq + '">' +
+                                '                               <button class="dropdown-item" type="submit">삭제</button>' +
+                                '                           </form>' +
+                                '                       </div>' +
+                                '                   </nav>' +
+                                '               </div>' +
+                                '           </div>' +
+                                '       </div>' +
+                                '   </div>' +
+                                '   <!-- 댓글 좋아요 -->' +
+                                '   <div class="col mr-2">' +
+                                '       <a class="btn btn-block btn-circle btn-sm" id="commentLikeOnBtn-' + ReplyCommentList[i].commentSeq + '" style="border-color: #858796; display: none" onclick="return commentLike(' + ReplyCommentList[i].commentSeq + ')">' +
+                                '          <i class="fas fa-thumbs-up"></i>' +
+                                '       </a>' +
+                                '       <a class="btn btn-info btn-circle btn-sm" id="commentLikeOffBtn-' + ReplyCommentList[i].commentSeq + '" onclick="return commentLike(' + ReplyCommentList[i].commentSeq + ')">' +
+                                '          <i class="fas fa-thumbs-up"></i>' +
+                                '       </a>' +
+                                '       <span class="text-xs" id="commentLikeCount-' + ReplyCommentList[i].commentSeq + '">'+ ReplyCommentList[i].likes +'</span>' +
+                                '   </div>' +
+                                '</div>' +
+                                '<div class="col-xl-3" id="ReplyModDiv-' + ReplyCommentList[i].commentSeq + '" style="display: none"></div>' +
+                                '</div>';
+                        }else {
+                            html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
+                                '<div class="card border-left h-10 py-2" id="childComment-' + ReplyCommentList[i].commentSeq + '">' +
+                                '   <div class="card-body">' +
+                                '       <div class="row no-gutters align-items-center">' +
+                                '           <div class="col mr-2">' +
+                                '               <div class="border-bottom mb-1">' +
+                                '                   <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">'+
+                                ReplyCommentList[i].commentWriteId +
+                                '                   </div>' +
+                                '                   <div class="text-xs text-right font-weight-bold text-uppercase mb-1">'+
+                                ReplyCommentList[i].commentWriteDt +
+                                '                   </div>' +
+                                '               </div>' +
+                                '               <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">'+
+                                ReplyCommentList[i].content +
+                                '               </div>' +
+                                '               <div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">' +
+                                '                   <nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">' +
+                                '                       <div class="navbar text-xs text-right font-weight-bold text-uppercase mb-0" data-toggle="dropdown">' +
+                                '                           <i class="fas fa-solid fa-ellipsis-h -align-center mt-2"></i>' +
+                                '                       </div>' +
+                                '                       <div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="navbarDropdown">' +
+                                '                           <a class="dropdown-item" onclick="return modifyReply(' + ReplyCommentList[i].postSeq + ', ' + ReplyCommentList[i].commentSeq + ', ' + "'" + ReplyCommentList[i].content +"'" + ')">수정</a>' +
+                                '                           <form class="mr-1" method="post" action="/comment">' +
+                                '                               <input type="hidden" name="_method" value="patch">' +
+                                '                               <input type="hidden" name="commentSeq" value="' + ReplyCommentList[i].commentSeq + '">' +
+                                '                               <input type="hidden" name="postSeq" value="' + ReplyCommentList[i].postSeq + '">' +
+                                '                               <button class="dropdown-item" type="submit">삭제</button>' +
+                                '                           </form>' +
+                                '                       </div>' +
+                                '                   </nav>' +
+                                '               </div>' +
+                                '           </div>' +
+                                '       </div>' +
+                                '   </div>' +
+                                '   <!-- 댓글 좋아요 -->' +
+                                '   <div class="col mr-2">' +
+                                '       <a class="btn btn-block btn-circle btn-sm" id="commentLikeOnBtn-' + ReplyCommentList[i].commentSeq + '" style="border-color: #858796;" onclick="return commentLike(' + ReplyCommentList[i].commentSeq + ')">' +
+                                '          <i class="fas fa-thumbs-up"></i>' +
+                                '       </a>' +
+                                '       <a class="btn btn-info btn-circle btn-sm" id="commentLikeOffBtn-' + ReplyCommentList[i].commentSeq + '" style="display: none" onclick="return commentLike(' + ReplyCommentList[i].commentSeq + ')">' +
+                                '          <i class="fas fa-thumbs-up"></i>' +
+                                '       </a>' +
+                                '       <span class="text-xs" id="commentLikeCount-' + ReplyCommentList[i].commentSeq + '">'+ ReplyCommentList[i].likes +'</span>' +
+                                '   </div>' +
+                                '</div>' +
+                                '<div class="col-xl-3" id="ReplyModDiv-' + ReplyCommentList[i].commentSeq + '" style="display: none"></div>' +
+                                '</div>';
+                        }
                     }else {
-
-                        html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
-                            '<div class="card border-left h-10 py-2">' +
-                            '<div class="card-body">' +
-                            '<div class="row no-gutters align-items-center">' +
-                            '<div class="col mr-2">' +
-                            '<div class="border-bottom mb-1">' +
-                            '<div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">'+
-                            ReplyCommentList[i].commentWriteId +
-                            '</div>' +
-                            '<div class="text-xs text-right font-weight-bold text-uppercase mb-1">'+
-                            ReplyCommentList[i].commentWriteDt +
-                            '</div></div>' +
-                            '<div class="h5 mb-0 font-weight-bold text-gray-800 mt-2">'+
-                            ReplyCommentList[i].content +
-                            '</div></div></div></div></div></div>';
+                        if (ReplyCommentList[i].liker > 0) {
+                            html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
+                                '<div class="card border-left h-10 py-2">' +
+                                '   <div class="card-body">' +
+                                '       <div class="row no-gutters align-items-center">' +
+                                '           <div class="col mr-2">' +
+                                '               <div class="border-bottom mb-1">' +
+                                '                   <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">'+
+                                ReplyCommentList[i].commentWriteId +
+                                '                   </div>' +
+                                '                   <div class="text-xs text-right font-weight-bold text-uppercase mb-1">'+
+                                ReplyCommentList[i].commentWriteDt +
+                                '                   </div>' +
+                                '               </div>' +
+                                '               <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2">'+
+                                ReplyCommentList[i].content +
+                                '               </div>' +
+                                '           </div>' +
+                                '       </div>' +
+                                '   </div>' +
+                                '   <!-- 댓글 좋아요 -->' +
+                                '   <div class="col mr-2">' +
+                                '       <a class="btn btn-block btn-circle btn-sm" id="commentLikeOnBtn-' + ReplyCommentList[i].commentSeq + '" style="border-color: #858796; display: none" onclick="return commentLike(' + ReplyCommentList[i].commentSeq + ')">' +
+                                '          <i class="fas fa-thumbs-up"></i>' +
+                                '       </a>' +
+                                '       <a class="btn btn-info btn-circle btn-sm" id="commentLikeOffBtn-' + ReplyCommentList[i].commentSeq + '" onclick="return commentLike(' + ReplyCommentList[i].commentSeq + ')">' +
+                                '          <i class="fas fa-thumbs-up"></i>' +
+                                '       </a>' +
+                                '       <span class="text-xs" id="commentLikeCount-' + ReplyCommentList[i].commentSeq + '">'+ ReplyCommentList[i].likes +'</span>' +
+                                '   </div>' +
+                                '</div>' +
+                                '</div>';
+                        }else {
+                            html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
+                                '<div class="card border-left h-10 py-2">' +
+                                '   <div class="card-body">' +
+                                '       <div class="row no-gutters align-items-center">' +
+                                '           <div class="col mr-2">' +
+                                '               <div class="border-bottom mb-1">' +
+                                '                   <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">'+
+                                ReplyCommentList[i].commentWriteId +
+                                '                   </div>' +
+                                '                   <div class="text-xs text-right font-weight-bold text-uppercase mb-1">'+
+                                ReplyCommentList[i].commentWriteDt +
+                                '                   </div>' +
+                                '               </div>' +
+                                '               <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2">'+
+                                ReplyCommentList[i].content +
+                                '               </div>' +
+                                '           </div>' +
+                                '       </div>' +
+                                '   </div>' +
+                                '   <!-- 댓글 좋아요 -->' +
+                                '   <div class="col mr-2">' +
+                                '       <a class="btn btn-block btn-circle btn-sm" id="commentLikeOnBtn-' + ReplyCommentList[i].commentSeq + '" style="border-color: #858796;" onclick="return commentLike(' + ReplyCommentList[i].commentSeq + ')">' +
+                                '          <i class="fas fa-thumbs-up"></i>' +
+                                '       </a>' +
+                                '       <a class="btn btn-info btn-circle btn-sm" id="commentLikeOffBtn-' + ReplyCommentList[i].commentSeq + '" style="display: none" onclick="return commentLike(' + ReplyCommentList[i].commentSeq + ')">' +
+                                '          <i class="fas fa-thumbs-up"></i>' +
+                                '       </a>' +
+                                '       <span class="text-xs" id="commentLikeCount-' + ReplyCommentList[i].commentSeq + '">'+ ReplyCommentList[i].likes +'</span>' +
+                                '   </div>' +
+                                '</div>' +
+                                '</div>';
+                        }
                     }
-
-                    console.log(ReplyCommentList[i].writer);
                 }
             }else {
                 html.innerHTML ='<div class="col-xl-4"  style="padding-left: 3rem">' +

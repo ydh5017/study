@@ -6,6 +6,8 @@ public class CommentVO {
     private int postSeq;
     private String content;
     private int likes;
+    private String liker = null;
+    private boolean isLikeUser = false;
     private int commentDepth = 0;
     private int commentGroup;
     private int replyCount;
@@ -50,6 +52,17 @@ public class CommentVO {
 
     public void setLikes(int likes) {
         this.likes = likes;
+    }
+
+    public String getLiker() {
+        return liker;
+    }
+
+    public void setLiker(boolean isLikeUser) {
+        if (isLikeUser){
+            this.liker = "1";
+            this.isLikeUser = true;
+        }
     }
 
     public int getCommentDepth() {

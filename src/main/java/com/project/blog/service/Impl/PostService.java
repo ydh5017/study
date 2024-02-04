@@ -84,7 +84,6 @@ public class PostService implements IPostService {
             postVO.setLikeUser(likeMapper.postLikeCheck(Integer.parseInt(userVO.getUserSeq()), postSeq));
         }
 
-
         if (postVO.getWriteId().equals(userVO.getUserId())) {
             postVO.setWriter();
         }

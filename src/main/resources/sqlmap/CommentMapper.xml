@@ -126,4 +126,22 @@
         WHERE
             COMMENTSEQ = (SELECT COMMENTGROUP FROM COMMENT WHERE COMMENTSEQ = #{commentSeq})
     </update>
+    <!-- 좋아요 up -->
+    <update id="likeInc" parameterType="map">
+        UPDATE
+            COMMENT
+        SET
+            LIKES = LIKES + 1
+        WHERE
+            COMMENTSEQ = #{commentSeq}
+    </update>
+    <!-- 좋아요 down -->
+    <update id="likeDec" parameterType="map">
+        UPDATE
+            COMMENT
+        SET
+            LIKES = LIKES - 1
+        WHERE
+            COMMENTSEQ = #{commentSeq}
+    </update>
 </mapper>

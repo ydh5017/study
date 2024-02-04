@@ -32,4 +32,35 @@
         WHERE USERSEQ = #{userSeq}
           AND POSTSEQ = #{postSeq}
     </select>
+    <!-- 댓글 좋아요 정보 추가 -->
+    <insert id="commentLikeInc" parameterType="int">
+        INSERT
+        INTO
+            LIKEINFO
+        (
+            USERSEQ,
+            COMMENTSEQ,
+            LIKEDT
+        )
+        VALUES
+            (
+                #{userSeq},
+                #{commentSeq},
+                SYSDATE()
+            )
+    </insert>
+    <!-- 댓글 좋아요 삭제 -->
+    <delete id="commentLikeDec" parameterType="int">
+        DELETE
+        FROM LIKEINFO
+        WHERE USERSEQ = #{userSeq}
+          AND COMMENTSEQ = #{commentSeq}
+    </delete>
+    <!-- 댓글 좋아요 확인 -->
+    <select id="commentLikeCheck" parameterType="int" resultType="boolean">
+        SELECT IF(COUNT(*) = 1, 1, 0)
+        FROM LIKEINFO
+        WHERE USERSEQ = #{userSeq}
+          AND COMMENTSEQ = #{commentSeq}
+    </select>
 </mapper>

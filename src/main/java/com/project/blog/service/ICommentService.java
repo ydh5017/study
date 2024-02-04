@@ -16,4 +16,8 @@ public interface ICommentService {
     HashMap<String, String> commentModProc(CommentVO commentVO) throws Exception;
 
     HashMap<String, String> commentDelete(int commentSeq, int postSeq) throws Exception;
+
+    void commentLikeInc(int commentSeq) throws Exception;
+
+    void commentLikeDec(int commentSeq) throws Exception;
 }

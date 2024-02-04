@@ -1,6 +1,7 @@
 package com.project.blog.service.Impl;
 
 import com.project.blog.mapper.CommentMapper;
+import com.project.blog.mapper.LikeMapper;
 import com.project.blog.service.ICommentService;
 import com.project.blog.service.IUserService;
 import com.project.blog.vo.CommentVO;
@@ -21,6 +22,7 @@ public class CommentService implements ICommentService {
     @Resource
     private final IUserService userService;
     private final CommentMapper commentMapper;
+    private final LikeMapper likeMapper;
 
 
     @Override
@@ -62,19 +64,33 @@ public class CommentService implements ICommentService {
 
     @Override
     public List<CommentVO> getCommentList(int postSeq) throws Exception {
-        return commentMapper.getCommentList(postSeq);
+        List<CommentVO> commentList = commentMapper.getCommentList(postSeq);
+        String userSeq = userService.userInfo().getUserSeq();
+        int commentSeq;
+
+        if (userSeq != null) {
+            for (int i = 0; i < commentList.size(); i++) {
+                commentSeq = commentList.get(i).getCommentSeq();
+                commentList.get(i).setLiker(likeMapper.commentLikeCheck(Integer.parseInt(userSeq), commentSeq));
+            }
+        }
+
+        return commentList;
     }
 
     @Override
     public List<CommentVO> getReplyList(int commentSeq) throws Exception {
         UserVO userVO = userService.userInfo();
         String userId = userVO.getUserId();
+        String userSeq = userVO.getUserSeq();
 
         List<CommentVO> commentList = commentMapper.getReplyList(commentSeq);
 
         if (userId != null) {
             for (int i = 0; i < commentList.size(); i++) {
                 commentList.get(i).setWriter(userId.equals(commentList.get(i).getCommentWriteId()));
+                commentSeq = commentList.get(i).getCommentSeq();
+                commentList.get(i).setLiker(likeMapper.commentLikeCheck(Integer.parseInt(userSeq), commentSeq));
             }
         }
 
@@ -133,5 +149,19 @@ public class CommentService implements ICommentService {
         map.put("url", url);
 
         return map;
+    }
+
+    @Override
+    public void commentLikeInc(int commentSeq) throws Exception {
+        int userSeq = Integer.parseInt(userService.userInfo().getUserSeq());
+        commentMapper.likeInc(commentSeq);
+        likeMapper.commentLikeInc(userSeq, commentSeq);
+    }
+
+    @Override
+    public void commentLikeDec(int commentSeq) throws Exception {
+        int userSeq = Integer.parseInt(userService.userInfo().getUserSeq());
+        commentMapper.likeDec(commentSeq);
+        likeMapper.commentLikeDec(userSeq, commentSeq);
     }
 }

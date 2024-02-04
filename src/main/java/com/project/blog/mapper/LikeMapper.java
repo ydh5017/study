@@ -10,4 +10,10 @@ public interface LikeMapper {
     void postLikeDec(int userSeq, int postSeq) throws Exception;
 
     boolean postLikeCheck(int userSeq, int postSeq) throws Exception;
+
+    void commentLikeInc(int userSeq, int commentSeq) throws Exception;
+
+    void commentLikeDec(int userSeq, int commentSeq) throws Exception;
+
+    boolean commentLikeCheck(int userSeq, int commentSeq) throws Exception;
 }

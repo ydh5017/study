@@ -39,8 +39,11 @@ public class PostController {
         int listCnt = 0;
 
         if (type != null && keyword != null) {
-            listCnt = postService.searchCount(type, keyword);
-            log.info("listCnt : " + listCnt);
+            if (type == "") {
+                listCnt = postService.postCount();
+            }else {
+                listCnt = postService.searchCount(type, keyword);
+            }
         }else {
             listCnt = postService.postCount();
         }
@@ -62,7 +65,12 @@ public class PostController {
                 sMap.put("listsize", j);
                 sMap.put("type", type);
                 sMap.put("keyword", keyword);
-                postList = postService.getSearchList(sMap);
+
+                if (type == "") {
+                    postList = postService.getPostList(map);
+                }else {
+                    postList = postService.getSearchList(sMap);
+                }
             }else {
                 postList = postService.getPostList(map);
             }
