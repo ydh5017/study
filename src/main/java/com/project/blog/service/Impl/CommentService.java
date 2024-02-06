@@ -4,6 +4,7 @@ import com.project.blog.mapper.CommentMapper;
 import com.project.blog.mapper.LikeMapper;
 import com.project.blog.service.ICommentService;
 import com.project.blog.service.IUserService;
+import com.project.blog.util.ResponseMapUtil;
 import com.project.blog.vo.CommentVO;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class CommentService implements ICommentService {
     private final IUserService userService;
     private final CommentMapper commentMapper;
     private final LikeMapper likeMapper;
+    private final ResponseMapUtil responseMapUtil;
 
 
     @Override
@@ -129,24 +131,18 @@ public class CommentService implements ICommentService {
         HashMap<String, String> map = new HashMap<>();
         String msg, url;
         int result = commentMapper.replyCountTotal(commentSeq);
-        log.info("result : "+result);
 
         if (result > 0) {
-            msg = "답글이 존재하여 삭제할 수 없습니다.";
-            url = "/post/detail?no%3D" + postSeq;
+            map = responseMapUtil.getResponseMap("comment.delete.reply", "post.detail", postSeq);
         } else {
             result = commentMapper.commentDelete(commentSeq);
             commentMapper.countDelete(commentSeq);
             if (result == 1) {
-                msg = " 삭제되었습니다.";
-                url = "/post/detail?no%3D" + postSeq;
+                map = responseMapUtil.getResponseMap("comment.delete", "post.detail", postSeq);
             } else {
-                msg = "삭제 실패";
-                url = "/post/detail?no%3D" + postSeq;
+                map = responseMapUtil.getResponseMap("comment.delete.error", "post.detail", postSeq);
             }
         }
-        map.put("msg", msg);
-        map.put("url", url);
 
         return map;
     }
