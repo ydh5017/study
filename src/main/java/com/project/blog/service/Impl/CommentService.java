@@ -29,10 +29,9 @@ public class CommentService implements ICommentService {
 
     @Override
     public HashMap<String, String> commentAddProc(CommentVO commentVO) throws Exception {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map;
         String userId = userService.userInfo().getUserId();
         int result;
-        String msg, url;
 
         if (userId != null) {
             commentVO.setCommentWriteId(userId);
@@ -46,20 +45,14 @@ public class CommentService implements ICommentService {
             }
 
             if (result==1) {
-                msg = "댓글 등록 성공";
-                url = "/post/detail?no%3D" + commentVO.getPostSeq();
+                map = responseMapUtil.getResponseMap("comment.add", "post.detail", commentVO.getPostSeq());
             } else {
-                msg = "댓글 등록 실패";
-                url = "/post/detail?no%3D" + commentVO.getPostSeq();
+                map = responseMapUtil.getResponseMap("comment.add.error", "post.detail", commentVO.getPostSeq());
             }
 
         } else {
-            msg = "로그인 후 사용해주세요.";
-            url = "/post/detail?no%3D" + commentVO.getPostSeq();
+            map = responseMapUtil.getResponseMap("login.need", "post.detail", commentVO.getPostSeq());
         }
-
-        map.put("msg", msg);
-        map.put("url", url);
 
         return map;
     }
@@ -101,9 +94,10 @@ public class CommentService implements ICommentService {
 
     @Override
     public HashMap<String, String> commentModProc(CommentVO commentVO) throws Exception {
-        HashMap<String, String> Map = new HashMap<>();
+        HashMap<String, String> map;
 
         String userId = userService.userInfo().getUserId();
+
         if (userId != null) {
             commentVO.setCommentChgId(userId);
         } else {
@@ -111,25 +105,20 @@ public class CommentService implements ICommentService {
         }
 
         int result = commentMapper.commentModProc(commentVO);
-        String msg, url;
 
         if (result==1) {
-            msg = "수정되었습니다.";
-            url = "/post/detail?no%3D" + commentVO.getPostSeq();
+            map = responseMapUtil.getResponseMap("comment.mod", "post.detail", commentVO.getPostSeq());
         } else {
-            msg = "수정 실패";
-            url = "/post/detail?no%3D" + commentVO.getPostSeq();
+            map = responseMapUtil.getResponseMap("comment.mod.error", "post.detail", commentVO.getPostSeq());
         }
-        Map.put("msg", msg);
-        Map.put("url", url);
 
-        return Map;
+        return map;
     }
 
     @Override
     public HashMap<String, String> commentDelete(int commentSeq, int postSeq) throws Exception {
-        HashMap<String, String> map = new HashMap<>();
-        String msg, url;
+        HashMap<String, String> map;
+
         int result = commentMapper.replyCountTotal(commentSeq);
 
         if (result > 0) {
