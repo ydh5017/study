@@ -21,7 +21,7 @@ function onReplyComment(commentSeq){
                 for(let i = 0; i < ReplyCommentList.length; i++) {
                     if (ReplyCommentList[i].writer > 0) {
                         if (ReplyCommentList[i].liker > 0) {
-                            html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
+                            html.innerHTML+= '<div class="col-xl-12" style="padding-left: 3rem">' +
                                 '<div class="card border-left h-10 py-2" id="childComment-' + ReplyCommentList[i].commentSeq + '">' +
                                 '   <div class="card-body">' +
                                 '       <div class="row no-gutters align-items-center">' +

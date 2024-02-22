@@ -3,6 +3,7 @@ package com.project.blog.vo;
 public class PostVO {
 
     private int postSeq;
+    private String cateCode;
     private String title;
     private String content;
     private String views;
@@ -21,6 +22,14 @@ public class PostVO {
 
     public void setPostSeq(int postSeq) {
         this.postSeq = postSeq;
+    }
+
+    public String getCateCode() {
+        return cateCode;
+    }
+
+    public void setCateCode(String cateCode) {
+        this.cateCode = cateCode;
     }
 
     public String getTitle() {

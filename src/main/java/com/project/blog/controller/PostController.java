@@ -31,6 +31,7 @@ public class PostController {
     // 게시글 리스트 페이지
     @GetMapping
     public String getPostList(@RequestParam(defaultValue = "1") int pno,
+                              @RequestParam(required = false) String cateCode,
                               @RequestParam(required = false) String type,
                               @RequestParam(required = false) String keyword, Model model) throws Exception {
         UserVO userVO = userService.userInfo();
@@ -84,6 +85,8 @@ public class PostController {
         model.addAttribute("paging", paging);
         model.addAttribute("pageList", pageList);
         model.addAttribute("userVO", userVO);
+        model.addAttribute("type", type);
+        model.addAttribute("keyword", keyword);
 
         return "/post/list";
     }

@@ -51,7 +51,7 @@ public class CommentService implements ICommentService {
             }
 
         } else {
-            map = responseMapUtil.getResponseMap("login.need", "post.detail", commentVO.getPostSeq());
+            map = responseMapUtil.getResponseMap("user.login.error", "post.detail", commentVO.getPostSeq());
         }
 
         return map;

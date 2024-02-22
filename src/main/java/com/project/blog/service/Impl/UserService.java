@@ -4,6 +4,7 @@ import com.project.blog.config.jwt.CustomUserDetails;
 import com.project.blog.config.jwt.JwtTokenProvider;
 import com.project.blog.mapper.UserMapper;
 import com.project.blog.service.IUserService;
+import com.project.blog.util.ResponseMapUtil;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,16 +23,15 @@ public class UserService implements IUserService {
     @Resource
     private final UserMapper userMapper;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ResponseMapUtil responseMapUtil;
 
     @Override
     public HashMap<String, String> userRegProc(UserVO userVO) throws Exception {
         int result;
-        String msg, url;
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map;
 
         if (userMapper.idCheck(userVO.getUserId())) {
-            msg = "중복된 아이디입니다.";
-            url = "/user/regist";
+            map = responseMapUtil.getResponseMap("user.exist", "user.reg");
         }else {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             userVO.setPassword(passwordEncoder.encode(userVO.getPassword()));
@@ -39,16 +39,11 @@ public class UserService implements IUserService {
             result = userMapper.userRegProc(userVO);
 
             if (result==1) {
-                msg = "회원가입 성공";
-                url = "/user";
+                map = responseMapUtil.getResponseMap("user.reg", "user");
             } else {
-                msg = "회원가입 실패";
-                url = "/user";
+                map = responseMapUtil.getResponseMap("user.reg.error", "user");
             }
         }
-
-        map.put("msg", msg);
-        map.put("url", url);
 
         return map;
     }
@@ -57,8 +52,7 @@ public class UserService implements IUserService {
     public HashMap<String, String> login(UserVO userVO) throws Exception {
         String userId = userVO.getUserId();
         String password = userVO.getPassword();
-        String msg, url;
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map;
 
         if (userMapper.idCheck(userId)) {
             userVO = userMapper.loginInfo(userId);
@@ -67,21 +61,14 @@ public class UserService implements IUserService {
             if (passwordEncoder.matches(password, userVO.getPassword())) {
                 String token = jwtTokenProvider.createToken(userVO);
 
-                msg = "로그인 성공";
-                url = "/index";
-
+                map = responseMapUtil.getResponseMap("user.login", "main");
                 map.put("token", token);
             } else {
-                msg = "비밀번호가 잘못되었습니다.";
-                url = "/user";
+                map = responseMapUtil.getResponseMap("user.password.error", "user");
             }
         } else {
-            msg = "존재하지 않는 계정입니다.";
-            url = "/user";
+            map = responseMapUtil.getResponseMap("user.exist.error", "user");
         }
-
-        map.put("msg", msg);
-        map.put("url", url);
 
         return map;
     }
@@ -109,27 +96,20 @@ public class UserService implements IUserService {
         }
 
         int result = userMapper.userModProc(userVO);
-        String msg, url;
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map;
 
         if (result == 1) {
-            msg = "회원정보 수정 성공";
-            url = "/user/detail";
+            map = responseMapUtil.getResponseMap("user.mod", "user.detail");
         }else {
-            msg = "회원정보 수정 실패";
-            url = "/user/detail";
+            map = responseMapUtil.getResponseMap("user.mod.error", "user.detail");
         }
-
-        map.put("msg", msg);
-        map.put("url", url);
 
         return map;
     }
 
     @Override
     public HashMap<String, String> passwordModProc(String currentPassword, String newPassword) throws Exception {
-        String msg, url;
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map;
         UserVO userVO = userInfo();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -140,38 +120,29 @@ public class UserService implements IUserService {
                 int result = userMapper.passwordModProc(userVO);
 
                 if (result == 1) {
-                    msg = "패스워드 변경 성공";
-                    url = "/user/modify";
+                    map = responseMapUtil.getResponseMap("user.password.mod", "user.modify");
                 } else {
-                    msg = "패스워드 변경 실패";
-                    url = "/user/modify";
+                    map = responseMapUtil.getResponseMap("user.password.mod.error1", "user.modify");
                 }
 
             } else {
-                msg = "입력한 새 비밀번호가 현재 비밀번호와 동일합니다.";
-                url = "/user/modify";
+                map = responseMapUtil.getResponseMap("user.password.mod.error2", "user.modify");
             }
         } else {
-            msg = "현재 비밀번호가 틀렸습니다.";
-            url = "/user/modify";
+            map = responseMapUtil.getResponseMap("user.password.mod.error3", "user.modify");
         }
-
-        map.put("msg", msg);
-        map.put("url", url);
 
         return map;
     }
 
     @Override
     public HashMap<String, String> updatePassword(String userId) throws Exception {
-        HashMap<String, String> map = new HashMap<>();
-        String msg, url;
+        HashMap<String, String> map;
 
         if (userMapper.idCheck(userId)) {
             String password = getTemporaryPassword();
 
-            msg = "임시 비밀번호 : " + password;
-            url = "/user";
+            map = responseMapUtil.getResponseMap("user.password.temporary", password,"user");
 
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             password = passwordEncoder.encode(password);
@@ -179,16 +150,11 @@ public class UserService implements IUserService {
             int result = userMapper.updatePassword(userId, password);
 
             if (result != 1) {
-                msg = "실패";
-                url = "/user";
+                map = responseMapUtil.getResponseMap("user.password.temporary.error", "user");
             }
         } else {
-            msg = "존재하지 않는 계정입니다.";
-            url = "/user";
+            map = responseMapUtil.getResponseMap("user.exist.error", "user");
         }
-
-        map.put("msg", msg);
-        map.put("url", url);
 
         return map;
     }

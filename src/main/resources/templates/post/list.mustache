@@ -87,9 +87,18 @@
                     </li>
                 {{/equalsPage}}
                 {{^equalsPage}}
+                    {{#type}}
+                        {{#keyword}}
+                    <li class="paginate_button page-item ">
+                        <a aria-controls="dataTable" tabindex="0" class="page-link" href="/post?pno={{page}}&type={{type}}&keyword={{keyword}}">{{page}}</a>
+                    </li>
+                        {{/keyword}}
+                    {{/type}}
+                    {{^type}}
                     <li class="paginate_button page-item ">
                         <a aria-controls="dataTable" tabindex="0" class="page-link" href="/post?pno={{page}}">{{page}}</a>
                     </li>
+                    {{/type}}
                 {{/equalsPage}}
             {{/pageList}}
 

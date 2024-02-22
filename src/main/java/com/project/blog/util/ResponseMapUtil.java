@@ -39,4 +39,16 @@ public class ResponseMapUtil {
 
         return map;
     }
+
+    public HashMap<String, String> getResponseMap(String message, String msgArgs, String URL) {
+        HashMap<String, String> map = new HashMap<>();
+
+        String msg = messageSource.getMessage(message, new Object[]{msgArgs}, null);
+        String url = messageSource.getMessage(URL+".url", null, null);
+
+        map.put("msg", msg);
+        map.put("url", url);
+
+        return map;
+    }
 }

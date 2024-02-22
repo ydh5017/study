@@ -4,6 +4,7 @@ import com.project.blog.mapper.LikeMapper;
 import com.project.blog.mapper.PostMapper;
 import com.project.blog.service.IPostService;
 import com.project.blog.service.IUserService;
+import com.project.blog.util.ResponseMapUtil;
 import com.project.blog.vo.PostVO;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class PostService implements IPostService {
     private final PostMapper postMapper;
     private final IUserService userService;
     private final LikeMapper likeMapper;
+    private final ResponseMapUtil responseMapUtil;
 
     @Override
     public List<PostVO> getPostList(HashMap<String, Integer> Map) throws Exception {
@@ -48,7 +50,7 @@ public class PostService implements IPostService {
 
     @Override
     public HashMap<String, String> postAddProc(PostVO postVO) throws Exception {
-        HashMap<String, String> Map = new HashMap<>();
+        HashMap<String, String> map;
         String userId = userService.userInfo().getUserId();
 
         if (userId != null) {
@@ -58,19 +60,14 @@ public class PostService implements IPostService {
         }
 
         int result = postMapper.postAddProc(postVO);
-        String msg, url;
 
         if (result==1) {
-            msg = "게시글 등록 성공";
-            url = "/post/detail?no%3D" + postVO.getPostSeq();
+            map = responseMapUtil.getResponseMap("post.add", "post.detail", postVO.getPostSeq());
         } else {
-            msg = "게시글 등록 실패";
-            url = "/post/add";
+            map = responseMapUtil.getResponseMap("post.add.error", "post.add");
         }
-        Map.put("msg", msg);
-        Map.put("url", url);
 
-        return Map;
+        return map;
     }
 
     @Override
@@ -93,27 +90,21 @@ public class PostService implements IPostService {
 
     @Override
     public HashMap<String, String> postDelete(int postSeq) throws Exception {
-        HashMap<String, String> Map = new HashMap<>();
+        HashMap<String, String> map;
         int result = postMapper.postDelete(postSeq);
 
-        String msg, url;
-
         if (result==1) {
-            msg = "글이 삭제되었습니다.";
-            url = "/post?pno%3D1";
+            map = responseMapUtil.getResponseMap("post.delete", "post.list");
         } else {
-            msg = "글 삭제 실패";
-            url = "/post?pno%3D1";
+            map = responseMapUtil.getResponseMap("post.delete.error", "post.list");
         }
-        Map.put("msg", msg);
-        Map.put("url", url);
 
-        return Map;
+        return map;
     }
 
     @Override
     public HashMap<String, String> postModProc(PostVO postVO) throws Exception {
-        HashMap<String, String> Map = new HashMap<>();
+        HashMap<String, String> map;
 
         String userId = userService.userInfo().getUserId();
         if (userId != null) {
@@ -123,19 +114,14 @@ public class PostService implements IPostService {
         }
 
         int result = postMapper.postModProc(postVO);
-        String msg, url;
 
         if (result==1) {
-            msg = "수정되었습니다.";
-            url = "/post/detail?no%3D" + postVO.getPostSeq();
+            map = responseMapUtil.getResponseMap("post.mod", "post.detail", postVO.getPostSeq());
         } else {
-            msg = "수정 실패";
-            url = "/post/detail?no%3D" + postVO.getPostSeq();
+            map = responseMapUtil.getResponseMap("post.mod.error", "post.detail", postVO.getPostSeq());
         }
-        Map.put("msg", msg);
-        Map.put("url", url);
 
-        return Map;
+        return map;
     }
 
     @Override

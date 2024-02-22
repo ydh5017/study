@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -19,23 +20,6 @@
     <link rel="stylesheet" href="/summernote/summernote-lite.css">
 </head>
 <body>
-<!-- Bootstrap core JavaScript-->
-<script src="/vendor/jquery/jquery.min.js"></script>
-<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="/js/sb-admin-2.min.js"></script>
-
-<!-- Page level plugins -->
-<script src="/vendor/chart.js/Chart.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="/js/demo/chart-area-demo.js"></script>
-<script src="/js/demo/chart-pie-demo.js"></script>
-
 <!-- Page Wrapper -->
 <div id="wrapper">
     <!-- Sidebar -->
@@ -52,11 +36,18 @@
         <!-- Divider -->
         <hr class="sidebar-divider my-0">
 
-        <!-- Nav Item - Dashboard -->
-        <li class="nav-item active">
-            <a class="nav-link" href="/post?pno=1">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>게시판</span></a>
+        <li class="nav-item">
+            <a class="nav-link collapsed"  data-toggle="collapse" data-target="#collapseTwo"
+               aria-expanded="false" aria-controls="collapseTwo">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>게시판</span>
+            </a>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="/post?cateCode=100&pno=1">공지사항</a>
+                    <a class="collapse-item" href="#">커뮤니티</a>
+                </div>
+            </div>
         </li>
 
         <!-- Divider -->
