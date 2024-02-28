@@ -27,7 +27,7 @@ public class PostService implements IPostService {
     private final ResponseMapUtil responseMapUtil;
 
     @Override
-    public List<PostVO> getPostList(HashMap<String, Integer> Map) throws Exception {
+    public List<PostVO> getPostList(HashMap<String, Object> Map) throws Exception {
         return postMapper.getPostList(Map);
     }
 
@@ -37,14 +37,14 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public int postCount() throws Exception {
-        int count = postMapper.postCount();
+    public int postCount(String cateCode) throws Exception {
+        int count = postMapper.postCount(cateCode);
         return count;
     }
 
     @Override
-    public int searchCount(String type, String keyword) throws Exception {
-        int count = postMapper.searchCount(type, keyword);
+    public int searchCount(String type, String keyword, String cateCode) throws Exception {
+        int count = postMapper.searchCount(type, keyword, cateCode);
         return count;
     }
 
@@ -57,6 +57,10 @@ public class PostService implements IPostService {
             postVO.setWriteId(userId);
         } else {
             postVO.setWriteId("익명");
+        }
+
+        if (postVO.getCateCode() == 0) {
+            return map = responseMapUtil.getResponseMap("post.add.error1", "post.add");
         }
 
         int result = postMapper.postAddProc(postVO);

@@ -41,22 +41,23 @@ public class PostController {
 
         if (type != null && keyword != null) {
             if (type == "") {
-                listCnt = postService.postCount();
+                listCnt = postService.postCount(cateCode);
             }else {
-                listCnt = postService.searchCount(type, keyword);
+                listCnt = postService.searchCount(type, keyword, cateCode);
             }
         }else {
-            listCnt = postService.postCount();
+            listCnt = postService.postCount(cateCode);
         }
 
         PagingUtil paging = new PagingUtil();
 
         paging.pageInfo(page, listCnt);
-        HashMap<String, Integer> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
         int i = paging.getStartList();
         int j = paging.getListSize();
         map.put("startlist", i);
         map.put("listsize", j);
+        map.put("cateCode", cateCode);
 
         List<PostVO> postList = new ArrayList<>();
         try {
@@ -64,6 +65,7 @@ public class PostController {
                 HashMap<String, Object> sMap = new HashMap<>();
                 sMap.put("startlist", i);
                 sMap.put("listsize", j);
+                sMap.put("cateCode", cateCode);
                 sMap.put("type", type);
                 sMap.put("keyword", keyword);
 
@@ -87,6 +89,7 @@ public class PostController {
         model.addAttribute("userVO", userVO);
         model.addAttribute("type", type);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("cateCode", cateCode);
 
         return "/post/list";
     }

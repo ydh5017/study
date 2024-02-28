@@ -7,6 +7,7 @@
         INTO
             POST
         (
+            CATECODE,
             TITLE,
             CONTENT,
             WRITEID,
@@ -14,6 +15,7 @@
         )
         VALUES
             (
+                #{cateCode},
                 #{title},
                 #{content},
                 #{writeId},
@@ -24,6 +26,7 @@
     <select id="getPostList" parameterType="map" resultType="PostVO">
         SELECT
             POSTSEQ,
+            CATECODE,
             TITLE,
             CONTENT,
             VIEWS,
@@ -35,6 +38,7 @@
             ISDELETED
         FROM POST
         WHERE ISDELETED = 0
+        AND CATECODE = #{cateCode}
         ORDER BY POSTSEQ DESC
         LIMIT #{startlist}, #{listsize}
     </select>
@@ -54,6 +58,7 @@
         FROM POST
         WHERE ${type} LIKE '%${keyword}%'
             AND ISDELETED = 0
+          AND CATECODE = #{cateCode}
         ORDER BY POSTSEQ DESC
             LIMIT #{startlist}, #{listsize}
     </select>
@@ -78,6 +83,7 @@
         SELECT COUNT(0)
         FROM POST
         WHERE ISDELETED = 0
+          AND CATECODE = #{cateCode}
     </select>
     <!-- 검색된 게시글 수 조회 -->
     <select id="searchCount" resultType="integer">
@@ -85,6 +91,7 @@
         FROM POST
         WHERE ${type} LIKE '%${keyword}%'
           AND ISDELETED = 0
+          AND CATECODE = #{cateCode}
     </select>
     <!-- 조회수 증가 -->
     <update id="viewIncrease" parameterType="map">
@@ -96,7 +103,7 @@
             POSTSEQ = #{postSeq}
     </update>
     <!-- 게시글 삭제 -->
-    <update id="postDelete" parameterType="map">
+    <update id="postDelete" parameterType="int">
         UPDATE
             POST
         SET

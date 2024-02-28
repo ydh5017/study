@@ -4,11 +4,12 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">게시판</h1>
+        <h1 class="h3 mb-0 text-gray-800">{{cateCode}}</h1>
     </div>
 
     <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style="padding: 1rem"
     id="searchFoam" name="searchFoam" method="get" action="/post">
+        <input type="hidden" name="cateCode" value="{{cateCode}}">
         <div class="border-left-primary container" style="float: left;">
             <div style="float: left; transform: translate(0, 20%)">
                 <select name="type">
@@ -90,13 +91,13 @@
                     {{#type}}
                         {{#keyword}}
                     <li class="paginate_button page-item ">
-                        <a aria-controls="dataTable" tabindex="0" class="page-link" href="/post?pno={{page}}&type={{type}}&keyword={{keyword}}">{{page}}</a>
+                        <a aria-controls="dataTable" tabindex="0" class="page-link" href="/post?cateCode={{cateCode}}&type={{type}}&keyword={{keyword}}&pno={{page}}">{{page}}</a>
                     </li>
                         {{/keyword}}
                     {{/type}}
                     {{^type}}
                     <li class="paginate_button page-item ">
-                        <a aria-controls="dataTable" tabindex="0" class="page-link" href="/post?pno={{page}}">{{page}}</a>
+                        <a aria-controls="dataTable" tabindex="0" class="page-link" href="/post?cateCode={{cateCode}}&pno={{page}}">{{page}}</a>
                     </li>
                     {{/type}}
                 {{/equalsPage}}

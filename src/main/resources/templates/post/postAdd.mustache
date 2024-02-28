@@ -8,6 +8,11 @@
     <div class="container">
         <form id="frm" name="frm" method="post" action="/post">
             <table class="board_detail">
+                <select name="cateCode">
+                    <option value="">카테고리 선택</option>
+                    <option value="110">공지사항</option>
+                    <option value="120">자유게시판</option>
+                </select>
                 <tr>
                     <td>제목</td>
                     <td><input type="text" id="title" name="title"></td>
