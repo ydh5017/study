@@ -27,6 +27,7 @@
         SELECT
             POSTSEQ,
             CATECODE,
+            (SELECT CATENAME FROM CATEGORY WHERE CATECODE = A.CATECODE) AS CATENAME,
             TITLE,
             CONTENT,
             VIEWS,
@@ -36,7 +37,7 @@
             CHGID,
             CHGDT,
             ISDELETED
-        FROM POST
+        FROM POST AS A
         WHERE ISDELETED = 0
         AND CATECODE = #{cateCode}
         ORDER BY POSTSEQ DESC
@@ -46,6 +47,8 @@
     <select id="getSearchList" parameterType="map" resultType="PostVO">
         SELECT
             POSTSEQ,
+            CATECODE,
+            (SELECT CATENAME FROM CATEGORY WHERE CATECODE = A.CATECODE) AS CATENAME,
             TITLE,
             CONTENT,
             VIEWS,
@@ -55,12 +58,34 @@
             CHGID,
             CHGDT,
             ISDELETED
-        FROM POST
+        FROM POST AS A
         WHERE ${type} LIKE '%${keyword}%'
             AND ISDELETED = 0
           AND CATECODE = #{cateCode}
         ORDER BY POSTSEQ DESC
             LIMIT #{startlist}, #{listsize}
+    </select>
+    <!-- 인기글 리스트 가져오기 -->
+    <select id="getPopularPost" parameterType="String" resultType="PostVO">
+        SELECT
+            A.POSTSEQ,
+            A.CATECODE,
+            (SELECT CATENAME FROM CATEGORY WHERE CATECODE = A.CATECODE) AS CATENAME,
+            A.TITLE,
+            A.CONTENT,
+            A.VIEWS,
+            A.LIKES,
+            A.WRITEID,
+            A.WRITEDT,
+            A.CHGID,
+            A.CHGDT,
+            A.ISDELETED
+        FROM (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )-7) A
+        WHERE A.ISDELETED = 0
+          <if test="cateCode != '100'">
+              AND A.CATECODE = #{cateCode}
+          </if>
+        ORDER BY A.LIKES DESC, A.WRITEDT DESC
     </select>
     <!-- 게시글 가져오기 -->
     <select id="postDetail" parameterType="int" resultType="PostVO">
@@ -103,13 +128,16 @@
             POSTSEQ = #{postSeq}
     </update>
     <!-- 게시글 삭제 -->
-    <update id="postDelete" parameterType="int">
+    <update id="postDelete" parameterType="map">
         UPDATE
-            POST
+        POST
         SET
-            ISDELETED = 1
+        ISDELETED = 1
         WHERE
-            POSTSEQ = #{postSeq}
+        POSTSEQ = #{postSeq}
+        <selectKey keyProperty="cateCode" resultType="int" order="AFTER">
+            select cateCode from post where postSeq = #{postSeq}
+        </selectKey>
     </update>
     <!-- 게시글 수정 -->
     <update id="postModProc" parameterType="PostVO">

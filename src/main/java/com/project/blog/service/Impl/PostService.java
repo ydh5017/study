@@ -1,5 +1,6 @@
 package com.project.blog.service.Impl;
 
+import com.project.blog.mapper.CommentMapper;
 import com.project.blog.mapper.LikeMapper;
 import com.project.blog.mapper.PostMapper;
 import com.project.blog.service.IPostService;
@@ -24,6 +25,7 @@ public class PostService implements IPostService {
     private final PostMapper postMapper;
     private final IUserService userService;
     private final LikeMapper likeMapper;
+    private final CommentMapper commentMapper;
     private final ResponseMapUtil responseMapUtil;
 
     @Override
@@ -34,6 +36,11 @@ public class PostService implements IPostService {
     @Override
     public List<PostVO> getSearchList(HashMap<String, Object> hMap) throws Exception {
         return postMapper.getSearchList(hMap);
+    }
+
+    @Override
+    public List<PostVO> getPopularPost(String cateCode) throws Exception {
+        return postMapper.getPopularPost(cateCode);
     }
 
     @Override
@@ -95,10 +102,14 @@ public class PostService implements IPostService {
     @Override
     public HashMap<String, String> postDelete(int postSeq) throws Exception {
         HashMap<String, String> map;
-        int result = postMapper.postDelete(postSeq);
 
-        if (result==1) {
-            map = responseMapUtil.getResponseMap("post.delete", "post.list");
+        HashMap<String, Object> pMap = new HashMap<>();
+        pMap.put("postSeq", postSeq);
+        postMapper.postDelete(pMap);
+        commentMapper.commentDelete2(postSeq);
+
+        if (pMap.get("cateCode") != null) {
+            map = responseMapUtil.getResponseMap("post.delete", "post.list" , pMap.get("cateCode"));
         } else {
             map = responseMapUtil.getResponseMap("post.delete.error", "post.list");
         }

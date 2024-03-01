@@ -117,6 +117,15 @@
         WHERE
             COMMENTSEQ = #{commentSeq}
     </update>
+    <!-- 댓글 삭제 -->
+    <update id="commentDelete2" parameterType="int">
+        UPDATE
+            COMMENT
+        SET
+            ISDELETED = 1
+        WHERE
+            POSTSEQ = #{postSeq}
+    </update>
     <!-- 댓글 삭제 시 모댓글 replyComment 개수 -1 -->
     <update id="countDelete" parameterType="int">
         UPDATE

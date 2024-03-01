@@ -12,6 +12,8 @@ public interface PostMapper {
 
     List<PostVO> getSearchList(HashMap<String, Object> hMap) throws Exception;
 
+    List<PostVO> getPopularPost(String cateCode) throws Exception;
+
     int postCount(String cateCode) throws Exception;
 
     int searchCount(String type, String keyword, String cateCode) throws Exception;
@@ -22,7 +24,7 @@ public interface PostMapper {
 
     PostVO postDetail(int postSeq) throws Exception;
 
-    int postDelete(int postSeq) throws Exception;
+    void postDelete(HashMap<String, Object> pMap) throws Exception;
 
     int postModProc(PostVO postVO) throws Exception;
 

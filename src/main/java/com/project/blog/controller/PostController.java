@@ -90,6 +90,7 @@ public class PostController {
         model.addAttribute("type", type);
         model.addAttribute("keyword", keyword);
         model.addAttribute("cateCode", cateCode);
+        model.addAttribute("cateName", postList.get(1).getCateName());
 
         return "/post/list";
     }
@@ -130,11 +131,17 @@ public class PostController {
             }
         }
 
+        boolean deleted = false;
+        if (postVO.getIsDeleted().equals("1")){
+            deleted = true;
+        }
+
         model.addAttribute("userVO", userVO);
         model.addAttribute("postVO", postVO);
         model.addAttribute("write", postVO.isWriter());
         model.addAttribute("likeUser", postVO.isLikeUser());
         model.addAttribute("commentList", commentList);
+        model.addAttribute("deleted", deleted);
 
         return "/post/postDetail";
     }

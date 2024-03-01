@@ -20,11 +20,13 @@ public interface CommentMapper {
 
     List<CommentVO> getReplyList(int commentSeq) throws Exception;
 
-     int commentModProc(CommentVO commentVO) throws Exception;
+    int commentModProc(CommentVO commentVO) throws Exception;
 
-     int commentDelete(int commentSeq) throws Exception;
+    int commentDelete(int commentSeq) throws Exception;
 
-     void countDelete(int commentSeq) throws Exception;
+    void commentDelete2(int postSeq) throws Exception;
+
+    void countDelete(int commentSeq) throws Exception;
 
     void likeInc(int commentSeq) throws Exception;
 

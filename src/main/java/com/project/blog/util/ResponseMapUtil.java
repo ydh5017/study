@@ -28,7 +28,7 @@ public class ResponseMapUtil {
         return map;
     }
 
-    public HashMap<String, String> getResponseMap(String message, String URL, int seq) {
+    public HashMap<String, String> getResponseMap(String message, String URL, Object seq) {
         HashMap<String, String> map = new HashMap<>();
 
         String msg = messageSource.getMessage(message, null, null);

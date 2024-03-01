@@ -4,6 +4,7 @@ public class PostVO {
 
     private int postSeq;
     private int cateCode;
+    private String cateName;
     private String title;
     private String content;
     private String views;
@@ -30,6 +31,14 @@ public class PostVO {
 
     public void setCateCode(int cateCode) {
         this.cateCode = cateCode;
+    }
+
+    public String getCateName() {
+        return cateName;
+    }
+
+    public void setCateName(String cateName) {
+        this.cateName = cateName;
     }
 
     public String getTitle() {

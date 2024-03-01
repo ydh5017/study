@@ -2,201 +2,208 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">게시글 상세보기</h1>
-    </div>
-    <div class="container">
-            <table class="board_detail">
-                <tr class="border-bottom">
-                    <td>제목 : </td>
-                    <td>{{postVO.title}}</td>
-                    <td>작성자 : {{postVO.writeId}}</td>
-                    <td>작성자 : {{postVO.views}}</td>
-                </tr>
-                <tr>
-                    <td class="border-bottom">내용 : </td>
-                    <td colspan="2">
-                        {{{postVO.content}}}
-                    </td>
-                </tr>
-            </table>
-
-        <!-- 게시글 좋아요 -->
-        <div class="col mr-2">
-            <span class="mr-1" id="">
-                {{#postVO}}
-                {{#isLikeUser}}
-                    <a class="btn btn-info btn-circle" id="postLikeOffBtn"
-                       onclick="return postLike({{postSeq}})">
-                                <i class="fas fa-thumbs-up"></i>
-                    </a>
-                    <a class="btn btn-block btn-circle" id="postLikeOnBtn"
-                   style="border-color: #858796; display: none" onclick="return postLike({{postSeq}})">
-                                <i class="fas fa-regular fa-thumbs-up"></i>
-                    </a>
-                {{/isLikeUser}}
-                {{^isLikeUser}}
-                    <a href="#" class="btn btn-info btn-circle" id="postLikeOffBtn"
-                       style="display: none" onclick="return postLike({{postSeq}})">
-                                <i class="fas fa-thumbs-up"></i>
-                    </a>
-                    <a href="#" class="btn btn-block btn-circle" id="postLikeOnBtn"
-                           style="border-color: #858796" onclick="return postLike({{postSeq}})">
-                                <i class="fas fa-regular fa-thumbs-up"></i>
-                    </a>
-                {{/isLikeUser}}
-                <span class="text-xs" id="postLikeCount">{{likes}}</span>
-                {{/postVO}}
-            </span>
-            <span class="mr-1">좋아요</span>
+    {{^deleted}}
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">게시글 상세보기</h1>
         </div>
-        <!-- 수정, 삭제 버튼 -->
-        {{#write}}
-            <form id="frm" name="frm" method="get" action="/post/modify">
-                <input type="hidden" name="no" value="{{postVO.postSeq}}">
-                <input type="submit" id="submit" value="수정" class="btn">
-            </form>
-            <form id="frm" name="frm" method="post" action="/post">
-                <input type="hidden" name="_method" value="patch">
-                <input type="hidden" name="no" value="{{postVO.postSeq}}">
-                <input type="submit" id="submit" value="삭제" class="btn">
-            </form>
-        {{/write}}
-        <!-- 이전 페이지 이동 버튼 -->
-        <input type="button" onclick="history.back()" value="이전" class="btn">
-        <!-- 댓글 입력 창 -->
-        <form method="post" action="/comment">
-            <table class="board_detail">
-                <tr>
-                    <td>댓글</td>
-                    <td><input type="text" id="content" name="content"></td>
-                    <input type="hidden" name="postSeq" value="{{postVO.postSeq}}">
-                    <input type="hidden" name="commentSeq" value=0>
-                    <input type="hidden" name="commentDepth" value=0>
-                </tr>
-            </table>
-            <input type="submit" id="submit" value="저장" class="btn">
-        </form>
-        <!-- 댓글 리스트 -->
-        {{#commentList}}
-            <div class="col-xl-12">
-                <!-- 댓글 컨텐츠 -->
-                <div class="card border-left h-10 py-2" id="parentComment-{{commentSeq}}">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="border-bottom mb-1">
-                                    <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">
-                                        {{commentWriteId}}
-                                    </div>
-                                    <div class="text-xs text-right font-weight-bold text-uppercase mb-1">
-                                        {{commentWriteDt}}
-                                    </div>
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">
-                                    <input type="hidden" id="commentContent-{{commentSeq}}" value="{{content}}">
-                                    {{content}}
-                                </div>
-                                <!-- 댓글 수정,삭제 -->
-                                {{#isWrite}}
-                                <div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">
-                                <nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">
-                                            <div class="navbar text-xs text-right font-weight-bold text-uppercase mb-0" data-toggle="dropdown">
-                                                <i class="fas fa-solid fa-ellipsis-h -align-center mt-2"></i>
-                                            </div>
-                                            <div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="navbarDropdown">
-                                                <a class="dropdown-item" onclick="return modifyComment({{commentSeq}}, {{postSeq}}, '{{content}}')">수정</a>
-                                                <form class="mr-1" method="post" action="/comment">
-                                                    <input type="hidden" name="_method" value="patch">
-                                                    <input type="hidden" name="commentSeq" value="{{commentSeq}}">
-                                                    <input type="hidden" name="postSeq" value="{{postVO.postSeq}}">
-                                                <button class="dropdown-item" type="submit">삭제</button>
-                                                </form>
-                                            </div>
-                                </nav>
-                                </div>
-                                {{/isWrite}}
-
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 댓글 좋아요 -->
-                    <div class="col mr-2">
+        <div class="container">
+                <table class="board_detail">
+                    <tr class="border-bottom">
+                        <td>제목 : </td>
+                        <td>{{postVO.title}}</td>
+                        <td>작성자 : {{postVO.writeId}}</td>
+                        <td>작성자 : {{postVO.views}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border-bottom">내용 : </td>
+                        <td colspan="2">
+                            {{{postVO.content}}}
+                        </td>
+                    </tr>
+                </table>
+                <!-- 게시글 좋아요 -->
+                <div class="col mr-2">
+                    <span class="mr-1" id="">
+                        {{#postVO}}
                         {{#isLikeUser}}
-                        <a class="btn btn-info btn-circle btn-sm" id="commentLikeOffBtn-{{commentSeq}}"
-                           onclick="return commentLike({{commentSeq}})">
-                            <i class="fas fa-thumbs-up"></i>
-                        </a>
-                        <a class="btn btn-block btn-circle btn-sm" id="commentLikeOnBtn-{{commentSeq}}"
-                           style="border-color: #858796; display: none" onclick="return commentLike({{commentSeq}})">
-                            <i class="fas fa-thumbs-up"></i>
-                        </a>
+                            <a class="btn btn-info btn-circle" id="postLikeOffBtn"
+                               onclick="return postLike({{postSeq}})">
+                                        <i class="fas fa-thumbs-up"></i>
+                            </a>
+                            <a class="btn btn-block btn-circle" id="postLikeOnBtn"
+                           style="border-color: #858796; display: none" onclick="return postLike({{postSeq}})">
+                                        <i class="fas fa-regular fa-thumbs-up"></i>
+                            </a>
                         {{/isLikeUser}}
                         {{^isLikeUser}}
-                        <a class="btn btn-info btn-circle btn-sm" id="commentLikeOffBtn-{{commentSeq}}"
-                           style="display: none" onclick="return commentLike({{commentSeq}})">
-                            <i class="fas fa-thumbs-up"></i>
-                        </a>
-                        <a class="btn btn-block btn-circle btn-sm" id="commentLikeOnBtn-{{commentSeq}}"
-                           style="border-color: #858796;" onclick="return commentLike({{commentSeq}})">
-                            <i class="fas fa-thumbs-up"></i>
-                        </a>
+                            <a href="#" class="btn btn-info btn-circle" id="postLikeOffBtn"
+                               style="display: none" onclick="return postLike({{postSeq}})">
+                                        <i class="fas fa-thumbs-up"></i>
+                            </a>
+                            <a href="#" class="btn btn-block btn-circle" id="postLikeOnBtn"
+                                   style="border-color: #858796" onclick="return postLike({{postSeq}})">
+                                        <i class="fas fa-regular fa-thumbs-up"></i>
+                            </a>
                         {{/isLikeUser}}
-                        <span class="text-xs" id="commentLikeCount-{{commentSeq}}">{{likes}}</span>
-                        <!-- 답글(대댓글) 입력 창 활성화 버튼 -->
-                        <span class="mr-1" id="reply-{{commentSeq}}" onclick="return reply({{commentSeq}})">답글</span>
-                    </div>
-                    <!-- 대댓글 리스트 보기 버튼 -->
-                    {{#count}}
-                    <div class="col mr-2">
-                        <span class="mr-1 text-primary" id="onReplyComment-{{commentSeq}}" onclick="return onReplyComment({{commentSeq}})">
-                            <i class="fas fa-solid fa-caret-down mr-1"></i>답글 보기({{replyCount}})
-                        </span>
-                        <span class="mr-1 text-primary" id="offReplyComment-{{commentSeq}}" onclick="return offReplyComment({{commentSeq}})" style="display: none">
-                            <i class="fas fa-solid fa-caret-up mr-1"></i>답글 닫기({{replyCount}})
-                        </span>
-                    </div>
-                    {{/count}}
+                        <span class="text-xs" id="postLikeCount">{{likes}}</span>
+                        {{/postVO}}
+                    </span>
+                    <span class="mr-1">좋아요</span>
                 </div>
-                <!-- 댓글 수정 창 -->
-                <div class="col-xl-3" id="modifyDiv-{{commentSeq}}" style="display: none"></div>
-                    <div class="card border-left h-10 py-2" id="parentCommentMod-{{commentSeq}}" style="display: none">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                        <form method="post" action="/">
-                                            <input type="hidden" name="_method" value="put">
-                                            <input type="text" id="content" name="content" value="{{content}}">
-                                            <input type="submit" id="submit" value="저장" class="btn">
-                                        </form>
+                <!-- 수정, 삭제 버튼 -->
+                {{#write}}
+                    <form id="frm" name="frm" method="get" action="/post/modify">
+                        <input type="hidden" name="no" value="{{postVO.postSeq}}">
+                        <input type="submit" id="submit" value="수정" class="btn">
+                    </form>
+                    <form id="frm" name="frm" method="post" action="/post">
+                        <input type="hidden" name="_method" value="patch">
+                        <input type="hidden" name="no" value="{{postVO.postSeq}}">
+                        <input type="submit" id="submit" value="삭제" class="btn">
+                    </form>
+                {{/write}}
+                <!-- 이전 페이지 이동 버튼 -->
+                <input type="button" onclick="history.back()" value="이전" class="btn">
+                <!-- 댓글 입력 창 -->
+                <form method="post" action="/comment">
+                    <table class="board_detail">
+                        <tr>
+                            <td>댓글</td>
+                            <td><input type="text" id="content" name="content"></td>
+                            <input type="hidden" name="postSeq" value="{{postVO.postSeq}}">
+                            <input type="hidden" name="commentSeq" value=0>
+                            <input type="hidden" name="commentDepth" value=0>
+                        </tr>
+                    </table>
+                    <input type="submit" id="submit" value="저장" class="btn">
+                </form>
+                <!-- 댓글 리스트 -->
+                {{#commentList}}
+                    <div class="col-xl-12">
+                        <!-- 댓글 컨텐츠 -->
+                        <div class="card border-left h-10 py-2" id="parentComment-{{commentSeq}}">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="border-bottom mb-1">
+                                            <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-1" style="float: left">
+                                                {{commentWriteId}}
+                                            </div>
+                                            <div class="text-xs text-right font-weight-bold text-uppercase mb-1">
+                                                {{commentWriteDt}}
+                                            </div>
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">
+                                            <input type="hidden" id="commentContent-{{commentSeq}}" value="{{content}}">
+                                            {{content}}
+                                        </div>
+                                        <!-- 댓글 수정,삭제 -->
+                                        {{#isWrite}}
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">
+                                        <nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">
+                                                    <div class="navbar text-xs text-right font-weight-bold text-uppercase mb-0" data-toggle="dropdown">
+                                                        <i class="fas fa-solid fa-ellipsis-h -align-center mt-2"></i>
+                                                    </div>
+                                                    <div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="navbarDropdown">
+                                                        <a class="dropdown-item" onclick="return modifyComment({{commentSeq}}, {{postSeq}}, '{{content}}')">수정</a>
+                                                        <form class="mr-1" method="post" action="/comment">
+                                                            <input type="hidden" name="_method" value="patch">
+                                                            <input type="hidden" name="commentSeq" value="{{commentSeq}}">
+                                                            <input type="hidden" name="postSeq" value="{{postVO.postSeq}}">
+                                                        <button class="dropdown-item" type="submit">삭제</button>
+                                                        </form>
+                                                    </div>
+                                        </nav>
+                                        </div>
+                                        {{/isWrite}}
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 댓글 좋아요 -->
+                            <div class="col mr-2">
+                                {{#isLikeUser}}
+                                <a class="btn btn-info btn-circle btn-sm" id="commentLikeOffBtn-{{commentSeq}}"
+                                   onclick="return commentLike({{commentSeq}})">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </a>
+                                <a class="btn btn-block btn-circle btn-sm" id="commentLikeOnBtn-{{commentSeq}}"
+                                   style="border-color: #858796; display: none" onclick="return commentLike({{commentSeq}})">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </a>
+                                {{/isLikeUser}}
+                                {{^isLikeUser}}
+                                <a class="btn btn-info btn-circle btn-sm" id="commentLikeOffBtn-{{commentSeq}}"
+                                   style="display: none" onclick="return commentLike({{commentSeq}})">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </a>
+                                <a class="btn btn-block btn-circle btn-sm" id="commentLikeOnBtn-{{commentSeq}}"
+                                   style="border-color: #858796;" onclick="return commentLike({{commentSeq}})">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </a>
+                                {{/isLikeUser}}
+                                <span class="text-xs" id="commentLikeCount-{{commentSeq}}">{{likes}}</span>
+                                <!-- 답글(대댓글) 입력 창 활성화 버튼 -->
+                                <span class="mr-1" id="reply-{{commentSeq}}" onclick="return reply({{commentSeq}})">답글</span>
+                            </div>
+                            <!-- 대댓글 리스트 보기 버튼 -->
+                            {{#count}}
+                            <div class="col mr-2">
+                                <span class="mr-1 text-primary" id="onReplyComment-{{commentSeq}}" onclick="return onReplyComment({{commentSeq}})">
+                                    <i class="fas fa-solid fa-caret-down mr-1"></i>답글 보기({{replyCount}})
+                                </span>
+                                <span class="mr-1 text-primary" id="offReplyComment-{{commentSeq}}" onclick="return offReplyComment({{commentSeq}})" style="display: none">
+                                    <i class="fas fa-solid fa-caret-up mr-1"></i>답글 닫기({{replyCount}})
+                                </span>
+                            </div>
+                            {{/count}}
+                        </div>
+                        <!-- 댓글 수정 창 -->
+                        <div class="col-xl-3" id="modifyDiv-{{commentSeq}}" style="display: none"></div>
+                            <div class="card border-left h-10 py-2" id="parentCommentMod-{{commentSeq}}" style="display: none">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <form method="post" action="/">
+                                                    <input type="hidden" name="_method" value="put">
+                                                    <input type="text" id="content" name="content" value="{{content}}">
+                                                    <input type="submit" id="submit" value="저장" class="btn">
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <!-- 답글(대댓글) 입력 창 -->
-                <div class="col-xl-3"  id="replyCommentPost-{{commentSeq}}" style="display: none">
-                    <form method="post" action="/comment">
-                        <table class="board_detail">
-                            <tr>
-                                <td>댓글</td>
-                                <td><input type="text" id="content" name="content"></td>
-                                <input type="hidden" name="postSeq" value="{{postVO.postSeq}}">
-                                <input type="hidden" name="commentSeq" value="{{commentSeq}}">
-                                <input type="hidden" name="commentDepth" value=1>
-                            </tr>
-                        </table>
-                        <input type="submit" id="submit" value="저장" class="btn">
-                    </form>
-                </div>
-            <!-- 대댓글 리스트 div -->
-            <div id="replyDiv-{{commentSeq}}" style="display: none"></div>
-        {{/commentList}}
-    </div>
+                        <!-- 답글(대댓글) 입력 창 -->
+                        <div class="col-xl-3"  id="replyCommentPost-{{commentSeq}}" style="display: none">
+                            <form method="post" action="/comment">
+                                <table class="board_detail">
+                                    <tr>
+                                        <td>댓글</td>
+                                        <td><input type="text" id="content" name="content"></td>
+                                        <input type="hidden" name="postSeq" value="{{postVO.postSeq}}">
+                                        <input type="hidden" name="commentSeq" value="{{commentSeq}}">
+                                        <input type="hidden" name="commentDepth" value=1>
+                                    </tr>
+                                </table>
+                                <input type="submit" id="submit" value="저장" class="btn">
+                            </form>
+                        </div>
+                    <!-- 대댓글 리스트 div -->
+                    <div id="replyDiv-{{commentSeq}}" style="display: none"></div>
+                {{/commentList}}
+        </div>
+    {{/deleted}}
+    {{#deleted}}
+        <div class="text-center">
+            <h1 class="lead text-gray-800 mb-5">삭제된 게시글입니다.</h1>
+            <a onclick="history.back()">← Back</a>
+        </div>
+    {{/deleted}}
 </div>
 <script src="/js/comment.js"></script>
 <script src="/js/like.js"></script>
