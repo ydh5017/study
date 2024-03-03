@@ -27,6 +27,7 @@ public class CommentService implements ICommentService {
     private final ResponseMapUtil responseMapUtil;
 
 
+    // 댓글 등록
     @Override
     public HashMap<String, String> commentAddProc(CommentVO commentVO) throws Exception {
         HashMap<String, String> map;
@@ -36,6 +37,7 @@ public class CommentService implements ICommentService {
         if (userId != null) {
             commentVO.setCommentWriteId(userId);
 
+            // 답글일 경우 모댓글 등록
             if (commentVO.getCommentSeq() != 0){
                 commentVO.setCommentGroup(commentVO.getCommentSeq());
                 result = commentMapper.replyCommentAddProc(commentVO);
@@ -57,6 +59,7 @@ public class CommentService implements ICommentService {
         return map;
     }
 
+    // 댓글 리스트 get
     @Override
     public List<CommentVO> getCommentList(int postSeq) throws Exception {
         List<CommentVO> commentList = commentMapper.getCommentList(postSeq);
@@ -66,6 +69,7 @@ public class CommentService implements ICommentService {
         if (userSeq != null) {
             for (int i = 0; i < commentList.size(); i++) {
                 commentSeq = commentList.get(i).getCommentSeq();
+                // 좋아요한 회원인지 확인
                 commentList.get(i).setLiker(likeMapper.commentLikeCheck(Integer.parseInt(userSeq), commentSeq));
             }
         }
@@ -73,6 +77,7 @@ public class CommentService implements ICommentService {
         return commentList;
     }
 
+    // 답글 리스트 get
     @Override
     public List<CommentVO> getReplyList(int commentSeq) throws Exception {
         UserVO userVO = userService.userInfo();
@@ -83,8 +88,10 @@ public class CommentService implements ICommentService {
 
         if (userId != null) {
             for (int i = 0; i < commentList.size(); i++) {
+                // 답글 작성자인지 확인
                 commentList.get(i).setWriter(userId.equals(commentList.get(i).getCommentWriteId()));
                 commentSeq = commentList.get(i).getCommentSeq();
+                // 좋아요한 회원인지 확인
                 commentList.get(i).setLiker(likeMapper.commentLikeCheck(Integer.parseInt(userSeq), commentSeq));
             }
         }
@@ -92,6 +99,7 @@ public class CommentService implements ICommentService {
         return commentList;
     }
 
+    // 댓글 수정
     @Override
     public HashMap<String, String> commentModProc(CommentVO commentVO) throws Exception {
         HashMap<String, String> map;
@@ -115,6 +123,7 @@ public class CommentService implements ICommentService {
         return map;
     }
 
+    // 댓글 삭제
     @Override
     public HashMap<String, String> commentDelete(int commentSeq, int postSeq) throws Exception {
         HashMap<String, String> map;
@@ -136,6 +145,7 @@ public class CommentService implements ICommentService {
         return map;
     }
 
+    // 댓글 좋아요 증가
     @Override
     public void commentLikeInc(int commentSeq) throws Exception {
         int userSeq = Integer.parseInt(userService.userInfo().getUserSeq());
@@ -143,6 +153,7 @@ public class CommentService implements ICommentService {
         likeMapper.commentLikeInc(userSeq, commentSeq);
     }
 
+    // 댓글 좋아요 감소
     @Override
     public void commentLikeDec(int commentSeq) throws Exception {
         int userSeq = Integer.parseInt(userService.userInfo().getUserSeq());

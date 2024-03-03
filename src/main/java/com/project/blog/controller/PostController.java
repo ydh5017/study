@@ -32,54 +32,29 @@ public class PostController {
     @GetMapping
     public String getPostList(@RequestParam(defaultValue = "1") int pno,
                               @RequestParam(required = false) String cateCode,
+                              @RequestParam(required = false) String postType,
                               @RequestParam(required = false) String type,
                               @RequestParam(required = false) String keyword, Model model) throws Exception {
         UserVO userVO = userService.userInfo();
 
-        int page = pno;
-        int listCnt = 0;
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("cateCode", cateCode);
+        map.put("postType", postType);
+        map.put("type", type);
+        map.put("keyword", keyword);
 
-        if (type != null && keyword != null) {
-            if (type == "") {
-                listCnt = postService.postCount(cateCode);
-            }else {
-                listCnt = postService.searchCount(type, keyword, cateCode);
-            }
-        }else {
-            listCnt = postService.postCount(cateCode);
-        }
+        int page = pno;
+        int listCnt = postService.postCount(map);
 
         PagingUtil paging = new PagingUtil();
 
         paging.pageInfo(page, listCnt);
-        HashMap<String, Object> map = new HashMap<>();
         int i = paging.getStartList();
         int j = paging.getListSize();
         map.put("startlist", i);
         map.put("listsize", j);
-        map.put("cateCode", cateCode);
 
-        List<PostVO> postList = new ArrayList<>();
-        try {
-            if (type != null && keyword != null) {
-                HashMap<String, Object> sMap = new HashMap<>();
-                sMap.put("startlist", i);
-                sMap.put("listsize", j);
-                sMap.put("cateCode", cateCode);
-                sMap.put("type", type);
-                sMap.put("keyword", keyword);
-
-                if (type == "") {
-                    postList = postService.getPostList(map);
-                }else {
-                    postList = postService.getSearchList(sMap);
-                }
-            }else {
-                postList = postService.getPostList(map);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        List<PostVO> postList = postService.getPostList(map);
 
         List<PagingUtil> pageList = paging.list(paging.getPage(), paging.getRangeCnt(), paging.getStartPage());
 
@@ -90,7 +65,7 @@ public class PostController {
         model.addAttribute("type", type);
         model.addAttribute("keyword", keyword);
         model.addAttribute("cateCode", cateCode);
-        model.addAttribute("cateName", postList.get(1).getCateName());
+        model.addAttribute("postType", postType);
 
         return "/post/list";
     }

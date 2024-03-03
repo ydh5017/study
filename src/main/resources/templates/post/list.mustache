@@ -3,10 +3,31 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
+    {{#postType}}
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">{{postType}}</h1>
+        </div>
+        <div class="col-sm-12 col-md-12" style="padding: 1rem">
+            <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                <ul class="pagination">
+                    <li class="paginate_button page-item active">
+                        <a aria-controls="dataTable" tabindex="0" class="page-link">전체</a>
+                    </li>
+                    <li class="paginate_button page-item">
+                        <a aria-controls="dataTable" tabindex="0" class="page-link">공지사항</a>
+                    </li>
+                    <li class="paginate_button page-item">
+                        <a aria-controls="dataTable" tabindex="0" class="page-link">자유게시판</a>
+                    </li>
+                    <br>
+                </ul>
+            </div>
+        </div>
+    {{/postType}}
+    {{^postType}}
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">{{cateName}}</h1>
+        <h1 class="h3 mb-0 text-gray-800">{{cateCode}}</h1>
     </div>
-
     <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style="padding: 1rem"
     id="searchFoam" name="searchFoam" method="get" action="/post">
         <input type="hidden" name="cateCode" value="{{cateCode}}">
@@ -29,10 +50,14 @@
             </div>
         </div>
     </form>
+    {{/postType}}
 
     <div class="container">
         <table class="board_list">
             <colgroup>
+                {{#postType}}
+                    <col width="6%"/>
+                {{/postType}}
                 <col width="15%"/>
                 <col width="5%"/>
                 <col width="5%"/>
@@ -41,6 +66,9 @@
             </colgroup>
             <thead>
             <tr>
+                {{#postType}}
+                    <th scope="col">카테고리</th>
+                {{/postType}}
                 <th scope="col">제목</th>
                 <th scope="col">조회수</th>
                 <th scope="col">좋아요</th>
@@ -52,6 +80,9 @@
             <tbody>
             <tr>
                 <input type="hidden" id="postSeq" name="postSeq" value="{{postSeq}}">
+                {{#postType}}
+                    <td style="color: #2a96a5">{{cateName}}</td>
+                {{/postType}}
                 <td onclick="location.href='post/detail?no={{postSeq}}'">{{title}}</td>
                 <td><i class="fas fa-eye"></i> {{views}}</td>
                 <td><i class="fas fa-thumbs-up"></i> {{likes}}</td>
@@ -84,7 +115,13 @@
                         {{/keyword}}
                     {{/type}}
                     {{^type}}
-                        <a href="/post?cateCode={{cateCode}}&pno={{paging.prevPage}}" aria-controls="dataTable" tabindex="0" class="page-link">Previous</a>
+                        {{#postType}}
+                            <a href="/post?postType={{postType}}&cateCode={{cateCode}}&pno={{paging.prevPage}}" aria-controls="dataTable" tabindex="0" class="page-link">Previous</a>
+                        {{/postType}}
+                        {{^postType}}
+                            <a href="/post?cateCode={{cateCode}}&pno={{paging.prevPage}}" aria-controls="dataTable" tabindex="0" class="page-link">Previous</a>
+                        {{/postType}}
+
                     {{/type}}
                 </li>
             {{/paging.prev}}
@@ -104,9 +141,16 @@
                         {{/keyword}}
                     {{/type}}
                     {{^type}}
-                    <li class="paginate_button page-item ">
-                        <a aria-controls="dataTable" tabindex="0" class="page-link" href="/post?cateCode={{cateCode}}&pno={{page}}">{{page}}</a>
-                    </li>
+                        {{#postType}}
+                            <li class="paginate_button page-item ">
+                                <a aria-controls="dataTable" tabindex="0" class="page-link" href="/post?postType={{postType}}&cateCode={{cateCode}}&pno={{page}}">{{page}}</a>
+                            </li>
+                        {{/postType}}
+                        {{^postType}}
+                            <li class="paginate_button page-item ">
+                                <a aria-controls="dataTable" tabindex="0" class="page-link" href="/post?cateCode={{cateCode}}&pno={{page}}">{{page}}</a>
+                            </li>
+                        {{/postType}}
                     {{/type}}
                 {{/equalsPage}}
             {{/pageList}}
@@ -119,7 +163,12 @@
                         {{/keyword}}
                     {{/type}}
                     {{^type}}
-                        <a href="/post?cateCode={{cateCode}}&pno={{paging.nextPage}}" aria-controls="dataTable" tabindex="0" class="page-link">next</a>
+                        {{#postType}}
+                            <a href="/post?postType={{postType}}&cateCode={{cateCode}}&pno={{paging.nextPage}}" aria-controls="dataTable" tabindex="0" class="page-link">next</a>
+                        {{/postType}}
+                        {{^postType}}
+                            <a href="/post?cateCode={{cateCode}}&pno={{paging.nextPage}}" aria-controls="dataTable" tabindex="0" class="page-link">next</a>
+                        {{/postType}}
                     {{/type}}
                 </li>
             {{/paging.next}}

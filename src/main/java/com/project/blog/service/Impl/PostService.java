@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,33 +29,77 @@ public class PostService implements IPostService {
     private final CommentMapper commentMapper;
     private final ResponseMapUtil responseMapUtil;
 
+    // 게시글 리스트 get
     @Override
-    public List<PostVO> getPostList(HashMap<String, Object> Map) throws Exception {
-        return postMapper.getPostList(Map);
+    public List<PostVO> getPostList(HashMap<String, Object> map) throws Exception {
+        String type = (String) map.get("type");
+        String keyword = (String) map.get("keyword");
+        String postType = (String) map.get("postType");
+
+        List<PostVO> postList = new ArrayList<>();
+
+        try {
+            if (type != null && keyword != null) {
+                if (type == "") {
+                    // 게시글 검색 타입 없을 시 전체글 리스트 get
+                    postList = postMapper.getPostList(map);
+                }else {
+                    // 검색 타입/키워드에 따라 게시글 리스트 get
+                    postList = postMapper.getSearchList(map);
+                }
+            }else {
+                if (postType != null) {
+                    // 인기글 리스트 get
+                    postList = postMapper.getPopularPost(map);
+                }else {
+                    // 전체글 리스트 get
+                    postList = postMapper.getPostList(map);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return postList;
     }
 
-    @Override
-    public List<PostVO> getSearchList(HashMap<String, Object> hMap) throws Exception {
-        return postMapper.getSearchList(hMap);
-    }
-
+    // 메인페이지 인기글 리스트 get
     @Override
     public List<PostVO> getPopularPost(String cateCode) throws Exception {
-        return postMapper.getPopularPost(cateCode);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("cateCode", cateCode);
+        return postMapper.getPopularPost(map);
     }
 
+    // 게시글 개수 count
     @Override
-    public int postCount(String cateCode) throws Exception {
-        int count = postMapper.postCount(cateCode);
+    public int postCount(HashMap<String, Object> map) throws Exception {
+        String type = (String) map.get("type");
+        String keyword = (String) map.get("keyword");
+        String postType = (String) map.get("postType");
+        int count;
+
+        if (type != null && keyword != null) {
+            if (type == "") {
+                // 게시글 검색 타입 없을 시 전체글 count
+                count = postMapper.postCount(map);
+            }else {
+                // 검색 타입/키워드에 따라 게시글 count
+                count = postMapper.searchCount(map);
+            }
+        }else {
+            if (postType != null) {
+                // 인기글 count
+                count = postMapper.popularCount(map);
+            } else {
+                // 전체글 count
+                count = postMapper.postCount(map);
+            }
+        }
+
         return count;
     }
 
-    @Override
-    public int searchCount(String type, String keyword, String cateCode) throws Exception {
-        int count = postMapper.searchCount(type, keyword, cateCode);
-        return count;
-    }
-
+    // 게시글 등록
     @Override
     public HashMap<String, String> postAddProc(PostVO postVO) throws Exception {
         HashMap<String, String> map;
@@ -81,24 +126,29 @@ public class PostService implements IPostService {
         return map;
     }
 
+    // 게시글 상세정보 get
     @Override
     public PostVO postDetail(int postSeq) throws Exception {
         PostVO postVO = postMapper.postDetail(postSeq);
         UserVO userVO = userService.userInfo();
 
+        // 게시글 조회수 증가
         postMapper.viewIncrease(postSeq);
 
         if (userVO.getUserSeq() != null) {
+            // 게시글 좋아요한 회원인지 확인
             postVO.setLikeUser(likeMapper.postLikeCheck(Integer.parseInt(userVO.getUserSeq()), postSeq));
         }
 
         if (postVO.getWriteId().equals(userVO.getUserId())) {
+            // 로그인한 회원과 작성자가 같은지 확인
             postVO.setWriter();
         }
 
         return postVO;
     }
 
+    // 게시글 삭제
     @Override
     public HashMap<String, String> postDelete(int postSeq) throws Exception {
         HashMap<String, String> map;
@@ -106,6 +156,7 @@ public class PostService implements IPostService {
         HashMap<String, Object> pMap = new HashMap<>();
         pMap.put("postSeq", postSeq);
         postMapper.postDelete(pMap);
+        // 삭제된 게시글의 댓글들 삭제
         commentMapper.commentDelete2(postSeq);
 
         if (pMap.get("cateCode") != null) {
@@ -117,6 +168,7 @@ public class PostService implements IPostService {
         return map;
     }
 
+    // 게시글 수정
     @Override
     public HashMap<String, String> postModProc(PostVO postVO) throws Exception {
         HashMap<String, String> map;
@@ -139,6 +191,7 @@ public class PostService implements IPostService {
         return map;
     }
 
+    // 게시글 좋아요 증가
     @Override
     public void postLikeInc(int postSeq) throws Exception {
         int userSeq = Integer.parseInt(userService.userInfo().getUserSeq());
@@ -146,6 +199,7 @@ public class PostService implements IPostService {
         likeMapper.postLikeInc(userSeq, postSeq);
     }
 
+    // 게시글 좋아요 감소
     @Override
     public void postLikeDec(int postSeq) throws Exception {
         int userSeq = Integer.parseInt(userService.userInfo().getUserSeq());

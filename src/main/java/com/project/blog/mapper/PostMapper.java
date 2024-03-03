@@ -12,11 +12,13 @@ public interface PostMapper {
 
     List<PostVO> getSearchList(HashMap<String, Object> hMap) throws Exception;
 
-    List<PostVO> getPopularPost(String cateCode) throws Exception;
+    List<PostVO> getPopularPost(HashMap<String, Object> hMap) throws Exception;
 
-    int postCount(String cateCode) throws Exception;
+    int postCount(HashMap<String, Object> map) throws Exception;
 
-    int searchCount(String type, String keyword, String cateCode) throws Exception;
+    int searchCount(HashMap<String, Object> map) throws Exception;
+
+    int popularCount(HashMap<String, Object> map) throws Exception;
 
     void viewIncrease(int postSeq) throws Exception;
 

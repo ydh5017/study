@@ -25,6 +25,7 @@ public class UserService implements IUserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final ResponseMapUtil responseMapUtil;
 
+    // 회원가입
     @Override
     public HashMap<String, String> userRegProc(UserVO userVO) throws Exception {
         int result;
@@ -33,6 +34,7 @@ public class UserService implements IUserService {
         if (userMapper.idCheck(userVO.getUserId())) {
             map = responseMapUtil.getResponseMap("user.exist", "user.reg");
         }else {
+            // 패스워드 암호화
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             userVO.setPassword(passwordEncoder.encode(userVO.getPassword()));
 
@@ -48,6 +50,7 @@ public class UserService implements IUserService {
         return map;
     }
 
+    // 로그인
     @Override
     public HashMap<String, String> login(UserVO userVO) throws Exception {
         String userId = userVO.getUserId();
@@ -58,7 +61,9 @@ public class UserService implements IUserService {
             userVO = userMapper.loginInfo(userId);
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+            // 패스워드 일치 확인
             if (passwordEncoder.matches(password, userVO.getPassword())) {
+                // 로그인 정보 토큰 발급
                 String token = jwtTokenProvider.createToken(userVO);
 
                 map = responseMapUtil.getResponseMap("user.login", "main");
@@ -73,6 +78,7 @@ public class UserService implements IUserService {
         return map;
     }
 
+    // 회원정보 get
     @Override
     public UserVO userInfo() {
         CustomUserDetails customUserDetails;
@@ -86,6 +92,7 @@ public class UserService implements IUserService {
         return customUserDetails.getUserVO();
     }
 
+    // 회원정보 수정
     @Override
     public HashMap<String, String> userModProc(UserVO userVO) throws Exception {
         UserVO loginUser = userInfo();
@@ -107,13 +114,16 @@ public class UserService implements IUserService {
         return map;
     }
 
+    // 패스워드 변경
     @Override
     public HashMap<String, String> passwordModProc(String currentPassword, String newPassword) throws Exception {
         HashMap<String, String> map;
         UserVO userVO = userInfo();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+        // 현재 비밀번호 일치 확인
         if (passwordEncoder.matches(currentPassword, userVO.getPassword())) {
+            // 현재 비밀번호와 새 비밀번호 다른지 확인
             if (!currentPassword.equals(newPassword)) {
                 userVO.setPassword(passwordEncoder.encode(newPassword));
 
@@ -135,6 +145,7 @@ public class UserService implements IUserService {
         return map;
     }
 
+    // 임시 비밀번호 발급
     @Override
     public HashMap<String, String> updatePassword(String userId) throws Exception {
         HashMap<String, String> map;
@@ -159,6 +170,7 @@ public class UserService implements IUserService {
         return map;
     }
 
+    // 임시 비밀번호 get
     @Override
     public String getTemporaryPassword() throws Exception {
         char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',

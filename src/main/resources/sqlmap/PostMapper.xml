@@ -66,7 +66,7 @@
             LIMIT #{startlist}, #{listsize}
     </select>
     <!-- 인기글 리스트 가져오기 -->
-    <select id="getPopularPost" parameterType="String" resultType="PostVO">
+    <select id="getPopularPost" parameterType="map" resultType="PostVO">
         SELECT
             A.POSTSEQ,
             A.CATECODE,
@@ -80,12 +80,31 @@
             A.CHGID,
             A.CHGDT,
             A.ISDELETED
-        FROM (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )-7) A
+        FROM
+            <choose>
+                <when test="postType == 'weekly'">
+                    (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )-7) A
+                </when>
+                <when test="postType == 'day'">
+                    (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )) A
+                </when>
+                <otherwise>
+                    (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )-7) A
+                </otherwise>
+            </choose>
         WHERE A.ISDELETED = 0
           <if test="cateCode != '100'">
               AND A.CATECODE = #{cateCode}
           </if>
         ORDER BY A.LIKES DESC, A.WRITEDT DESC
+        <choose>
+            <when test="startlist != null">
+                LIMIT #{startlist}, #{listsize}
+            </when>
+            <otherwise>
+                LIMIT 0, 10
+            </otherwise>
+        </choose>
     </select>
     <!-- 게시글 가져오기 -->
     <select id="postDetail" parameterType="int" resultType="PostVO">
@@ -108,7 +127,9 @@
         SELECT COUNT(0)
         FROM POST
         WHERE ISDELETED = 0
-          AND CATECODE = #{cateCode}
+        <if test="cateCode != '100'">
+            AND CATECODE = #{cateCode}
+        </if>
     </select>
     <!-- 검색된 게시글 수 조회 -->
     <select id="searchCount" resultType="integer">
@@ -116,7 +137,29 @@
         FROM POST
         WHERE ${type} LIKE '%${keyword}%'
           AND ISDELETED = 0
-          AND CATECODE = #{cateCode}
+        <if test="cateCode != '100'">
+            AND CATECODE = #{cateCode}
+        </if>
+    </select>
+    <!-- 인기글 수 조회 -->
+    <select id="popularCount" resultType="integer">
+        SELECT COUNT(0)
+        FROM
+            <choose>
+                <when test="postType == 'weekly'">
+                    (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )-7) A
+                </when>
+                <when test="postType == 'day'">
+                    (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )) A
+                </when>
+                <otherwise>
+                    POST AS A
+                </otherwise>
+            </choose>
+        WHERE A.ISDELETED = 0
+        <if test="cateCode != '100'">
+            AND A.CATECODE = #{cateCode}
+        </if>
     </select>
     <!-- 조회수 증가 -->
     <update id="viewIncrease" parameterType="map">
