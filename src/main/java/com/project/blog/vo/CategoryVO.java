@@ -8,6 +8,7 @@ public class CategoryVO {
     private String cateDepth;
     private String cateParent;
     private String isDeleted;
+    private boolean isCate = false;
 
     public int getCateSeq() {
         return cateSeq;
@@ -55,5 +56,13 @@ public class CategoryVO {
 
     public void setIsDeleted(String isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public boolean isCate() {
+        return isCate;
+    }
+
+    public void setCate(boolean cate) {
+        isCate = cate;
     }
 }

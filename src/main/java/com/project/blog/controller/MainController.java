@@ -27,7 +27,7 @@ public class MainController {
     @GetMapping
     public String index(Model model) throws Exception {
         UserVO userVO = userService.userInfo();
-        List<PostVO> postList = postService.getPopularPost("100");
+        List<PostVO> postList = postService.getPopularPost("week", "100");
 
         model.addAttribute("userVO", userVO);
         model.addAttribute("postList", postList);

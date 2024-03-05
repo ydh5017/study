@@ -4,6 +4,7 @@ import com.project.blog.service.ICommentService;
 import com.project.blog.service.IPostService;
 import com.project.blog.service.IUserService;
 import com.project.blog.util.PagingUtil;
+import com.project.blog.vo.CategoryVO;
 import com.project.blog.vo.CommentVO;
 import com.project.blog.vo.PostVO;
 import com.project.blog.vo.UserVO;
@@ -30,11 +31,13 @@ public class PostController {
 
     // 게시글 리스트 페이지
     @GetMapping
-    public String getPostList(@RequestParam(defaultValue = "1") int pno,
-                              @RequestParam(required = false) String cateCode,
-                              @RequestParam(required = false) String postType,
-                              @RequestParam(required = false) String type,
-                              @RequestParam(required = false) String keyword, Model model) throws Exception {
+    public String getPostList(@RequestParam(defaultValue = "1") int pno, // 페이지 넘버
+                              @RequestParam(required = false) String cateCode, // 카테고리 코드
+                              @RequestParam(required = false) String postType, // 게시판 타입(주간/일간)
+                              @RequestParam(required = false) String type, // 검색 유형
+                              @RequestParam(required = false) String keyword, // 검색 키워드
+                              Model model) throws Exception {
+        // 회원정보
         UserVO userVO = userService.userInfo();
 
         HashMap<String, Object> map = new HashMap<>();
@@ -43,9 +46,11 @@ public class PostController {
         map.put("type", type);
         map.put("keyword", keyword);
 
+        // 게시글 수 count
         int page = pno;
         int listCnt = postService.postCount(map);
 
+        // 페이징
         PagingUtil paging = new PagingUtil();
 
         paging.pageInfo(page, listCnt);
@@ -54,11 +59,15 @@ public class PostController {
         map.put("startlist", i);
         map.put("listsize", j);
 
+        // 게시글 리스트
         List<PostVO> postList = postService.getPostList(map);
-
+        // 하위 카테고리 리스트
+        List<CategoryVO> cateList = postService.getCateList(cateCode);
+        // 페이지 리스트
         List<PagingUtil> pageList = paging.list(paging.getPage(), paging.getRangeCnt(), paging.getStartPage());
 
         model.addAttribute("postList", postList);
+        model.addAttribute("cateList", cateList);
         model.addAttribute("paging", paging);
         model.addAttribute("pageList", pageList);
         model.addAttribute("userVO", userVO);

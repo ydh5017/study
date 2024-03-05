@@ -82,7 +82,7 @@
             A.ISDELETED
         FROM
             <choose>
-                <when test="postType == 'weekly'">
+                <when test="postType == 'week'">
                     (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )-7) A
                 </when>
                 <when test="postType == 'day'">
@@ -146,7 +146,7 @@
         SELECT COUNT(0)
         FROM
             <choose>
-                <when test="postType == 'weekly'">
+                <when test="postType == 'week'">
                     (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )-7) A
                 </when>
                 <when test="postType == 'day'">

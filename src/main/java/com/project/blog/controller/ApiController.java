@@ -3,11 +3,13 @@ package com.project.blog.controller;
 import com.project.blog.service.ICommentService;
 import com.project.blog.service.IPostService;
 import com.project.blog.vo.CommentVO;
+import com.project.blog.vo.PostVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -23,6 +25,12 @@ public class ApiController {
     @GetMapping(value = "replyList")
     public List<CommentVO> getReplyList(@RequestParam int commentSeq) throws Exception {
         return commentService.getReplyList(commentSeq);
+    }
+
+    // 대댓글 리스트 get
+    @GetMapping(value = "PopularPost")
+    public List<PostVO> getPopularPost(@RequestParam String postType) throws Exception {
+        return postService.getPopularPost(postType, "100");
     }
 
     // 게시글 좋아요 up

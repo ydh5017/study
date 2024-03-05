@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.project.blog.mapper.CategoryMapper">
-    <!-- 하위 카테고리 리스트 -->
-    <select id="getChildCategory" parameterType="map" resultType="CategoryVO">
+    <!-- 게시판 카테고리 리스트 -->
+    <select id="getChildCategory" resultType="CategoryVO">
         SELECT
             CATESEQ,
             CATECODE,
@@ -12,6 +12,6 @@
             ISDELETED
         FROM CATEGORY
         WHERE ISDELETED = 0
-          AND CATEPARENT = #{cateParent}
+          AND CATEPARENT = #{cateCode} OR CATECODE = #{cateCode}
     </select>
 </mapper>

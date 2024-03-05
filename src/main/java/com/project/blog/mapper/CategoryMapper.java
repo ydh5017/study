@@ -9,5 +9,5 @@ import java.util.List;
 @Mapper
 public interface CategoryMapper {
 
-    List<CategoryVO> getChildCategory(HashMap<String, Object> hMap) throws Exception;
+    List<CategoryVO> getChildCategory(String cateCode) throws Exception;
 }

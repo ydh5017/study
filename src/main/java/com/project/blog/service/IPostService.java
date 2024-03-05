@@ -1,5 +1,6 @@
 package com.project.blog.service;
 
+import com.project.blog.vo.CategoryVO;
 import com.project.blog.vo.PostVO;
 
 import java.util.HashMap;
@@ -9,7 +10,7 @@ public interface IPostService {
 
     List<PostVO> getPostList(HashMap<String, Object> hMap) throws Exception;
 
-    List<PostVO> getPopularPost(String cateCode) throws Exception;
+    List<PostVO> getPopularPost(String postType, String cateCode) throws Exception;
 
     int postCount(HashMap<String, Object> map) throws Exception;
 
@@ -24,4 +25,6 @@ public interface IPostService {
     void  postLikeInc(int postSeq) throws Exception;
 
     void  postLikeDec(int postSeq) throws Exception;
+
+    List<CategoryVO> getCateList(String cateCode) throws Exception;
 }

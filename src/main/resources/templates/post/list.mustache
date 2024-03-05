@@ -5,20 +5,25 @@
     <!-- Page Heading -->
     {{#postType}}
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">{{postType}}</h1>
+            <h1 class="h3 mb-0 text-gray-800" id="postType">{{postType}}</h1>
         </div>
         <div class="col-sm-12 col-md-12" style="padding: 1rem">
             <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
-                <ul class="pagination">
-                    <li class="paginate_button page-item active">
-                        <a aria-controls="dataTable" tabindex="0" class="page-link">전체</a>
-                    </li>
-                    <li class="paginate_button page-item">
-                        <a aria-controls="dataTable" tabindex="0" class="page-link">공지사항</a>
-                    </li>
-                    <li class="paginate_button page-item">
-                        <a aria-controls="dataTable" tabindex="0" class="page-link">자유게시판</a>
-                    </li>
+                <ul class="pagination" id="cateList">
+                    {{#cateList}}
+                        {{#isCate}}
+                            <li class="paginate_button page-item active" id="category-{{cateCode}}">
+                                <a aria-controls="dataTable" tabindex="0" class="page-link"
+                                   href="/post?postType={{postType}}&cateCode={{cateCode}}&pno=1">{{cateName}}</a>
+                            </li>
+                        {{/isCate}}
+                        {{^isCate}}
+                            <li class="paginate_button page-item" id="category-{{cateCode}}">
+                                <a aria-controls="dataTable" tabindex="0" class="page-link"
+                                   href="/post?postType={{postType}}&cateCode={{cateCode}}&pno=1">{{cateName}}</a>
+                            </li>
+                        {{/isCate}}
+                    {{/cateList}}
                     <br>
                 </ul>
             </div>
@@ -64,38 +69,40 @@
                 <col width="8%"/>
                 <col width="15%"/>
             </colgroup>
-            <thead>
-            <tr>
-                {{#postType}}
-                    <th scope="col">카테고리</th>
-                {{/postType}}
-                <th scope="col">제목</th>
-                <th scope="col">조회수</th>
-                <th scope="col">좋아요</th>
-                <th scope="col">작성자</th>
-                <th scope="col">작성일</th>
-            </tr>
+            <thead id="postThead">
+                <tr>
+                    {{#postType}}
+                        <th scope="col">카테고리</th>
+                    {{/postType}}
+                    <th scope="col">제목</th>
+                    <th scope="col">조회수</th>
+                    <th scope="col">좋아요</th>
+                    <th scope="col">작성자</th>
+                    <th scope="col">작성일</th>
+                </tr>
             </thead>
-            {{#postList}}
-            <tbody>
-            <tr>
-                <input type="hidden" id="postSeq" name="postSeq" value="{{postSeq}}">
-                {{#postType}}
-                    <td style="color: #2a96a5">{{cateName}}</td>
-                {{/postType}}
-                <td onclick="location.href='post/detail?no={{postSeq}}'">{{title}}</td>
-                <td><i class="fas fa-eye"></i> {{views}}</td>
-                <td><i class="fas fa-thumbs-up"></i> {{likes}}</td>
-                <td>{{writeId}}</td>
-                <td>{{writeDt}}</td>
-            </tr>
-            {{/postList}}
-            {{^postList}}
-            <tr>
-                <td colspan="4">조회된 결과가 없습니다.</td>
-            </tr>
-            {{/postList}}
-        </tbody>
+            <tbody id="postTbody">
+                <div id="postDiv">
+                    {{#postList}}
+                        <tr>
+                            <input type="hidden" id="postSeq" name="postSeq" value="{{postSeq}}">
+                            {{#postType}}
+                                <td style="color: #2a96a5">{{cateName}}</td>
+                            {{/postType}}
+                            <td onclick="location.href='post/detail?no={{postSeq}}'">{{title}}</td>
+                            <td><i class="fas fa-eye"></i> {{views}}</td>
+                            <td><i class="fas fa-thumbs-up"></i> {{likes}}</td>
+                            <td>{{writeId}}</td>
+                            <td>{{writeDt}}</td>
+                        </tr>
+                    {{/postList}}
+                    {{^postList}}
+                        <tr>
+                            <td colspan="4">조회된 결과가 없습니다.</td>
+                        </tr>
+                    {{/postList}}
+                </div>
+            </tbody>
         </table>
         {{#userVO}}
             {{#isReleased}}

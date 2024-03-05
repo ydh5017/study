@@ -1,11 +1,13 @@
 package com.project.blog.service.Impl;
 
+import com.project.blog.mapper.CategoryMapper;
 import com.project.blog.mapper.CommentMapper;
 import com.project.blog.mapper.LikeMapper;
 import com.project.blog.mapper.PostMapper;
 import com.project.blog.service.IPostService;
 import com.project.blog.service.IUserService;
 import com.project.blog.util.ResponseMapUtil;
+import com.project.blog.vo.CategoryVO;
 import com.project.blog.vo.PostVO;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class PostService implements IPostService {
     private final IUserService userService;
     private final LikeMapper likeMapper;
     private final CommentMapper commentMapper;
+    private final CategoryMapper categoryMapper;
     private final ResponseMapUtil responseMapUtil;
 
     // 게시글 리스트 get
@@ -64,9 +67,10 @@ public class PostService implements IPostService {
 
     // 메인페이지 인기글 리스트 get
     @Override
-    public List<PostVO> getPopularPost(String cateCode) throws Exception {
+    public List<PostVO> getPopularPost(String postType, String cateCode) throws Exception {
         HashMap<String, Object> map = new HashMap<>();
         map.put("cateCode", cateCode);
+        map.put("postType", postType);
         return postMapper.getPopularPost(map);
     }
 
@@ -206,4 +210,20 @@ public class PostService implements IPostService {
         postMapper.likeDec(postSeq);
         likeMapper.postLikeDec(userSeq, postSeq);
     }
+
+    // 게시판 하위 카테고리 리스트 get
+    @Override
+    public List<CategoryVO> getCateList(String cateCode) throws Exception {
+        List<CategoryVO> cateList = categoryMapper.getChildCategory("100");
+        for (int i = 0; i < cateList.size(); i++) {
+            if (cateList.get(i).getCateCode().equals(cateCode)) {
+                cateList.get(i).setCate(true);
+            }
+            if (cateList.get(i).getCateCode().equals("100")){
+                cateList.get(i).setCateName("전체");
+            }
+        }
+        return cateList;
+    }
+
 }
