@@ -106,6 +106,53 @@
             </otherwise>
         </choose>
     </select>
+    <!-- 마이페이지 게시글 리스트 가져오기 -->
+    <select id="getMypagePost" parameterType="map" resultType="PostVO">
+        SELECT
+            POSTSEQ,
+            CATECODE,
+            (SELECT CATENAME FROM CATEGORY WHERE CATECODE = A.CATECODE) AS CATENAME,
+            TITLE,
+            CONTENT,
+            VIEWS,
+            LIKES,
+            WRITEID,
+            WRITEDT,
+            CHGID,
+            CHGDT,
+            ISDELETED
+        FROM POST AS A
+        WHERE ISDELETED = 0
+        <choose>
+            <when test="mypageType == 'write' || postType == 'writePost'">
+                AND WRITEID = #{userId}
+            </when>
+            <when test="mypageType == 'like' || postType == 'likePost'">
+                AND POSTSEQ IN
+                <foreach collection="likeInfo" item="item" open="(" close=")" separator=",">
+                    #{item.postSeq}
+                </foreach>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cateCode != '100'">
+                AND CATECODE = #{cateCode}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        ORDER BY POSTSEQ DESC
+        <choose>
+            <when test="postType == 'writePost' || postType == 'likePost'">
+                LIMIT #{startlist}, #{listsize}
+            </when>
+            <otherwise>
+                LIMIT 0, 10
+            </otherwise>
+        </choose>
+    </select>
     <!-- 게시글 가져오기 -->
     <select id="postDetail" parameterType="int" resultType="PostVO">
         SELECT
@@ -159,6 +206,28 @@
         WHERE A.ISDELETED = 0
         <if test="cateCode != '100'">
             AND A.CATECODE = #{cateCode}
+        </if>
+    </select>
+    <!-- 마이페이지 작성한 게시글 수 조회 -->
+    <select id="mypageCount" resultType="integer">
+        SELECT COUNT(0)
+        FROM POST
+        WHERE ISDELETED = 0
+        <choose>
+            <when test="postType == 'writePost'">
+                AND WRITEID = #{userId}
+            </when>
+            <when test="postType == 'likePost'">
+                AND POSTSEQ IN
+                <foreach collection="likeInfo" item="item" open="(" close=")" separator=",">
+                    #{item.postSeq}
+                </foreach>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <if test="cateCode != '100'">
+            AND CATECODE = #{cateCode}
         </if>
     </select>
     <!-- 조회수 증가 -->

@@ -1,6 +1,9 @@
 package com.project.blog.mapper;
 
+import com.project.blog.vo.LikeVO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 @Mapper
 public interface LikeMapper {
@@ -16,4 +19,6 @@ public interface LikeMapper {
     void commentLikeDec(int userSeq, int commentSeq) throws Exception;
 
     boolean commentLikeCheck(int userSeq, int commentSeq) throws Exception;
+
+    List<LikeVO> getLikeInfo(String userSeq) throws Exception;
 }

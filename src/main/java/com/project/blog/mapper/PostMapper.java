@@ -14,11 +14,15 @@ public interface PostMapper {
 
     List<PostVO> getPopularPost(HashMap<String, Object> hMap) throws Exception;
 
+    List<PostVO> getMypagePost(HashMap<String, Object> map) throws Exception;
+
     int postCount(HashMap<String, Object> map) throws Exception;
 
     int searchCount(HashMap<String, Object> map) throws Exception;
 
     int popularCount(HashMap<String, Object> map) throws Exception;
+
+    int mypageCount(HashMap<String, Object> map) throws Exception;
 
     void viewIncrease(int postSeq) throws Exception;
 

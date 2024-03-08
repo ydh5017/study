@@ -8,6 +8,7 @@ import com.project.blog.service.IPostService;
 import com.project.blog.service.IUserService;
 import com.project.blog.util.ResponseMapUtil;
 import com.project.blog.vo.CategoryVO;
+import com.project.blog.vo.LikeVO;
 import com.project.blog.vo.PostVO;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class PostService implements IPostService {
     // 게시글 리스트 get
     @Override
     public List<PostVO> getPostList(HashMap<String, Object> map) throws Exception {
+        UserVO userVO = userService.userInfo();
         String type = (String) map.get("type");
         String keyword = (String) map.get("keyword");
         String postType = (String) map.get("postType");
@@ -52,8 +54,20 @@ public class PostService implements IPostService {
                 }
             }else {
                 if (postType != null) {
-                    // 인기글 리스트 get
-                    postList = postMapper.getPopularPost(map);
+                    if (postType.equals("week") || postType.equals("day")) {
+                        // 인기글 리스트 get
+                        postList = postMapper.getPopularPost(map);
+                    }else {
+                        if (postType.equals("likePost")) {
+                            List<LikeVO> likeInfo = likeMapper.getLikeInfo(userVO.getUserSeq());
+                            map.put("likeInfo", likeInfo);
+                            map.put("mypageType", "like");
+                        }else {
+                            // 마이페이지 게시글 리스트 get
+                            map.put("mypageType", "write");
+                        }
+                        postList = postMapper.getMypagePost(map);
+                    }
                 }else {
                     // 전체글 리스트 get
                     postList = postMapper.getPostList(map);
@@ -65,7 +79,7 @@ public class PostService implements IPostService {
         return postList;
     }
 
-    // 메인페이지 인기글 리스트 get
+    // 메인페이지 인기글 미리보기 리스트 get
     @Override
     public List<PostVO> getPopularPost(String postType, String cateCode) throws Exception {
         HashMap<String, Object> map = new HashMap<>();
@@ -74,9 +88,34 @@ public class PostService implements IPostService {
         return postMapper.getPopularPost(map);
     }
 
+    // 마이페이지 게시글 미리보기 리스트
+    @Override
+    public List<PostVO> getMypagePost(String mypageType) throws Exception {
+        UserVO userVO = userService.userInfo();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("userId" , userVO.getUserId());
+        map.put("cateCode", "100");
+        map.put("mypageType", mypageType);
+
+        List<PostVO> postList = new ArrayList<>();
+
+        if (mypageType.equals("write")) {
+            // 로그인한 회원이 작성한 게시글 리스트
+            postList = postMapper.getMypagePost(map);
+        }else if (mypageType.equals("like")) {
+            // 로그인한 회원이 좋아요한 게시글 리스트
+            List<LikeVO> likeInfo = likeMapper.getLikeInfo(userVO.getUserSeq());
+            map.put("likeInfo", likeInfo);
+            postList = postMapper.getMypagePost(map);
+        }
+
+        return postList;
+    }
+
     // 게시글 개수 count
     @Override
     public int postCount(HashMap<String, Object> map) throws Exception {
+        UserVO userVO = userService.userInfo();
         String type = (String) map.get("type");
         String keyword = (String) map.get("keyword");
         String postType = (String) map.get("postType");
@@ -92,8 +131,18 @@ public class PostService implements IPostService {
             }
         }else {
             if (postType != null) {
-                // 인기글 count
-                count = postMapper.popularCount(map);
+                if (postType.equals("week") || postType.equals("day")) {
+                    // 인기글 count
+                    count = postMapper.popularCount(map);
+                }else {
+                    // 마이페이지 게시글 count
+                    if (postType.equals("likePost")) {
+                        List<LikeVO> likeInfo = likeMapper.getLikeInfo(userVO.getUserSeq());
+                        map.put("likeInfo", likeInfo);
+                    }
+                    count = postMapper.mypageCount(map);
+                    log.info("count : " + count);
+                }
             } else {
                 // 전체글 count
                 count = postMapper.postCount(map);
@@ -225,5 +274,4 @@ public class PostService implements IPostService {
         }
         return cateList;
     }
-
 }

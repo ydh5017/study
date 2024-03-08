@@ -1,6 +1,8 @@
 package com.project.blog.controller;
 
+import com.project.blog.service.IPostService;
 import com.project.blog.service.IUserService;
+import com.project.blog.vo.PostVO;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,6 +22,7 @@ import java.util.HashMap;
 public class UserController {
 
     private final IUserService userService;
+    private final IPostService postService;
 
     // 회원가입 페이지
     @GetMapping("regist")
@@ -122,6 +126,18 @@ public class UserController {
         model.addAttribute("url", map.get("url"));
 
         return "/redirect";
+    }
+
+    // 마이페이지
+    @GetMapping("/mypage")
+    public String mypage(Model model) throws Exception {
+        List<PostVO> postList = postService.getMypagePost("write");
+        List<PostVO> likeList = postService.getMypagePost("like");
+
+        model.addAttribute("postList", postList);
+        model.addAttribute("likeList", likeList);
+
+        return "/user/mypage";
     }
 
     // 패스워드 변경

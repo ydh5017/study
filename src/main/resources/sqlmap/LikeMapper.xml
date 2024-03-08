@@ -63,4 +63,16 @@
         WHERE USERSEQ = #{userSeq}
           AND COMMENTSEQ = #{commentSeq}
     </select>
+    <!-- 회원별 좋아요 리스트 -->
+    <select id="getLikeInfo" resultType="LikeVO">
+        SELECT
+            LIKESEQ,
+            USERSEQ,
+            POSTSEQ,
+            COMMENTSEQ,
+            LIKEDT
+        FROM LIKEINFO
+        WHERE POSTSEQ IS NOT NULL
+            AND USERSEQ = #{userSeq}
+    </select>
 </mapper>

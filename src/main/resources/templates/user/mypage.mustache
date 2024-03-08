@@ -1,0 +1,127 @@
+{{>layout/header}}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">마이페이지</h1>
+    </div>
+    <div class="container">
+        <div class="card border-left h-10 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="border-bottom mb-3">
+                            <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-3">
+                                <div class="text-left" style="float: left">
+                                    <h1 class="h3 mb-0 text-gray-800">내가 작성한 게시글</h1>
+                                </div>
+                            </div>
+                            <div class="text-xl text-right font-weight-bold text-uppercase mb-3 mr-4">
+                                <a href="/post?postType=writePost&cateCode=100&pno=1" id="href">더보기</a>
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </div>
+                        <table class="board_list" id="table">
+                            <colgroup>
+                                <col width="6%"/>
+                                <col width="15%"/>
+                                <col width="5%"/>
+                                <col width="5%"/>
+                                <col width="8%"/>
+                                <col width="15%"/>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th scope="col">카테고리</th>
+                                <th scope="col">제목</th>
+                                <th scope="col">조회수</th>
+                                <th scope="col">좋아요</th>
+                                <th scope="col">작성자</th>
+                                <th scope="col">작성일</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody">
+                            {{#postList}}
+                                <tr>
+                                    <input type="hidden" id="postSeq" name="postSeq" value="{{postSeq}}">
+                                    <td style="color: #2a96a5">{{cateName}}</td>
+                                    <td onclick="location.href='/post/detail?no={{postSeq}}'">{{title}}</td>
+                                    <td><i class="fas fa-eye"></i> {{views}}</td>
+                                    <td><i class="fas fa-thumbs-up"></i> {{likes}}</td>
+                                    <td>{{writeId}}</td>
+                                    <td>{{writeDt}}</td>
+                                </tr>
+                            {{/postList}}
+                            {{^postList}}
+                                <tr>
+                                    <td colspan="4">조회된 결과가 없습니다.</td>
+                                </tr>
+                            {{/postList}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card border-left h-10 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="border-bottom mb-3">
+                            <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-3">
+                                <div class="text-left" style="float: left">
+                                    <h1 class="h3 mb-0 text-gray-800">좋아요한 게시글</h1>
+                                </div>
+                            </div>
+                            <div class="text-xl text-right font-weight-bold text-uppercase mb-3 mr-4">
+                                <a href="/post?postType=likePost&cateCode=100&pno=1" id="href">더보기</a>
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </div>
+                        <table class="board_list" id="table">
+                            <colgroup>
+                                <col width="6%"/>
+                                <col width="15%"/>
+                                <col width="5%"/>
+                                <col width="5%"/>
+                                <col width="8%"/>
+                                <col width="15%"/>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th scope="col">카테고리</th>
+                                <th scope="col">제목</th>
+                                <th scope="col">조회수</th>
+                                <th scope="col">좋아요</th>
+                                <th scope="col">작성자</th>
+                                <th scope="col">작성일</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody">
+                            {{#likeList}}
+                                <tr>
+                                    <input type="hidden" id="postSeq" name="postSeq" value="{{postSeq}}">
+                                    <td style="color: #2a96a5">{{cateName}}</td>
+                                    <td onclick="location.href='/post/detail?no={{postSeq}}'">{{title}}</td>
+                                    <td><i class="fas fa-eye"></i> {{views}}</td>
+                                    <td><i class="fas fa-thumbs-up"></i> {{likes}}</td>
+                                    <td>{{writeId}}</td>
+                                    <td>{{writeDt}}</td>
+                                </tr>
+                            {{/likeList}}
+                            {{^likeList}}
+                                <tr>
+                                    <td colspan="4">조회된 결과가 없습니다.</td>
+                                </tr>
+                            {{/likeList}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+{{>layout/footer}}

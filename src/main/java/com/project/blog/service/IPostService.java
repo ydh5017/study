@@ -12,6 +12,8 @@ public interface IPostService {
 
     List<PostVO> getPopularPost(String postType, String cateCode) throws Exception;
 
+    List<PostVO> getMypagePost(String mypageType) throws Exception;
+
     int postCount(HashMap<String, Object> map) throws Exception;
 
     HashMap<String, String> postAddProc(PostVO postVO) throws Exception;

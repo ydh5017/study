@@ -45,6 +45,7 @@ public class PostController {
         map.put("postType", postType);
         map.put("type", type);
         map.put("keyword", keyword);
+        map.put("userId", userVO.getUserId());
 
         // 게시글 수 count
         int page = pno;
