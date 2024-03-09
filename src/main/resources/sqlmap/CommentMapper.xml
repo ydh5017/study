@@ -97,6 +97,52 @@
           AND ISDELETED = 0
         ORDER BY COMMENTSEQ
     </select>
+    <!-- 마이페이지 댓글 리스트 -->
+    <select id="getMypageComment" resultType="CommentVO">
+        SELECT
+            COMMENTSEQ,
+            POSTSEQ,
+            CONTENT,
+            LIKES,
+            COMMENTDEPTH,
+            COMMENTGROUP,
+            COMMENTWRITEID,
+            COMMENTWRITEDT,
+            COMMENTCHGID,
+            COMMENTCHGDT,
+            ISDELETED
+        FROM COMMENT
+        WHERE ISDELETED = 0
+        <choose>
+            <when test="mypageType == 'writeComment' || postType == 'writeComment'">
+                AND COMMENTWRITEID = #{userId}
+            </when>
+            <when test="mypageType == 'likeComment' || postType == 'likeComment'">
+                <choose>
+                    <when test="!likeInfo.isEmpty()">
+                        AND COMMENTSEQ IN
+                        <foreach collection="likeInfo" item="item" open="(" close=")" separator=",">
+                            #{item.commentSeq}
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        AND COMMENTSEQ IN (0)
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        ORDER BY COMMENTSEQ
+        <choose>
+            <when test="postType == 'writeComment' || postType == 'likeComment'">
+                LIMIT #{startlist}, #{listsize}
+            </when>
+            <otherwise>
+                LIMIT 0, 10
+            </otherwise>
+        </choose>
+    </select>
     <!-- 댓글 수정 -->
     <update id="commentModProc" parameterType="CommentVO">
         UPDATE

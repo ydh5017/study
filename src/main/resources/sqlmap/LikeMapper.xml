@@ -72,7 +72,16 @@
             COMMENTSEQ,
             LIKEDT
         FROM LIKEINFO
-        WHERE POSTSEQ IS NOT NULL
-            AND USERSEQ = #{userSeq}
+        WHERE USERSEQ = #{userSeq}
+        <choose>
+            <when test="mypageType == 'likePost' || postType == 'likePost'">
+                AND POSTSEQ IS NOT NULL
+            </when>
+            <when test="mypageType == 'likeComment' || postType == 'likeComment'">
+                AND COMMENTSEQ IS NOT NULL
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
     </select>
 </mapper>

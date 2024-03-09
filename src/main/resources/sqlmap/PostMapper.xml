@@ -124,14 +124,21 @@
         FROM POST AS A
         WHERE ISDELETED = 0
         <choose>
-            <when test="mypageType == 'write' || postType == 'writePost'">
+            <when test="mypageType == 'writePost' || postType == 'writePost'">
                 AND WRITEID = #{userId}
             </when>
-            <when test="mypageType == 'like' || postType == 'likePost'">
-                AND POSTSEQ IN
-                <foreach collection="likeInfo" item="item" open="(" close=")" separator=",">
-                    #{item.postSeq}
-                </foreach>
+            <when test="mypageType == 'likePost' || postType == 'likePost'">
+                <choose>
+                    <when test="!likeInfo.isEmpty()">
+                        AND POSTSEQ IN
+                        <foreach collection="likeInfo" item="item" open="(" close=")" separator=",">
+                            #{item.postSeq}
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        AND POSTSEQ IN (0)
+                    </otherwise>
+                </choose>
             </when>
             <otherwise>
             </otherwise>
@@ -217,7 +224,7 @@
             <when test="postType == 'writePost'">
                 AND WRITEID = #{userId}
             </when>
-            <when test="postType == 'likePost'">
+            <when test="postType == 'likePost'  and !likeInfo.isEmpty()">
                 AND POSTSEQ IN
                 <foreach collection="likeInfo" item="item" open="(" close=")" separator=",">
                     #{item.postSeq}

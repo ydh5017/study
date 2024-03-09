@@ -6,12 +6,14 @@ import com.project.blog.service.ICommentService;
 import com.project.blog.service.IUserService;
 import com.project.blog.util.ResponseMapUtil;
 import com.project.blog.vo.CommentVO;
+import com.project.blog.vo.LikeVO;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -94,6 +96,29 @@ public class CommentService implements ICommentService {
                 // 좋아요한 회원인지 확인
                 commentList.get(i).setLiker(likeMapper.commentLikeCheck(Integer.parseInt(userSeq), commentSeq));
             }
+        }
+
+        return commentList;
+    }
+
+    @Override
+    public List<CommentVO> getMypageComment(String mypageType) throws Exception {
+        UserVO userVO = userService.userInfo();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("mypageType", mypageType);
+        map.put("userId", userVO.getUserId());
+
+        List<CommentVO> commentList = new ArrayList<>();
+
+        if (mypageType.equals("writeComment")) {
+            // 로그인한 회원이 작성한 댓글 리스트
+            commentList = commentMapper.getMypageComment(map);
+        }else if (mypageType.equals("likeComment")) {
+            // 로그인한 회원이 좋아요한 게시글 리스트
+            map.put("userSeq", userVO.getUserSeq());
+            List<LikeVO> likeInfo = likeMapper.getLikeInfo(map);
+            map.put("likeInfo", likeInfo);
+            commentList = commentMapper.getMypageComment(map);
         }
 
         return commentList;

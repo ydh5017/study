@@ -13,6 +13,8 @@ public interface ICommentService {
 
     List<CommentVO> getReplyList(int commentSeq) throws Exception;
 
+    List<CommentVO> getMypageComment(String mypageType) throws Exception;
+
     HashMap<String, String> commentModProc(CommentVO commentVO) throws Exception;
 
     HashMap<String, String> commentDelete(int commentSeq, int postSeq) throws Exception;

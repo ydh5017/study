@@ -1,7 +1,9 @@
 package com.project.blog.controller;
 
+import com.project.blog.service.ICommentService;
 import com.project.blog.service.IPostService;
 import com.project.blog.service.IUserService;
+import com.project.blog.vo.CommentVO;
 import com.project.blog.vo.PostVO;
 import com.project.blog.vo.UserVO;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class UserController {
 
     private final IUserService userService;
     private final IPostService postService;
+    private final ICommentService commentService;
 
     // 회원가입 페이지
     @GetMapping("regist")
@@ -131,11 +134,13 @@ public class UserController {
     // 마이페이지
     @GetMapping("/mypage")
     public String mypage(Model model) throws Exception {
-        List<PostVO> postList = postService.getMypagePost("write");
-        List<PostVO> likeList = postService.getMypagePost("like");
+        List<PostVO> writePostList = postService.getMypagePost("writePost");
+        List<PostVO> likePostList = postService.getMypagePost("likePost");
+        List<CommentVO> writeCommentList = commentService.getMypageComment("writeComment");
+        List<CommentVO> likeCommentList = commentService.getMypageComment("likeComment");
 
-        model.addAttribute("postList", postList);
-        model.addAttribute("likeList", likeList);
+        model.addAttribute("postList", writePostList);
+        model.addAttribute("likeList", likePostList);
 
         return "/user/mypage";
     }

@@ -59,12 +59,13 @@ public class PostService implements IPostService {
                         postList = postMapper.getPopularPost(map);
                     }else {
                         if (postType.equals("likePost")) {
-                            List<LikeVO> likeInfo = likeMapper.getLikeInfo(userVO.getUserSeq());
+                            map.put("userSeq", userVO.getUserSeq());
+                            List<LikeVO> likeInfo = likeMapper.getLikeInfo(map);
                             map.put("likeInfo", likeInfo);
-                            map.put("mypageType", "like");
+                            map.put("mypageType", "likePost");
                         }else {
                             // 마이페이지 게시글 리스트 get
-                            map.put("mypageType", "write");
+                            map.put("mypageType", "writePost");
                         }
                         postList = postMapper.getMypagePost(map);
                     }
@@ -99,12 +100,13 @@ public class PostService implements IPostService {
 
         List<PostVO> postList = new ArrayList<>();
 
-        if (mypageType.equals("write")) {
+        if (mypageType.equals("writePost")) {
             // 로그인한 회원이 작성한 게시글 리스트
             postList = postMapper.getMypagePost(map);
-        }else if (mypageType.equals("like")) {
+        }else if (mypageType.equals("likePost")) {
             // 로그인한 회원이 좋아요한 게시글 리스트
-            List<LikeVO> likeInfo = likeMapper.getLikeInfo(userVO.getUserSeq());
+            map.put("userSeq", userVO.getUserSeq());
+            List<LikeVO> likeInfo = likeMapper.getLikeInfo(map);
             map.put("likeInfo", likeInfo);
             postList = postMapper.getMypagePost(map);
         }
@@ -119,7 +121,7 @@ public class PostService implements IPostService {
         String type = (String) map.get("type");
         String keyword = (String) map.get("keyword");
         String postType = (String) map.get("postType");
-        int count;
+        int count = 0;
 
         if (type != null && keyword != null) {
             if (type == "") {
@@ -137,11 +139,12 @@ public class PostService implements IPostService {
                 }else {
                     // 마이페이지 게시글 count
                     if (postType.equals("likePost")) {
-                        List<LikeVO> likeInfo = likeMapper.getLikeInfo(userVO.getUserSeq());
+                        map.put("userSeq", userVO.getUserSeq());
+                        List<LikeVO> likeInfo = likeMapper.getLikeInfo(map);
                         map.put("likeInfo", likeInfo);
+
                     }
-                    count = postMapper.mypageCount(map);
-                    log.info("count : " + count);
+                        count = postMapper.mypageCount(map);
                 }
             } else {
                 // 전체글 count

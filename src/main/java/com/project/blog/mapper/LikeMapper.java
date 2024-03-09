@@ -3,6 +3,7 @@ package com.project.blog.mapper;
 import com.project.blog.vo.LikeVO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -20,5 +21,5 @@ public interface LikeMapper {
 
     boolean commentLikeCheck(int userSeq, int commentSeq) throws Exception;
 
-    List<LikeVO> getLikeInfo(String userSeq) throws Exception;
+    List<LikeVO> getLikeInfo(HashMap<String, Object> map) throws Exception;
 }
