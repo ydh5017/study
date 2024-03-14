@@ -44,8 +44,9 @@ public class CommentController {
     // 댓글 삭제
     @PatchMapping
     public String commentDelete(@RequestParam int commentSeq,
-                                @RequestParam int postSeq,Model model) throws Exception {
-        HashMap<String, String> Map = commentService.commentDelete(commentSeq, postSeq);
+                                @RequestParam int postSeq,
+                                @RequestParam String location, Model model) throws Exception {
+        HashMap<String, String> Map = commentService.commentDelete(commentSeq, postSeq, location);
 
         model.addAttribute("msg", Map.get("msg"));
         model.addAttribute("url", Map.get("url"));

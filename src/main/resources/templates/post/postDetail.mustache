@@ -96,7 +96,9 @@
                                         </div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">
                                             <input type="hidden" id="commentContent-{{commentSeq}}" value="{{content}}">
+                                            <span id="start-{{commentSeq}}" style="display: none">start</span>
                                             {{content}}
+                                            <span id="and-{{commentSeq}}" style="display: none">and</span>
                                         </div>
                                         <!-- 댓글 수정,삭제 -->
                                         {{#isWrite}}
@@ -111,14 +113,13 @@
                                                             <input type="hidden" name="_method" value="patch">
                                                             <input type="hidden" name="commentSeq" value="{{commentSeq}}">
                                                             <input type="hidden" name="postSeq" value="{{postVO.postSeq}}">
+                                                            <input type="hidden" name="location" value="postDetail">
                                                         <button class="dropdown-item" type="submit">삭제</button>
                                                         </form>
                                                     </div>
                                         </nav>
                                         </div>
                                         {{/isWrite}}
-
-
                                     </div>
                                 </div>
                             </div>

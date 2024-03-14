@@ -4,6 +4,7 @@ public class CommentVO {
 
     private int commentSeq;
     private int postSeq;
+    private String postTitle;
     private String content;
     private int likes;
     private String liker = null;
@@ -36,6 +37,14 @@ public class CommentVO {
 
     public void setPostSeq(int postSeq) {
         this.postSeq = postSeq;
+    }
+
+    public String getPostTitle() {
+        return postTitle;
+    }
+
+    public void setPostTitle(String postTitle) {
+        this.postTitle = postTitle;
     }
 
     public String getContent() {

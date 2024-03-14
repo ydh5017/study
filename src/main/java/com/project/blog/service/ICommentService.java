@@ -15,11 +15,17 @@ public interface ICommentService {
 
     List<CommentVO> getMypageComment(String mypageType) throws Exception;
 
+    List<CommentVO> getMypageList(HashMap<String, Object> map) throws Exception;
+
+    int commentCount(HashMap<String, Object> map) throws Exception;
+
     HashMap<String, String> commentModProc(CommentVO commentVO) throws Exception;
 
-    HashMap<String, String> commentDelete(int commentSeq, int postSeq) throws Exception;
+    HashMap<String, String> commentDelete(int commentSeq, int postSeq, String location) throws Exception;
 
     void commentLikeInc(int commentSeq) throws Exception;
 
     void commentLikeDec(int commentSeq) throws Exception;
+
+    int replyConfirm(int commentSeq) throws Exception;
 }

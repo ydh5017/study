@@ -3,6 +3,8 @@ package com.project.blog.controller;
 import com.project.blog.service.ICommentService;
 import com.project.blog.service.IPostService;
 import com.project.blog.service.IUserService;
+import com.project.blog.util.PagingUtil;
+import com.project.blog.vo.CategoryVO;
 import com.project.blog.vo.CommentVO;
 import com.project.blog.vo.PostVO;
 import com.project.blog.vo.UserVO;
@@ -134,15 +136,59 @@ public class UserController {
     // 마이페이지
     @GetMapping("/mypage")
     public String mypage(Model model) throws Exception {
+        UserVO userVO = userService.userInfo();
+
         List<PostVO> writePostList = postService.getMypagePost("writePost");
         List<PostVO> likePostList = postService.getMypagePost("likePost");
         List<CommentVO> writeCommentList = commentService.getMypageComment("writeComment");
         List<CommentVO> likeCommentList = commentService.getMypageComment("likeComment");
 
-        model.addAttribute("postList", writePostList);
-        model.addAttribute("likeList", likePostList);
+        model.addAttribute("userVO", userVO);
+        model.addAttribute("writePostList", writePostList);
+        model.addAttribute("likePostList", likePostList);
+        model.addAttribute("writeCommentList", writeCommentList);
+        model.addAttribute("likeCommentList", likeCommentList);
 
         return "/user/mypage";
+    }
+
+    // 마이페이지 댓글 리스트 페이지
+    @GetMapping("/comment")
+    public String getCommentList(@RequestParam(defaultValue = "1") int pno, // 페이지 넘버
+                              @RequestParam(required = false) String mypageType, // 게시판 타입(주간/일간)
+                              Model model) throws Exception {
+        // 회원정보
+        UserVO userVO = userService.userInfo();
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("mypageType", mypageType);
+        map.put("userId", userVO.getUserId());
+
+        // 댓글 수 count
+        int page = pno;
+        int listCnt = commentService.commentCount(map);
+
+        // 페이징
+        PagingUtil paging = new PagingUtil();
+
+        paging.pageInfo(page, listCnt);
+        int i = paging.getStartList();
+        int j = paging.getListSize();
+        map.put("startlist", i);
+        map.put("listsize", j);
+
+        // 댓글 리스트
+        List<CommentVO> commentList = commentService.getMypageList(map);
+        // 페이지 리스트
+        List<PagingUtil> pageList = paging.list(paging.getPage(), paging.getRangeCnt(), paging.getStartPage());
+
+        model.addAttribute("userVO", userVO);
+        model.addAttribute("commentList", commentList);
+        model.addAttribute("paging", paging);
+        model.addAttribute("pageList", pageList);
+        model.addAttribute("mypageType", mypageType);
+
+        return "/user/commentList";
     }
 
     // 패스워드 변경

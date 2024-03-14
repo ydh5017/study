@@ -23,6 +23,8 @@ public interface CommentMapper {
 
     List<CommentVO> getMypageComment(HashMap<String, Object> map) throws Exception;
 
+    int commentCount(HashMap<String, Object> map) throws Exception;
+
     int commentModProc(CommentVO commentVO) throws Exception;
 
     int commentDelete(int commentSeq) throws Exception;
@@ -34,4 +36,6 @@ public interface CommentMapper {
     void likeInc(int commentSeq) throws Exception;
 
     void likeDec(int commentSeq) throws Exception;
+
+    int replyConfirm(int commentSeq) throws Exception;
 }

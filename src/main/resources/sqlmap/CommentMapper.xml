@@ -102,6 +102,7 @@
         SELECT
             COMMENTSEQ,
             POSTSEQ,
+            (SELECT TITLE FROM POST WHERE POSTSEQ = A.POSTSEQ) AS POSTTITLE,
             CONTENT,
             LIKES,
             COMMENTDEPTH,
@@ -111,13 +112,13 @@
             COMMENTCHGID,
             COMMENTCHGDT,
             ISDELETED
-        FROM COMMENT
+        FROM COMMENT AS A
         WHERE ISDELETED = 0
         <choose>
-            <when test="mypageType == 'writeComment' || postType == 'writeComment'">
+            <when test="mypageType == 'writeComment'">
                 AND COMMENTWRITEID = #{userId}
             </when>
-            <when test="mypageType == 'likeComment' || postType == 'likeComment'">
+            <when test="mypageType == 'likeComment'">
                 <choose>
                     <when test="!likeInfo.isEmpty()">
                         AND COMMENTSEQ IN
@@ -135,11 +136,30 @@
         </choose>
         ORDER BY COMMENTSEQ
         <choose>
-            <when test="postType == 'writeComment' || postType == 'likeComment'">
+            <when test="startlist != null">
                 LIMIT #{startlist}, #{listsize}
             </when>
             <otherwise>
                 LIMIT 0, 10
+            </otherwise>
+        </choose>
+    </select>
+    <!-- 마이페이지 댓글 수 조회 -->
+    <select id="commentCount" resultType="integer">
+        SELECT COUNT(0)
+        FROM COMMENT
+        WHERE ISDELETED = 0
+        <choose>
+            <when test="mypageType == 'writeComment'">
+                AND COMMENTWRITEID = #{userId}
+            </when>
+            <when test="mypageType == 'likeComment'  and !likeInfo.isEmpty()">
+                AND COMMENTSEQ IN
+                <foreach collection="likeInfo" item="item" open="(" close=")" separator=",">
+                    #{item.commentSeq}
+                </foreach>
+            </when>
+            <otherwise>
             </otherwise>
         </choose>
     </select>
@@ -199,4 +219,12 @@
         WHERE
             COMMENTSEQ = #{commentSeq}
     </update>
+    <!-- 답글인지 확인 -->
+    <select id="replyConfirm" resultType="int">
+        SELECT
+            IF(COMMENTGROUP IS NULL, #{commentSeq}, (SELECT COMMENTGROUP FROM COMMENT WHERE COMMENTSEQ = #{commentSeq}))
+        FROM COMMENT
+        WHERE COMMENTSEQ = #{commentSeq}
+          AND ISDELETED = 0
+    </select>
 </mapper>

@@ -101,6 +101,7 @@ public class CommentService implements ICommentService {
         return commentList;
     }
 
+    // 마이페이지 댓글 미리보기 리스트
     @Override
     public List<CommentVO> getMypageComment(String mypageType) throws Exception {
         UserVO userVO = userService.userInfo();
@@ -122,6 +123,48 @@ public class CommentService implements ICommentService {
         }
 
         return commentList;
+    }
+
+    // 마이페이지 댓글 미리보기 리스트
+    @Override
+    public List<CommentVO> getMypageList(HashMap<String, Object> map) throws Exception {
+        List<CommentVO> commentList = new ArrayList<>();
+        UserVO userVO = userService.userInfo();
+        String mypageType = (String) map.get("mypageType");
+
+        if (mypageType.equals("writeComment")) {
+            // 로그인한 회원이 작성한 댓글 리스트
+            commentList = commentMapper.getMypageComment(map);
+        }else if (mypageType.equals("likeComment")) {
+            // 로그인한 회원이 좋아요한 게시글 리스트
+            map.put("userSeq", userVO.getUserSeq());
+            List<LikeVO> likeInfo = likeMapper.getLikeInfo(map);
+            map.put("likeInfo", likeInfo);
+            commentList = commentMapper.getMypageComment(map);
+        }
+
+        return commentList;
+    }
+
+    // 마이페이지 댓글 count
+    @Override
+    public int commentCount(HashMap<String, Object> map) throws Exception {
+        int count = 0;
+        UserVO userVO = userService.userInfo();
+        String mypageType = (String) map.get("mypageType");
+
+        if (mypageType.equals("writeComment")) {
+            // 로그인한 회원이 작성한 댓글 count
+            count = commentMapper.commentCount(map);
+        }else if (mypageType.equals("likeComment")) {
+            // 로그인한 회원이 좋아요한 게시글 count
+            map.put("userSeq", userVO.getUserSeq());
+            List<LikeVO> likeInfo = likeMapper.getLikeInfo(map);
+            map.put("likeInfo", likeInfo);
+            log.info("like size : " + likeInfo.size());
+            count = commentMapper.commentCount(map);
+        }
+        return count;
     }
 
     // 댓글 수정
@@ -150,20 +193,34 @@ public class CommentService implements ICommentService {
 
     // 댓글 삭제
     @Override
-    public HashMap<String, String> commentDelete(int commentSeq, int postSeq) throws Exception {
+    public HashMap<String, String> commentDelete(int commentSeq, int postSeq, String location) throws Exception {
         HashMap<String, String> map;
 
         int result = commentMapper.replyCountTotal(commentSeq);
 
-        if (result > 0) {
-            map = responseMapUtil.getResponseMap("comment.delete.reply", "post.detail", postSeq);
-        } else {
-            result = commentMapper.commentDelete(commentSeq);
-            commentMapper.countDelete(commentSeq);
-            if (result == 1) {
-                map = responseMapUtil.getResponseMap("comment.delete", "post.detail", postSeq);
+        if (location == "postDetail"){
+            if (result > 0) {
+                map = responseMapUtil.getResponseMap("comment.delete.reply", "post.detail", postSeq);
             } else {
-                map = responseMapUtil.getResponseMap("comment.delete.error", "post.detail", postSeq);
+                result = commentMapper.commentDelete(commentSeq);
+                commentMapper.countDelete(commentSeq);
+                if (result == 1) {
+                    map = responseMapUtil.getResponseMap("comment.delete", "post.detail", postSeq);
+                } else {
+                    map = responseMapUtil.getResponseMap("comment.delete.error", "post.detail", postSeq);
+                }
+            }
+        }else {
+            if (result > 0) {
+                map = responseMapUtil.getResponseMap("comment.delete.reply", "user.mypage");
+            } else {
+                result = commentMapper.commentDelete(commentSeq);
+                commentMapper.countDelete(commentSeq);
+                if (result == 1) {
+                    map = responseMapUtil.getResponseMap("comment.delete", "user.mypage");
+                } else {
+                    map = responseMapUtil.getResponseMap("comment.delete.error", "user.mypage");
+                }
             }
         }
 
@@ -184,5 +241,11 @@ public class CommentService implements ICommentService {
         int userSeq = Integer.parseInt(userService.userInfo().getUserSeq());
         commentMapper.likeDec(commentSeq);
         likeMapper.commentLikeDec(userSeq, commentSeq);
+    }
+
+    // 답글인지 확인
+    @Override
+    public int replyConfirm(int commentSeq) throws Exception {
+        return commentMapper.replyConfirm(commentSeq);
     }
 }

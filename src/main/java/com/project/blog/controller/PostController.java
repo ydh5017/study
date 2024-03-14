@@ -108,6 +108,7 @@ public class PostController {
         UserVO userVO = userService.userInfo();
         String userId = userVO.getUserId();
 
+
         List<CommentVO> commentList = commentService.getCommentList(postSeq);
 
         if (userId != null) {

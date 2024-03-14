@@ -1,5 +1,38 @@
+//마이페이지에서 댓글 작성한 게시글로 이동 시 포커스
+$(document).ready(function () {
+    var page_url = window.location.href;
+    if (page_url.lastIndexOf("#") + 1 != 0){
+        var page_id = page_url.substring(page_url.lastIndexOf("#") + 1);
+    }
+
+
+    if (page_id != null) {
+        $.ajax({
+            url:"/api/replyConfirm",
+            type:"get",
+            dataType: 'json',
+            data:{"commentSeq":page_id},
+            success:function(commentSeq){
+                if (page_id != commentSeq) {
+                    onReplyComment(commentSeq, page_id);
+                }else {
+                    const start = document.getElementById('start-' + page_id);
+                    const and = document.getElementById('and-' + page_id);
+                    window.getSelection().setBaseAndExtent(start, 1, and, 0);
+                    $('html, body').animate({
+                        scrollTop: $('#parentComment-' + page_id).offset().top
+                    }, 500);
+                }
+            },
+            error: function (request, status, error) {
+                alert("code: " + request.status + "\n" + "error: " + error);
+            }
+        })
+    }
+});
+
 //대댓글 출력하기
-function onReplyComment(commentSeq){
+function onReplyComment(commentSeq, page_id){
     const replyDiv = document.getElementById('replyDiv-'+commentSeq);
     const onReplyComment = document.getElementById('onReplyComment-'+commentSeq);
     const offReplyComment = document.getElementById('offReplyComment-'+commentSeq);
@@ -22,7 +55,7 @@ function onReplyComment(commentSeq){
                     if (ReplyCommentList[i].writer > 0) {
                         if (ReplyCommentList[i].liker > 0) {
                             html.innerHTML+= '<div class="col-xl-12" style="padding-left: 3rem">' +
-                                '<div class="card border-left h-10 py-2" id="childComment-' + ReplyCommentList[i].commentSeq + '">' +
+                                '<div class="card border-left h-10 py-2" name="childComment-' + ReplyCommentList[i].commentSeq + '" id="childComment-' + ReplyCommentList[i].commentSeq + '">' +
                                 '   <div class="card-body">' +
                                 '       <div class="row no-gutters align-items-center">' +
                                 '           <div class="col mr-2">' +
@@ -34,8 +67,10 @@ function onReplyComment(commentSeq){
                                 ReplyCommentList[i].commentWriteDt +
                                 '                   </div>' +
                                 '               </div>' +
-                                '               <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">'+
+                                '               <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">' +
+                                '                   <span name="replyStart-' + ReplyCommentList[i].commentSeq + '" id="replyStart-' + ReplyCommentList[i].commentSeq + '" style="display: none">start</span>\n' +
                                 ReplyCommentList[i].content +
+                                '                   <span name="replyAnd-' + ReplyCommentList[i].commentSeq + '" id="replyAnd-' + ReplyCommentList[i].commentSeq + '" style="display: none">and</span>'+
                                 '               </div>' +
                                 '               <div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">' +
                                 '                   <nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">' +
@@ -71,7 +106,7 @@ function onReplyComment(commentSeq){
                                 '</div>';
                         }else {
                             html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
-                                '<div class="card border-left h-10 py-2" id="childComment-' + ReplyCommentList[i].commentSeq + '">' +
+                                '<div class="card border-left h-10 py-2" name="childComment-' + ReplyCommentList[i].commentSeq + '" id="childComment-' + ReplyCommentList[i].commentSeq + '">' +
                                 '   <div class="card-body">' +
                                 '       <div class="row no-gutters align-items-center">' +
                                 '           <div class="col mr-2">' +
@@ -84,7 +119,9 @@ function onReplyComment(commentSeq){
                                 '                   </div>' +
                                 '               </div>' +
                                 '               <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2" style="float: left">'+
+                                '                   <span name="replyStart-' + ReplyCommentList[i].commentSeq + '" id="replyStart-' + ReplyCommentList[i].commentSeq + '" style="display: none">start</span>\n' +
                                 ReplyCommentList[i].content +
+                                '                   <span name="replyAnd-' + ReplyCommentList[i].commentSeq + '" id="replyAnd-' + ReplyCommentList[i].commentSeq + '" style="display: none">and</span>'+
                                 '               </div>' +
                                 '               <div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">' +
                                 '                   <nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">' +
@@ -122,7 +159,7 @@ function onReplyComment(commentSeq){
                     }else {
                         if (ReplyCommentList[i].liker > 0) {
                             html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
-                                '<div class="card border-left h-10 py-2">' +
+                                '<div class="card border-left h-10 py-2" name="childComment-' + ReplyCommentList[i].commentSeq + '" id="childComment-' + ReplyCommentList[i].commentSeq + '">' +
                                 '   <div class="card-body">' +
                                 '       <div class="row no-gutters align-items-center">' +
                                 '           <div class="col mr-2">' +
@@ -135,7 +172,9 @@ function onReplyComment(commentSeq){
                                 '                   </div>' +
                                 '               </div>' +
                                 '               <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2">'+
+                                '                   <span name="replyStart-' + ReplyCommentList[i].commentSeq + '" id="replyStart-' + ReplyCommentList[i].commentSeq + '" style="display: none">start</span>\n' +
                                 ReplyCommentList[i].content +
+                                '                   <span name="replyAnd-' + ReplyCommentList[i].commentSeq + '" id="replyAnd-' + ReplyCommentList[i].commentSeq + '" style="display: none">and</span>'+
                                 '               </div>' +
                                 '           </div>' +
                                 '       </div>' +
@@ -154,7 +193,7 @@ function onReplyComment(commentSeq){
                                 '</div>';
                         }else {
                             html.innerHTML+= '<div class="col-xl-4" style="padding-left: 3rem">' +
-                                '<div class="card border-left h-10 py-2">' +
+                                '<div class="card border-left h-10 py-2" name="childComment-' + ReplyCommentList[i].commentSeq + '" id="childComment-' + ReplyCommentList[i].commentSeq + '">' +
                                 '   <div class="card-body">' +
                                 '       <div class="row no-gutters align-items-center">' +
                                 '           <div class="col mr-2">' +
@@ -167,7 +206,9 @@ function onReplyComment(commentSeq){
                                 '                   </div>' +
                                 '               </div>' +
                                 '               <div class="h5 mb-0 font-weight-bold text-gray-800 mt-2">'+
+                                '                   <span name="replyStart-' + ReplyCommentList[i].commentSeq + '" id="replyStart-' + ReplyCommentList[i].commentSeq + '" style="display: none">start</span>\n' +
                                 ReplyCommentList[i].content +
+                                '                   <span name="replyAnd-' + ReplyCommentList[i].commentSeq + '" id="replyAnd-' + ReplyCommentList[i].commentSeq + '" style="display: none">and</span>'+
                                 '               </div>' +
                                 '           </div>' +
                                 '       </div>' +
@@ -197,6 +238,16 @@ function onReplyComment(commentSeq){
                     '</div></div></div></div></div>';
             }
             replyDiv.append(html);
+
+            if (page_id != null){
+                const childComment = replyDiv.getElementsByTagName('div').namedItem("childComment-"+page_id);
+                const replyStart = replyDiv.getElementsByTagName('span').namedItem("replyStart-"+page_id);
+                const replyAnd = replyDiv.getElementsByTagName('span').namedItem("replyAnd-"+page_id);
+                window.getSelection().setBaseAndExtent(replyStart, 1, replyAnd, 0);
+                $('html, body').animate({
+                    scrollTop: $(childComment).offset().top
+                }, 500);
+            }
         },
         error: function (request, status, error) {
             alert("code: " + request.status + "\n" + "error: " + error);

@@ -1,0 +1,96 @@
+{{>layout/header}}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{mypageType}}</h1>
+    </div>
+    <div class="container">
+        <div class="card border-left h-10 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        {{#commentList}}
+                        <div class="card-body border-bottom p-0">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="mb-1">
+                                        <div class="text-xl font-weight-bold text-uppercase" style="float: left">
+                                            댓글이 달린 게시글 : <a class="text-primary" onclick="return movePostDetail({{postSeq}}, {{commentSeq}})">"{{postTitle}}"</a>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" style="">
+                                                <input type="hidden" id="commentContent-" value="content">
+                                                {{content}}
+                                            </div>
+                                        </div>
+                                        <div class="text-xs text-right font-weight-bold text-uppercase" style="float: right">
+                                            <div>{{commentWriteDt}}</div>
+                                            <!-- 댓글 수정,삭제 -->
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">
+                                                <nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">
+                                                    <div class="navbar text-xs text-right font-weight-bold text-uppercase mb-0" data-toggle="dropdown">
+                                                        <i class="fas fa-solid fa-ellipsis-h -align-center mt-2"></i>
+                                                    </div>
+                                                    <div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="navbarDropdown">
+                                                        <form class="mr-1" method="post" action="/comment">
+                                                            <input type="hidden" name="_method" value="patch">
+                                                            <input type="hidden" name="commentSeq" value="{{commentSeq}}">
+                                                            <input type="hidden" name="postSeq" value="{{postSeq}}">
+                                                            <input type="hidden" name="location" value="mypage">
+                                                            <button class="dropdown-item" type="submit">삭제</button>
+                                                        </form>
+                                                    </div>
+                                                </nav>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{/commentList}}
+                        {{^commentList}}
+                            <div class="card-body border-bottom p-0">
+                                <div class="mb-0 text-gray-800">조회된 답글이 없습니다.</div>
+                            </div>
+                        {{/commentList}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12" style="padding: 1rem">
+            <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                <ul class="pagination">
+                    {{#paging.prev}}
+                        <li class="paginate_button page-item previous" id="dataTable_previous">
+                            <a href="/user/comment?mypageType={{mypageType}}&pno={{paging.prevPage}}" aria-controls="dataTable" tabindex="0" class="page-link">Previous</a>
+                        </li>
+                    {{/paging.prev}}
+
+                    {{#pageList}}
+                        {{#equalsPage}}
+                            <li class="paginate_button page-item active">
+                                <a aria-controls="dataTable" tabindex="0" class="page-link">{{page}}</a>
+                            </li>
+                        {{/equalsPage}}
+                        {{^equalsPage}}
+                            <li class="paginate_button page-item ">
+                                <a aria-controls="dataTable" tabindex="0" class="page-link" href="/user/comment?mypageType={{mypageType}}&pno={{page}}">{{page}}</a>
+                            </li>
+                        {{/equalsPage}}
+                    {{/pageList}}
+
+                    {{#paging.next}}
+                        <li class="paginate_button page-item next" id="dataTable_next">
+                            <a href="/user/comment?mypageType={{mypageType}}&pno={{paging.nextPage}}" aria-controls="dataTable" tabindex="0" class="page-link">next</a>
+                        </li>
+                    {{/paging.next}}
+                    <br>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/mypage.js"></script>
+<!-- /.container-fluid -->
+{{>layout/footer}}

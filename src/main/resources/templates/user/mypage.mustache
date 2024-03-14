@@ -5,6 +5,10 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">마이페이지</h1>
+        <span id="start">start</span>
+        123123
+        <span id="and">and</span>
+        <button onclick="return drag()">drag</button>
     </div>
     <div class="container">
         <div class="card border-left h-10 py-2">
@@ -42,7 +46,7 @@
                             </tr>
                             </thead>
                             <tbody id="tbody">
-                            {{#postList}}
+                            {{#writePostList}}
                                 <tr>
                                     <input type="hidden" id="postSeq" name="postSeq" value="{{postSeq}}">
                                     <td style="color: #2a96a5">{{cateName}}</td>
@@ -52,12 +56,12 @@
                                     <td>{{writeId}}</td>
                                     <td>{{writeDt}}</td>
                                 </tr>
-                            {{/postList}}
-                            {{^postList}}
+                            {{/writePostList}}
+                            {{^writePostList}}
                                 <tr>
                                     <td colspan="4">조회된 결과가 없습니다.</td>
                                 </tr>
-                            {{/postList}}
+                            {{/writePostList}}
                             </tbody>
                         </table>
                     </div>
@@ -99,7 +103,7 @@
                             </tr>
                             </thead>
                             <tbody id="tbody">
-                            {{#likeList}}
+                            {{#likePostList}}
                                 <tr>
                                     <input type="hidden" id="postSeq" name="postSeq" value="{{postSeq}}">
                                     <td style="color: #2a96a5">{{cateName}}</td>
@@ -109,19 +113,144 @@
                                     <td>{{writeId}}</td>
                                     <td>{{writeDt}}</td>
                                 </tr>
-                            {{/likeList}}
-                            {{^likeList}}
+                            {{/likePostList}}
+                            {{^likePostList}}
                                 <tr>
                                     <td colspan="4">조회된 결과가 없습니다.</td>
                                 </tr>
-                            {{/likeList}}
+                            {{/likePostList}}
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="card border-left h-10 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="border-bottom mb-3">
+                            <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-3">
+                                <div class="text-left" style="float: left">
+                                    <h1 class="h3 mb-0 text-gray-800">내가 작성한 댓글</h1>
+                                </div>
+                            </div>
+                            <div class="text-xl text-right font-weight-bold text-uppercase mb-3 mr-4">
+                                <a href="/user/comment?mypageType=writeComment&pno=1" id="href">더보기</a>
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </div>
+                        {{#writeCommentList}}
+                        <div class="card-body border-bottom p-0">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="mb-1">
+                                        <div class="text-xl font-weight-bold text-uppercase" style="float: left">
+                                            댓글이 달린 게시글 : <a class="text-primary" onclick="return movePostDetail({{postSeq}}, {{commentSeq}})">"{{postTitle}}"</a>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" style="">
+                                                <input type="hidden" id="commentContent-" value="content">
+                                                {{content}}
+                                            </div>
+                                        </div>
+                                        <div class="text-xs text-right font-weight-bold text-uppercase" style="float: right">
+                                            <div>{{commentWriteDt}}</div>
+                                            <!-- 댓글 수정,삭제 -->
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">
+                                                <nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">
+                                                    <div class="navbar text-xs text-right font-weight-bold text-uppercase mb-0" data-toggle="dropdown">
+                                                        <i class="fas fa-solid fa-ellipsis-h -align-center mt-2"></i>
+                                                    </div>
+                                                    <div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="navbarDropdown">
+                                                        <form class="mr-1" method="post" action="/comment">
+                                                            <input type="hidden" name="_method" value="patch">
+                                                            <input type="hidden" name="commentSeq" value="{{commentSeq}}">
+                                                            <input type="hidden" name="postSeq" value="{{postSeq}}">
+                                                            <input type="hidden" name="location" value="mypage">
+                                                            <button class="dropdown-item" type="submit">삭제</button>
+                                                        </form>
+                                                    </div>
+                                                </nav>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{/writeCommentList}}
+                        {{^writeCommentList}}
+                            <div class="card-body border-bottom p-0">
+                                <div class="mb-0 text-gray-800">조회된 답글이 없습니다.</div>
+                            </div>
+                        {{/writeCommentList}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card border-left h-10 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="border-bottom mb-3">
+                            <div class="text-xl-left font-weight-bold text-primary text-uppercase mb-3">
+                                <div class="text-left" style="float: left">
+                                    <h1 class="h3 mb-0 text-gray-800">좋아요한 댓글</h1>
+                                </div>
+                            </div>
+                            <div class="text-xl text-right font-weight-bold text-uppercase mb-3 mr-4">
+                                <a href="/user/comment?mypageType=likeComment&pno=1" id="href">더보기</a>
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </div>
+                        {{#likeCommentList}}
+                            <div class="card-body border-bottom p-0">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="mb-1">
+                                            <div class="text-xl font-weight-bold text-uppercase" style="float: left">
+                                                댓글이 달린 게시글 : <a class="text-primary" onclick="return movePostDetail({{postSeq}}, {{commentSeq}})">"{{postTitle}}"</a>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" style="">
+                                                    <input type="hidden" id="commentContent-" value="content">
+                                                    {{content}}
+                                                </div>
+                                            </div>
+                                            <div class="text-xs text-right font-weight-bold text-uppercase" style="float: right">
+                                                <div>{{commentWriteDt}}</div>
+                                                <!-- 댓글 수정,삭제 -->
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800 text-xl-left" style="float: right">
+                                                    <nav class="navbar mb-0 text-right" style="padding: 0rem 0.5rem;">
+                                                        <div class="navbar text-xs text-right font-weight-bold text-uppercase mb-0" data-toggle="dropdown">
+                                                            <i class="fas fa-solid fa-ellipsis-h -align-center mt-2"></i>
+                                                        </div>
+                                                        <div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="navbarDropdown">
+                                                            <form class="mr-1" method="post" action="/comment">
+                                                                <input type="hidden" name="_method" value="patch">
+                                                                <input type="hidden" name="commentSeq" value="{{commentSeq}}">
+                                                                <input type="hidden" name="postSeq" value="{{postSeq}}">
+                                                                <input type="hidden" name="location" value="mypage">
+                                                                <button class="dropdown-item" type="submit">삭제</button>
+                                                            </form>
+                                                        </div>
+                                                    </nav>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/likeCommentList}}
+                        {{^likeCommentList}}
+                            <div class="card-body border-bottom p-0">
+                                <div class="mb-0 text-gray-800">조회된 답글이 없습니다.</div>
+                            </div>
+                        {{/likeCommentList}}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<script src="/js/mypage.js"></script>
 <!-- /.container-fluid -->
 {{>layout/footer}}
