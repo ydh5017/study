@@ -83,13 +83,13 @@
         FROM
             <choose>
                 <when test="postType == 'week'">
-                    (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )-7) A
+                    (SELECT * FROM POST WHERE WRITEDT >= DATE_FORMAT(NOW(),'%y%m%d')-7) A
                 </when>
                 <when test="postType == 'day'">
-                    (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )) A
+                    (SELECT * FROM POST WHERE WRITEDT >= DATE_FORMAT(NOW(),'%y%m%d')) A
                 </when>
                 <otherwise>
-                    (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )-7) A
+                    (SELECT * FROM POST WHERE WRITEDT >= DATE_FORMAT(NOW(),'%y%m%d')-7) A
                 </otherwise>
             </choose>
         WHERE A.ISDELETED = 0
@@ -201,10 +201,10 @@
         FROM
             <choose>
                 <when test="postType == 'week'">
-                    (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )-7) A
+                    (SELECT * FROM POST WHERE WRITEDT >= DATE_FORMAT(NOW(),'%y%m%d')-7) A
                 </when>
                 <when test="postType == 'day'">
-                    (SELECT * FROM POST WHERE WRITEDT >= TO_CHAR(SYSDATE(),'YYYYMMDD' )) A
+                    (SELECT * FROM POST WHERE WRITEDT >= DATE_FORMAT(NOW(),'%y%m%d')) A
                 </when>
                 <otherwise>
                     POST AS A
