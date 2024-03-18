@@ -27,7 +27,7 @@ public class CommentController {
         model.addAttribute("msg", Map.get("msg"));
         model.addAttribute("url", Map.get("url"));
 
-        return "/redirect";
+        return "redirect";
     }
 
     // 댓글 수정
@@ -38,7 +38,7 @@ public class CommentController {
         model.addAttribute("msg", Map.get("msg"));
         model.addAttribute("url", Map.get("url"));
 
-        return "/redirect";
+        return "redirect";
     }
 
     // 댓글 삭제
@@ -51,7 +51,7 @@ public class CommentController {
         model.addAttribute("msg", Map.get("msg"));
         model.addAttribute("url", Map.get("url"));
 
-        return "/redirect";
+        return "redirect";
     }
 
 }

@@ -32,6 +32,6 @@ public class MainController {
         model.addAttribute("userVO", userVO);
         model.addAttribute("postList", postList);
 
-        return "/index";
+        return "index";
     }
 }

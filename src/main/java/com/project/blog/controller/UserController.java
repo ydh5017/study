@@ -32,7 +32,7 @@ public class UserController {
     // 회원가입 페이지
     @GetMapping("regist")
     public String userRegPage() {
-        return "/user/userReg";
+        return "user/userReg";
     }
 
     // 회원가입
@@ -46,13 +46,13 @@ public class UserController {
 
         model.addAttribute("msg", map.get("msg"));
         model.addAttribute("url", map.get("url"));
-        return "/redirect";
+        return "redirect";
     }
 
     // 로그인 페이지
     @GetMapping
     public String  loginPage() {
-        return "/user/login";
+        return "user/login";
     }
 
     // 로그인 & 회원인증
@@ -74,7 +74,7 @@ public class UserController {
         model.addAttribute("msg", map.get("msg"));
         model.addAttribute("url", map.get("url"));
 
-        return "/redirect";
+        return "redirect";
     }
 
     // 로그아웃
@@ -99,7 +99,7 @@ public class UserController {
         model.addAttribute("msg", msg);
         model.addAttribute("url", url);
 
-        return "/redirect";
+        return "redirect";
     }
 
     // 회원정보 페이지
@@ -109,7 +109,7 @@ public class UserController {
 
         model.addAttribute("userVO", userVO);
 
-        return "/user/userDetail";
+        return "user/userDetail";
     }
 
     // 회원정보 수정 페이지
@@ -119,7 +119,7 @@ public class UserController {
 
         model.addAttribute("userVO", userVO);
 
-        return "/user/userMod";
+        return "user/userMod";
     }
 
     // 회원정보 수정
@@ -130,7 +130,7 @@ public class UserController {
         model.addAttribute("msg", map.get("msg"));
         model.addAttribute("url", map.get("url"));
 
-        return "/redirect";
+        return "redirect";
     }
 
     // 마이페이지
@@ -149,7 +149,7 @@ public class UserController {
         model.addAttribute("writeCommentList", writeCommentList);
         model.addAttribute("likeCommentList", likeCommentList);
 
-        return "/user/mypage";
+        return "user/mypage";
     }
 
     // 마이페이지 댓글 리스트 페이지
@@ -188,7 +188,7 @@ public class UserController {
         model.addAttribute("pageList", pageList);
         model.addAttribute("mypageType", mypageType);
 
-        return "/user/commentList";
+        return "user/commentList";
     }
 
     // 패스워드 변경
@@ -204,13 +204,13 @@ public class UserController {
         model.addAttribute("msg", map.get("msg"));
         model.addAttribute("url", map.get("url"));
 
-        return "/redirect";
+        return "redirect";
     }
 
     // 임시 비밀번호 발급 페이지
     @GetMapping("/findPw")
     public String findPw() throws Exception {
-        return "/user/findPw";
+        return "user/findPw";
     }
 
     // 임시 비밀번호 발급
@@ -221,6 +221,6 @@ public class UserController {
         model.addAttribute("msg", map.get("msg"));
         model.addAttribute("url", map.get("url"));
 
-        return "/redirect";
+        return "redirect";
     }
 }

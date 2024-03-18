@@ -60,9 +60,6 @@ public class ApiController {
     // 답글인지 확인
     @GetMapping(value = "replyConfirm")
     public int replyConfirm(@RequestParam int commentSeq) throws Exception {
-        log.info("commentSeq1 : "  + commentSeq);
-        int i =  commentService.replyConfirm(commentSeq);
-        log.info("commentSeq2 : "  + i);
-        return i;
+        return commentService.replyConfirm(commentSeq);
     }
 }

@@ -77,7 +77,7 @@ public class PostController {
         model.addAttribute("cateCode", cateCode);
         model.addAttribute("postType", postType);
 
-        return "/post/list";
+        return "post/list";
     }
 
     // 게시글 작성 페이지
@@ -87,7 +87,7 @@ public class PostController {
 
         model.addAttribute("userVO", userVO);
 
-        return "/post/postAdd";
+        return "post/postAdd";
     }
 
     // 게시글 작성
@@ -98,7 +98,7 @@ public class PostController {
         model.addAttribute("msg", Map.get("msg"));
         model.addAttribute("url", Map.get("url"));
 
-        return "/redirect";
+        return "redirect";
     }
 
     // 게시글 상세보기 페이지
@@ -129,7 +129,7 @@ public class PostController {
         model.addAttribute("commentList", commentList);
         model.addAttribute("deleted", deleted);
 
-        return "/post/postDetail";
+        return "post/postDetail";
     }
 
     // 게시글 삭제
@@ -141,7 +141,7 @@ public class PostController {
         model.addAttribute("msg", Map.get("msg"));
         model.addAttribute("url", Map.get("url"));
 
-        return "/redirect";
+        return "redirect";
     }
 
     // 게시글 수정 페이지
@@ -153,7 +153,7 @@ public class PostController {
         model.addAttribute("userVO", userVO);
         model.addAttribute("postVO",postVO);
 
-        return "/post/postModify";
+        return "post/postModify";
     }
 
     // 게시글 수정
@@ -164,6 +164,6 @@ public class PostController {
         model.addAttribute("msg", Map.get("msg"));
         model.addAttribute("url", Map.get("url"));
 
-        return "/redirect";
+        return "redirect";
     }
 }
